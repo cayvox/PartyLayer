@@ -636,7 +636,8 @@ CantonConnect exports typed error classes. Use `try-catch` with `instanceof` che
 - [Architecture](./docs/architecture.md)
 - [Error Handling](./docs/errors.md)
 - [Wallet Provider Guide](./docs/wallet-provider-guide.md)
-- [Security Checklist](./docs/security-checklist.md)
+- [Security Checklist](./docs/security-checklist.md) - For wallet providers
+- [Production Security Guide](./docs/security-production.md) - For dApp developers
 
 ---
 
