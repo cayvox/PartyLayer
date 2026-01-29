@@ -7,7 +7,6 @@
 
 import { program } from 'commander';
 import { readFileSync, writeFileSync, existsSync } from 'fs';
-import { join } from 'path';
 import { loadAdapter } from './loader';
 import { runConformanceTests, createMockContext } from './tests';
 import { generateReport, formatReportText, type ConformanceReport } from './report';

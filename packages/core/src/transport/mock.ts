@@ -55,7 +55,7 @@ export class MockTransport implements Transport {
     // Check for mock response
     const mockResponse = this.mockResponses.get(request.state);
     if (mockResponse && 'partyId' in mockResponse) {
-      return mockResponse as ConnectResponse;
+      return mockResponse;
     }
 
     // Default mock response
@@ -83,7 +83,7 @@ export class MockTransport implements Transport {
     // Check for mock response
     const mockResponse = this.mockResponses.get(request.state);
     if (mockResponse && ('signature' in mockResponse || 'jobId' in mockResponse)) {
-      return mockResponse as SignResponse;
+      return mockResponse;
     }
 
     // Default mock response
@@ -101,7 +101,7 @@ export class MockTransport implements Transport {
   /**
    * Poll job status (mock)
    */
-  async pollJobStatus(
+  pollJobStatus(
     jobId: string,
     _statusUrl: string,
     _options: TransportOptions
@@ -109,17 +109,17 @@ export class MockTransport implements Transport {
     // Check for mock job
     const mockJob = this.mockJobs.get(jobId);
     if (mockJob) {
-      return mockJob;
+      return Promise.resolve(mockJob);
     }
 
     // Default mock: approved immediately
-    return {
+    return Promise.resolve({
       jobId,
       status: 'approved',
       result: {
         signature: 'mock-signature',
         transactionHash: 'mock-tx-hash',
       },
-    };
+    });
   }
 }

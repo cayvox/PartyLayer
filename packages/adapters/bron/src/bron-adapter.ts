@@ -82,9 +82,9 @@ export class BronAdapter implements WalletAdapter {
     const mockBaseUrl = 'https://api.bron.dev';
     return new BronApiClient({
       baseUrl: mockBaseUrl,
-      getAccessToken: async () => {
+      getAccessToken: () => {
         // In mock mode, return a mock token
-        return 'mock-bron-token';
+        return Promise.resolve('mock-bron-token');
       },
     });
   }
@@ -100,13 +100,13 @@ export class BronAdapter implements WalletAdapter {
     ];
   }
 
-  async detectInstalled(): Promise<AdapterDetectResult> {
+  detectInstalled(): Promise<AdapterDetectResult> {
     // Bron is an enterprise remote signer - no "installation" required
     // Availability depends on OAuth2 configuration
-    return {
+    return Promise.resolve({
       installed: true,
       reason: 'Bron is a remote signer service',
-    };
+    });
   }
 
   async connect(
@@ -191,8 +191,8 @@ export class BronAdapter implements WalletAdapter {
     persisted: import('@cantonconnect/core').PersistedSession
   ): Promise<import('@cantonconnect/core').Session | null> {
     // Check if we have a session ID and access token
-    const sessionId = persisted.metadata?.sessionId as string | undefined;
-    if (!sessionId) {
+    const sessionId = persisted.metadata?.sessionId;
+    if (typeof sessionId !== 'string') {
       return null;
     }
 
@@ -219,8 +219,8 @@ export class BronAdapter implements WalletAdapter {
     params: SignMessageParams
   ): Promise<import('@cantonconnect/core').SignedMessage> {
     try {
-      const sessionId = session.metadata?.sessionId as string | undefined;
-      if (!sessionId) {
+      const sessionId = session.metadata?.sessionId;
+      if (typeof sessionId !== 'string') {
         throw new Error('No session ID');
       }
 
@@ -277,8 +277,8 @@ export class BronAdapter implements WalletAdapter {
     params: SignTransactionParams
   ): Promise<import('@cantonconnect/core').SignedTransaction> {
     try {
-      const sessionId = session.metadata?.sessionId as string | undefined;
-      if (!sessionId) {
+      const sessionId = session.metadata?.sessionId;
+      if (typeof sessionId !== 'string') {
         throw new Error('No session ID');
       }
 

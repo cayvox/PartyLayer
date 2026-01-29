@@ -113,7 +113,7 @@ export class PostMessageTransport implements Transport {
 
     // Get target window (could be parent, opener, or specific iframe)
     // For now, assume we're communicating with parent/opener
-    const target = window.opener || window.parent;
+    const target = (window.opener ?? window.parent) as Window | null;
 
     if (!target || target === window) {
       throw new Error('No target window available for postMessage');
@@ -159,7 +159,7 @@ export class PostMessageTransport implements Transport {
     const targetOrigin = targetUrl.origin;
 
     // Get target window
-    const target = window.opener || window.parent;
+    const target = (window.opener ?? window.parent) as Window | null;
 
     if (!target || target === window) {
       throw new Error('No target window available for postMessage');

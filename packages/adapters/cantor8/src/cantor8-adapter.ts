@@ -80,11 +80,11 @@ export class Cantor8Adapter implements WalletAdapter {
     ];
   }
 
-  async detectInstalled(): Promise<AdapterDetectResult> {
+  detectInstalled(): Promise<AdapterDetectResult> {
     // Cantor8 is a mobile wallet - detection is not straightforward
     // We can check for deep link support or user agent hints
     if (typeof window === 'undefined') {
-      return { installed: false, reason: 'Browser environment required' };
+      return Promise.resolve({ installed: false, reason: 'Browser environment required' });
     }
 
     // Check if device supports deep links (mobile)
@@ -92,10 +92,10 @@ export class Cantor8Adapter implements WalletAdapter {
     
     // For now, assume installed if mobile device
     // In production, might check for specific user agent or other hints
-    return {
+    return Promise.resolve({
       installed: isMobile,
       reason: isMobile ? undefined : 'Cantor8 is a mobile wallet',
-    };
+    });
   }
 
   async connect(
@@ -170,7 +170,7 @@ export class Cantor8Adapter implements WalletAdapter {
     }
   }
 
-  async disconnect(
+  disconnect(
     _ctx: AdapterContext,
     _session: import('@cantonconnect/core').Session
   ): Promise<void> {
@@ -179,29 +179,30 @@ export class Cantor8Adapter implements WalletAdapter {
     if (_session.metadata?.sessionToken) {
       // In production, might call a logout endpoint
     }
+    return Promise.resolve();
   }
 
-  async restore(
+  restore(
     _ctx: AdapterContext,
     persisted: import('@cantonconnect/core').PersistedSession
   ): Promise<import('@cantonconnect/core').Session | null> {
     // Check if we have a session token
-    const sessionToken = persisted.metadata?.sessionToken as string | undefined;
-    if (!sessionToken) {
-      return null; // No token to restore
+    const sessionToken = persisted.metadata?.sessionToken;
+    if (typeof sessionToken !== 'string') {
+      return Promise.resolve(null); // No token to restore
     }
 
     // In production, might validate token with vendor API
     // For now, if token exists and session not expired, restore
     if (persisted.expiresAt && Date.now() >= persisted.expiresAt) {
-      return null; // Expired
+      return Promise.resolve(null); // Expired
     }
 
     // Return restored session
-    return {
+    return Promise.resolve({
       ...persisted,
       walletId: this.walletId,
-    };
+    });
   }
 
   async signMessage(

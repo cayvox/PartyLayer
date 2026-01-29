@@ -86,23 +86,25 @@ export class PostMessageTransport implements Transport {
     this.targetWindow = window;
   }
 
-  async connect(): Promise<void> {
+  connect(): Promise<void> {
     if (typeof window === 'undefined') {
-      throw new Error('PostMessageTransport requires browser environment');
+      return Promise.reject(new Error('PostMessageTransport requires browser environment'));
     }
 
     window.addEventListener('message', this.handleMessage.bind(this));
     this.connected = true;
+    return Promise.resolve();
   }
 
-  async disconnect(): Promise<void> {
+  disconnect(): Promise<void> {
     if (typeof window === 'undefined') {
-      return;
+      return Promise.resolve();
     }
 
     window.removeEventListener('message', this.handleMessage.bind(this));
     this.connected = false;
     this.messageHandlers.clear();
+    return Promise.resolve();
   }
 
   isConnected(): boolean {
@@ -125,17 +127,18 @@ export class PostMessageTransport implements Transport {
         reject(new Error(`Transport timeout for message ${message.id}`));
       }, 30000); // 30 second timeout
 
-      const handler = (event: MessageEvent) => {
+      const handler = (event: MessageEvent<TransportResponse<TResponse>>) => {
+        const data = event.data as TransportResponse<TResponse> | null;
         if (
           event.origin !== this.targetOrigin ||
-          event.data?.id !== message.id
+          data?.id !== message.id
         ) {
           return;
         }
 
         clearTimeout(timeout);
         window.removeEventListener('message', handler);
-        resolve(event.data as TransportResponse<TResponse>);
+        resolve(data);
       };
 
       window.addEventListener('message', handler);

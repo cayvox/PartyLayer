@@ -10,9 +10,7 @@ import type {
   CapabilityKey,
 } from '@cantonconnect/core';
 import {
-  WalletNotInstalledError,
   CapabilityNotSupportedError,
-  UserRejectedError,
 } from '@cantonconnect/core';
 
 /**

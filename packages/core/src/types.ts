@@ -21,7 +21,7 @@ export type Signature = string & { readonly __brand: 'Signature' };
  * Standard networks: "devnet" | "testnet" | "mainnet"
  * Custom networks allowed as string
  */
-export type NetworkId = 'devnet' | 'testnet' | 'mainnet' | string;
+export type NetworkId = 'devnet' | 'testnet' | 'mainnet' | (string & Record<never, never>);
 
 /**
  * Capability keys that wallets can support

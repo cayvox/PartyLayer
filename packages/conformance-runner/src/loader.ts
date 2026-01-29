@@ -5,8 +5,7 @@
  */
 
 import type { WalletAdapter } from '@cantonconnect/core';
-import { readFileSync, existsSync } from 'fs';
-import { join, resolve } from 'path';
+import { resolve } from 'path';
 import { pathToFileURL } from 'url';
 
 /**
@@ -50,7 +49,7 @@ export async function loadAdapter(
   } catch (err) {
     // Fallback to CJS
     try {
-      // eslint-disable-next-line @typescript-eslint/no-require-imports
+      // eslint-disable-next-line @typescript-eslint/no-var-requires
       const module = require(adapterPath);
       const adapter = module.default || module[Object.keys(module)[0]];
       
