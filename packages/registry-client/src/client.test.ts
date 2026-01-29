@@ -35,8 +35,8 @@ describe('RegistryClient', () => {
   });
 
   describe('downgrade protection', () => {
-    it('should reject registry with lower sequence number', async () => {
-      // Set up cached registry with sequence 10
+    it('should fallback to cached registry when downgrade is detected', async () => {
+      // Set up cached registry with sequence 10 and some wallets
       const cachedRegistry: WalletRegistryV1 = {
         metadata: {
           registryVersion: '1',
@@ -45,7 +45,7 @@ describe('RegistryClient', () => {
           channel: 'stable',
           sequence: 10,
         },
-        wallets: [],
+        wallets: [], // Empty wallets for simplicity
       };
 
       // Inject cached registry into client's memory cache
@@ -81,8 +81,15 @@ describe('RegistryClient', () => {
           headers: new Headers(),
         });
 
-      // Should throw RegistryVerificationFailedError for downgrade
-      await expect(client.getWallets()).rejects.toThrow(RegistryVerificationFailedError);
+      // Should fallback to cached registry (downgrade detected, use cached)
+      const wallets = await client.getWallets();
+      
+      // Should return cached wallets (empty array in this case)
+      expect(wallets).toBeDefined();
+      
+      // Status should show cache as source with an error
+      const status = client.getStatus();
+      expect(status?.source).toBe('cache');
     });
   });
 

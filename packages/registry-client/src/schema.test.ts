@@ -10,6 +10,7 @@ import {
   REGISTRY_SCHEMA_VERSION,
 } from './schema';
 import type { WalletRegistryV1, RegistryWalletEntry } from './schema';
+import { toWalletId } from '@cantonconnect/core';
 
 describe('registry schema validation', () => {
   const validWalletEntry: RegistryWalletEntry = {
@@ -34,9 +35,11 @@ describe('registry schema validation', () => {
 
   const validRegistry: WalletRegistryV1 = {
     metadata: {
-      version: '1.0.0',
+      registryVersion: '1.0.0',
       schemaVersion: REGISTRY_SCHEMA_VERSION,
-      timestamp: Date.now(),
+      publishedAt: new Date().toISOString(),
+      channel: 'stable',
+      sequence: 1,
     },
     wallets: [validWalletEntry],
   };
@@ -67,10 +70,13 @@ describe('registry schema validation', () => {
 
   describe('registryEntryToMetadata', () => {
     it('should convert entry to metadata', () => {
-      const metadata = registryEntryToMetadata(validWalletEntry);
-      expect(metadata.id).toBe(validWalletEntry.id);
-      expect(metadata.name).toBe(validWalletEntry.name);
-      expect(metadata.capabilities).toEqual(validWalletEntry.capabilities);
+      const walletInfo = registryEntryToMetadata(validWalletEntry);
+      // registryEntryToMetadata returns WalletInfo, not the raw entry
+      expect(walletInfo.walletId).toBe(toWalletId(validWalletEntry.id));
+      expect(walletInfo.name).toBe(validWalletEntry.name);
+      // capabilities is transformed to CapabilityKey[]
+      expect(walletInfo.capabilities).toContain('signMessage');
+      expect(walletInfo.capabilities).toContain('signTransaction');
     });
   });
 });
