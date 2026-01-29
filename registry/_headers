@@ -1,0 +1,23 @@
+# Cloudflare Pages Headers
+# https://developers.cloudflare.com/pages/configuration/headers/
+
+# CORS headers for all JSON files
+/*.json
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, HEAD, OPTIONS
+  Access-Control-Allow-Headers: Accept, If-None-Match, Content-Type
+  Access-Control-Expose-Headers: ETag, Last-Modified, Cache-Control
+  Cache-Control: public, max-age=300
+  Content-Type: application/json; charset=utf-8
+
+# Signature files
+/*.sig
+  Access-Control-Allow-Origin: *
+  Access-Control-Allow-Methods: GET, HEAD, OPTIONS
+  Access-Control-Allow-Headers: Accept, If-None-Match, Content-Type
+  Cache-Control: public, max-age=300
+  Content-Type: application/json; charset=utf-8
+
+# Health check
+/health.json
+  Cache-Control: no-cache

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CantonConnect Registry</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+      color: #fff;
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .container {
+      max-width: 600px;
+      padding: 3rem;
+      text-align: center;
+    }
+    h1 {
+      font-size: 2.5rem;
+      margin-bottom: 1rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    p { color: #a0aec0; margin-bottom: 2rem; line-height: 1.6; }
+    .endpoints {
+      background: rgba(255,255,255,0.05);
+      border-radius: 12px;
+      padding: 1.5rem;
+      text-align: left;
+    }
+    .endpoint {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 0;
+      border-bottom: 1px solid rgba(255,255,255,0.1);
+    }
+    .endpoint:last-child { border-bottom: none; }
+    .endpoint-name { font-weight: 600; }
+    .endpoint-url {
+      font-family: monospace;
+      font-size: 0.85rem;
+      color: #667eea;
+    }
+    a { color: #667eea; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    .footer {
+      margin-top: 2rem;
+      font-size: 0.85rem;
+      color: #718096;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>CantonConnect Registry</h1>
+    <p>
+      This is the wallet registry for the CantonConnect SDK.
+      It provides a list of supported wallets for Canton Network dApps.
+    </p>
+    
+    <div class="endpoints">
+      <div class="endpoint">
+        <span class="endpoint-name">Stable Channel</span>
+        <a class="endpoint-url" href="/v1/stable/registry.json">/v1/stable/registry.json</a>
+      </div>
+      <div class="endpoint">
+        <span class="endpoint-name">Beta Channel</span>
+        <a class="endpoint-url" href="/v1/beta/registry.json">/v1/beta/registry.json</a>
+      </div>
+      <div class="endpoint">
+        <span class="endpoint-name">Health Check</span>
+        <a class="endpoint-url" href="/health.json">/health.json</a>
+      </div>
+    </div>
+    
+    <div class="footer">
+      <p>
+        <a href="https://github.com/cayvox/CantonConnect">GitHub</a> · 
+        <a href="https://cantonconnect.xyz">Website</a> · 
+        <a href="https://www.npmjs.com/package/@cantonconnect/sdk">npm</a>
+      </p>
+    </div>
+  </div>
+</body>
+</html>

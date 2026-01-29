@@ -2,9 +2,9 @@
   "metadata": {
     "registryVersion": "1.0.0",
     "schemaVersion": "1.0.0",
-    "publishedAt": "2026-01-25T00:00:00Z",
+    "publishedAt": "2026-01-29T00:00:00Z",
     "channel": "stable",
-    "sequence": 1,
+    "sequence": 2,
     "publisher": "CantonConnect"
   },
   "wallets": [
@@ -51,6 +51,53 @@
       },
       "installation": {
         "scriptTag": "@fivenorth/loop-sdk"
+      },
+      "sdkVersion": ">=0.1.0"
+    },
+    {
+      "id": "cantor8",
+      "name": "Cantor8",
+      "description": "Cantor8 Mobile Wallet for Canton Network",
+      "homepage": "https://cantor8.tech",
+      "icon": "https://cantor8.tech/icon.png",
+      "supportedNetworks": ["devnet", "testnet", "mainnet"],
+      "capabilities": {
+        "signMessage": true,
+        "signTransaction": true,
+        "submitTransaction": false,
+        "transactionStatus": false,
+        "switchNetwork": false,
+        "multiParty": false
+      },
+      "adapter": {
+        "type": "@cantonconnect/adapter-cantor8"
+      },
+      "installation": {
+        "deeplink": "cantor8://"
+      },
+      "sdkVersion": ">=0.1.0"
+    },
+    {
+      "id": "bron",
+      "name": "Bron",
+      "description": "Bron Enterprise Remote Signer for Canton Network",
+      "homepage": "https://developer.bron.org",
+      "icon": "https://developer.bron.org/icon.png",
+      "supportedNetworks": ["devnet", "testnet", "mainnet"],
+      "capabilities": {
+        "signMessage": true,
+        "signTransaction": true,
+        "submitTransaction": false,
+        "transactionStatus": false,
+        "switchNetwork": false,
+        "multiParty": false
+      },
+      "adapter": {
+        "type": "@cantonconnect/adapter-bron",
+        "requiresConfig": true
+      },
+      "installation": {
+        "oauth": true
       },
       "sdkVersion": ">=0.1.0"
     }
