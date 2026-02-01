@@ -39,15 +39,15 @@ export function CodeBlock({
         )}
 
         {/* Code content */}
-        <div className="relative">
+        <div className="relative overflow-hidden">
           {!filename && (
             <div className="absolute right-2 top-2 opacity-0 group-hover:opacity-100 transition-opacity">
               <CopyButton copied={copied} onClick={handleCopy} />
             </div>
           )}
 
-          <pre className="p-4 overflow-x-auto scrollbar-hide">
-            <code className="text-sm font-mono text-slate-300 leading-relaxed">
+          <pre className="p-4 overflow-x-auto scrollbar-hide max-w-full">
+            <code className="text-sm font-mono text-slate-300 leading-relaxed table w-full">
               {lines.map((line, i) => (
                 <div key={i} className="table-row">
                   {showLineNumbers && (
