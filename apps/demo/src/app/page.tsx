@@ -1,28 +1,28 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { CantonConnectProvider } from '@cantonconnect/react';
-import { createCantonConnect } from '@cantonconnect/sdk';
-import type { CantonConnectClient } from '@cantonconnect/sdk';
-import { ConsoleAdapter } from '@cantonconnect/adapter-console';
-import { LoopAdapter } from '@cantonconnect/adapter-loop';
-import { Cantor8Adapter } from '@cantonconnect/adapter-cantor8';
-import { BronAdapter } from '@cantonconnect/adapter-bron';
+import { PartyLayerProvider } from '@partylayer/react';
+import { createPartyLayer } from '@partylayer/sdk';
+import type { PartyLayerClient } from '@partylayer/sdk';
+import { ConsoleAdapter } from '@partylayer/adapter-console';
+import { LoopAdapter } from '@partylayer/adapter-loop';
+import { Cantor8Adapter } from '@partylayer/adapter-cantor8';
+import { BronAdapter } from '@partylayer/adapter-bron';
 import { DemoApp } from './components/DemoApp';
 
 /**
- * Client-side only wrapper to initialize CantonConnect
+ * Client-side only wrapper to initialize PartyLayer
  * This ensures window APIs are available before adapters are registered
  */
-function CantonConnectWrapper({ children }: { children: React.ReactNode }) {
-  const [client, setClient] = useState<CantonConnectClient | null>(null);
+function PartyLayerWrapper({ children }: { children: React.ReactNode }) {
+  const [client, setClient] = useState<PartyLayerClient | null>(null);
 
   useEffect(() => {
     // Only run on client side
     if (typeof window === 'undefined') return;
 
-    // Create CantonConnect client using public API
-    const cantonClient = createCantonConnect({
+    // Create PartyLayer client using public API
+    const cantonClient = createPartyLayer({
       registryUrl:
         process.env.NEXT_PUBLIC_REGISTRY_URL || 'http://localhost:3001',
       channel:
@@ -32,7 +32,7 @@ function CantonConnectWrapper({ children }: { children: React.ReactNode }) {
         (process.env.NEXT_PUBLIC_NETWORK as 'devnet' | 'testnet' | 'mainnet') ||
         'devnet',
       app: {
-        name: 'CantonConnect Demo',
+        name: 'PartyLayer Demo',
         origin: typeof window !== 'undefined' ? window.location.origin : undefined,
       },
     });
@@ -71,20 +71,20 @@ function CantonConnectWrapper({ children }: { children: React.ReactNode }) {
   if (!client) {
     return (
       <div style={{ padding: '24px', textAlign: 'center' }}>
-        <p>Initializing CantonConnect...</p>
+        <p>Initializing PartyLayer...</p>
       </div>
     );
   }
 
   return (
-    <CantonConnectProvider client={client}>{children}</CantonConnectProvider>
+    <PartyLayerProvider client={client}>{children}</PartyLayerProvider>
   );
 }
 
 export default function Home() {
   return (
-    <CantonConnectWrapper>
+    <PartyLayerWrapper>
       <DemoApp />
-    </CantonConnectWrapper>
+    </PartyLayerWrapper>
   );
 }

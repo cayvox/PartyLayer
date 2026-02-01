@@ -4,27 +4,27 @@ import { cn } from '@/design/cn';
 const links = [
   {
     label: 'GitHub',
-    href: 'https://github.com/cayvox/CantonConnect',
+    href: 'https://github.com/cayvox/PartyLayer',
     external: true,
   },
   {
     label: 'npm',
-    href: 'https://www.npmjs.com/package/@cantonconnect/sdk',
+    href: 'https://www.npmjs.com/package/@partylayer/sdk',
     external: true,
   },
   {
     label: 'Issues',
-    href: 'https://github.com/cayvox/CantonConnect/issues',
+    href: 'https://github.com/cayvox/PartyLayer/issues',
     external: true,
   },
   {
     label: 'Discussions',
-    href: 'https://github.com/cayvox/CantonConnect/discussions',
+    href: 'https://github.com/cayvox/PartyLayer/discussions',
     external: true,
   },
   {
     label: 'License',
-    href: 'https://github.com/cayvox/CantonConnect/blob/main/LICENSE',
+    href: 'https://github.com/cayvox/PartyLayer/blob/main/LICENSE',
     external: true,
   },
 ];
@@ -83,7 +83,7 @@ export function Footer() {
         <div className="mt-10 pt-6 border-t border-border">
           <div className="flex flex-col sm:flex-row justify-between items-center gap-4">
             <p className="text-small text-slate-400">
-              © {year} CantonConnect. MIT License.
+              © {year} PartyLayer. MIT License.
             </p>
 
             {/* Built by Cayvox Labs */}

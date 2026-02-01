@@ -13,7 +13,7 @@ import type {
   ConnectResponse,
   SignRequest,
   SignResponse,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 
 /**
  * Vendor configuration

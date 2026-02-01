@@ -1,7 +1,7 @@
 /**
- * Error taxonomy for CantonConnect SDK
+ * Error taxonomy for PartyLayer SDK
  * 
- * All errors extend CantonConnectError with stable error codes.
+ * All errors extend PartyLayerError with stable error codes.
  * Error codes are string literals for telemetry and UI message mapping.
  * 
  * References:
@@ -42,9 +42,9 @@ export interface ErrorMappingContext {
 }
 
 /**
- * Base error class for all CantonConnect errors
+ * Base error class for all PartyLayer errors
  */
-export class CantonConnectError extends Error {
+export class PartyLayerError extends Error {
   public readonly code: ErrorCode;
   public readonly cause?: unknown;
   public readonly details?: Record<string, unknown>;
@@ -60,7 +60,7 @@ export class CantonConnectError extends Error {
     }
   ) {
     super(message);
-    this.name = 'CantonConnectError';
+    this.name = 'PartyLayerError';
     this.code = code;
     this.cause = options?.cause;
     this.details = options?.details;
@@ -68,7 +68,7 @@ export class CantonConnectError extends Error {
 
     // Maintains proper stack trace
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, CantonConnectError);
+      Error.captureStackTrace(this, PartyLayerError);
     }
   }
 
@@ -96,7 +96,7 @@ export class CantonConnectError extends Error {
 /**
  * Wallet not found error
  */
-export class WalletNotFoundError extends CantonConnectError {
+export class WalletNotFoundError extends PartyLayerError {
   constructor(walletId: string) {
     super(`Wallet "${walletId}" not found`, 'WALLET_NOT_FOUND', {
       details: { walletId },
@@ -108,7 +108,7 @@ export class WalletNotFoundError extends CantonConnectError {
 /**
  * Wallet not installed error
  */
-export class WalletNotInstalledError extends CantonConnectError {
+export class WalletNotInstalledError extends PartyLayerError {
   constructor(walletId: string, reason?: string) {
     super(
       `Wallet "${walletId}" is not installed${reason ? `: ${reason}` : ''}`,
@@ -124,7 +124,7 @@ export class WalletNotInstalledError extends CantonConnectError {
 /**
  * User rejected error
  */
-export class UserRejectedError extends CantonConnectError {
+export class UserRejectedError extends PartyLayerError {
   constructor(operation: string, details?: Record<string, unknown>) {
     super(`User rejected ${operation}`, 'USER_REJECTED', {
       details: { operation, ...details },
@@ -136,7 +136,7 @@ export class UserRejectedError extends CantonConnectError {
 /**
  * Origin not allowed error
  */
-export class OriginNotAllowedError extends CantonConnectError {
+export class OriginNotAllowedError extends PartyLayerError {
   constructor(origin: string, allowedOrigins?: string[]) {
     super(
       `Origin "${origin}" is not allowed`,
@@ -152,7 +152,7 @@ export class OriginNotAllowedError extends CantonConnectError {
 /**
  * Session expired error
  */
-export class SessionExpiredError extends CantonConnectError {
+export class SessionExpiredError extends PartyLayerError {
   constructor(sessionId: string) {
     super(`Session "${sessionId}" has expired`, 'SESSION_EXPIRED', {
       details: { sessionId },
@@ -164,7 +164,7 @@ export class SessionExpiredError extends CantonConnectError {
 /**
  * Capability not supported error
  */
-export class CapabilityNotSupportedError extends CantonConnectError {
+export class CapabilityNotSupportedError extends PartyLayerError {
   constructor(walletId: string, capability: string) {
     super(
       `Wallet "${walletId}" does not support capability "${capability}"`,
@@ -180,7 +180,7 @@ export class CapabilityNotSupportedError extends CantonConnectError {
 /**
  * Transport error
  */
-export class TransportError extends CantonConnectError {
+export class TransportError extends PartyLayerError {
   constructor(message: string, cause?: unknown, details?: Record<string, unknown>) {
     super(message, 'TRANSPORT_ERROR', {
       cause,
@@ -193,7 +193,7 @@ export class TransportError extends CantonConnectError {
 /**
  * Registry fetch failed error
  */
-export class RegistryFetchFailedError extends CantonConnectError {
+export class RegistryFetchFailedError extends PartyLayerError {
   constructor(url: string, cause?: unknown) {
     super(`Failed to fetch registry from "${url}"`, 'REGISTRY_FETCH_FAILED', {
       cause,
@@ -206,7 +206,7 @@ export class RegistryFetchFailedError extends CantonConnectError {
 /**
  * Registry verification failed error
  */
-export class RegistryVerificationFailedError extends CantonConnectError {
+export class RegistryVerificationFailedError extends PartyLayerError {
   constructor(reason: string, details?: Record<string, unknown>) {
     super(`Registry verification failed: ${reason}`, 'REGISTRY_VERIFICATION_FAILED', {
       details: { reason, ...details },
@@ -218,7 +218,7 @@ export class RegistryVerificationFailedError extends CantonConnectError {
 /**
  * Registry schema invalid error
  */
-export class RegistrySchemaInvalidError extends CantonConnectError {
+export class RegistrySchemaInvalidError extends PartyLayerError {
   constructor(reason: string, details?: Record<string, unknown>) {
     super(`Registry schema invalid: ${reason}`, 'REGISTRY_SCHEMA_INVALID', {
       details: { reason, ...details },
@@ -230,7 +230,7 @@ export class RegistrySchemaInvalidError extends CantonConnectError {
 /**
  * Internal error (non-operational)
  */
-export class InternalError extends CantonConnectError {
+export class InternalError extends PartyLayerError {
   constructor(message: string, cause?: unknown, details?: Record<string, unknown>) {
     super(message, 'INTERNAL_ERROR', {
       cause,
@@ -244,7 +244,7 @@ export class InternalError extends CantonConnectError {
 /**
  * Timeout error
  */
-export class TimeoutError extends CantonConnectError {
+export class TimeoutError extends PartyLayerError {
   constructor(operation: string, timeoutMs: number) {
     super(
       `Operation "${operation}" timed out after ${timeoutMs}ms`,
@@ -258,18 +258,18 @@ export class TimeoutError extends CantonConnectError {
 }
 
 /**
- * Map unknown errors to CantonConnectError
+ * Map unknown errors to PartyLayerError
  * 
  * This is the single error mapping strategy used by all adapters.
  * It normalizes errors from various sources (wallet SDKs, network, etc.)
- * into typed CantonConnectError instances.
+ * into typed PartyLayerError instances.
  */
-export function mapUnknownErrorToCantonConnectError(
+export function mapUnknownErrorToPartyLayerError(
   err: unknown,
   context: ErrorMappingContext
-): CantonConnectError {
-  // Already a CantonConnectError
-  if (err instanceof CantonConnectError) {
+): PartyLayerError {
+  // Already a PartyLayerError
+  if (err instanceof PartyLayerError) {
     return err;
   }
 

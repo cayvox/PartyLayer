@@ -11,12 +11,12 @@ import type {
   WalletRegistryV1,
   RegistryWalletEntry,
   RegistryChannel,
-} from '@cantonconnect/registry-client';
+} from '@partylayer/registry-client';
 import {
   validateRegistry,
   validateWalletEntry,
   REGISTRY_SCHEMA_VERSION,
-} from '@cantonconnect/registry-client';
+} from '@partylayer/registry-client';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);

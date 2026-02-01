@@ -23,7 +23,7 @@ import type {
   PersistedSession,
   CapabilityKey,
   PartyId,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 import {
   toWalletId,
   toPartyId,
@@ -31,8 +31,8 @@ import {
   toSignature,
   WalletNotInstalledError,
   CapabilityNotSupportedError,
-  mapUnknownErrorToCantonConnectError,
-} from '@cantonconnect/core';
+  mapUnknownErrorToPartyLayerError,
+} from '@partylayer/core';
 
 /**
  * Loop SDK CDN URLs to try
@@ -378,7 +378,7 @@ export class LoopAdapter implements WalletAdapter {
         loopSDK.connect();
       });
     } catch (err) {
-      throw mapUnknownErrorToCantonConnectError(err, {
+      throw mapUnknownErrorToPartyLayerError(err, {
         walletId: this.walletId,
         phase: 'connect',
         transport: 'popup',
@@ -466,7 +466,7 @@ export class LoopAdapter implements WalletAdapter {
         domain: params.domain,
       };
     } catch (err) {
-      throw mapUnknownErrorToCantonConnectError(err, {
+      throw mapUnknownErrorToPartyLayerError(err, {
         walletId: this.walletId,
         phase: 'signMessage',
         transport: 'popup',
@@ -531,7 +531,7 @@ export class LoopAdapter implements WalletAdapter {
         updateId: result.submission_id,
       };
     } catch (err) {
-      throw mapUnknownErrorToCantonConnectError(err, {
+      throw mapUnknownErrorToPartyLayerError(err, {
         walletId: this.walletId,
         phase: 'submitTransaction',
         transport: 'popup',

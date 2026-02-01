@@ -5,5 +5,5 @@
 ### Patch Changes
 
 - Updated dependencies
-  - @cantonconnect/sdk@0.2.0
-  - @cantonconnect/react@0.2.0
+  - @partylayer/sdk@0.2.0
+  - @partylayer/react@0.2.0

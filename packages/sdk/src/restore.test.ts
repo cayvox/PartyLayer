@@ -3,12 +3,12 @@
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import type { WalletAdapter, Session, PersistedSession } from '@cantonconnect/core';
+import type { WalletAdapter, Session, PersistedSession } from '@partylayer/core';
 import {
   toWalletId,
   toPartyId,
   toSessionId,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 
 // Mock adapter that supports restore
 class MockRestoreAdapter implements WalletAdapter {

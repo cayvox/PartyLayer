@@ -1,6 +1,6 @@
-# CantonConnect Demo App
+# PartyLayer Demo App
 
-A Next.js demo application showcasing the CantonConnect SDK integration.
+A Next.js demo application showcasing the PartyLayer SDK integration.
 
 ## Features
 
@@ -82,7 +82,7 @@ pnpm --filter demo test:e2e
 apps/demo/
 ├── src/
 │   └── app/
-│       ├── page.tsx          # Main page with CantonConnect setup
+│       ├── page.tsx          # Main page with PartyLayer setup
 │       ├── components/
 │       │   └── DemoApp.tsx   # Demo UI component
 │       ├── debug/

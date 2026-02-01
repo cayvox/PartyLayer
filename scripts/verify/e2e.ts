@@ -121,10 +121,10 @@ function runConformanceTests(): TestResult[] {
   const results: TestResult[] = [];
   
   const adapters = [
-    '@cantonconnect/adapter-console',
-    '@cantonconnect/adapter-loop',
-    '@cantonconnect/adapter-cantor8',
-    '@cantonconnect/adapter-bron',
+    '@partylayer/adapter-console',
+    '@partylayer/adapter-loop',
+    '@partylayer/adapter-cantor8',
+    '@partylayer/adapter-bron',
   ];
   
   // In CI (Node.js without browser), conformance tests require browser runtime
@@ -145,7 +145,7 @@ function runConformanceTests(): TestResult[] {
     
     try {
       exec(`pnpm --filter ${adapter} build`, ROOT);
-      exec(`pnpm --filter @cantonconnect/conformance-runner exec cantonconnect-conformance run --adapter ${adapter}`, ROOT);
+      exec(`pnpm --filter @partylayer/conformance-runner exec cantonconnect-conformance run --adapter ${adapter}`, ROOT);
       results.push({ name: adapter, status: 'passed' });
     } catch (error: any) {
       results.push({ 
@@ -192,7 +192,7 @@ function generateReport(
   );
   
   // Markdown report
-  const markdown = `# CantonConnect Verification Report
+  const markdown = `# PartyLayer Verification Report
 
 **Generated:** ${report.timestamp}
 **Git Commit:** ${report.gitCommit}
@@ -292,7 +292,7 @@ async function main() {
 
     // Step 4: Start registry server
     runStep('Start registry server', () => {
-      exec('pnpm --filter @cantonconnect/registry-server build', ROOT);
+      exec('pnpm --filter @partylayer/registry-server build', ROOT);
       // Start server in background (simplified - in real impl would use spawn)
       console.log('Registry server should be started manually or via separate process');
     });
@@ -301,8 +301,8 @@ async function main() {
     // Only run tests for packages that have test scripts configured
     runStep('Run unit tests', () => {
       report.testResults.unit = [
-        ...runTests('@cantonconnect/core', 'core'),
-        ...runTests('@cantonconnect/registry-client', 'registry-client'),
+        ...runTests('@partylayer/core', 'core'),
+        ...runTests('@partylayer/registry-client', 'registry-client'),
         // sdk and react don't have test scripts - mark as skipped
         { name: 'sdk', status: 'skipped', error: 'No test script defined' },
         { name: 'react', status: 'skipped', error: 'No test script defined' },

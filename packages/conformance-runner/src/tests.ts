@@ -8,10 +8,10 @@ import type {
   WalletAdapter,
   AdapterContext,
   CapabilityKey,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 import {
   CapabilityNotSupportedError,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 
 /**
  * Test result

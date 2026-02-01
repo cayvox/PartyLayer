@@ -3,7 +3,7 @@
 **References:**
 - [Wallet Integration Guide](https://docs.digitalasset.com/integrate/devnet/index.html)
 
-All errors extend `CantonConnectError` and have a stable `code` property for programmatic handling and UI messages.
+All errors extend `PartyLayerError` and have a stable `code` property for programmatic handling and UI messages.
 
 ## Error Codes
 
@@ -29,7 +29,7 @@ import {
   WalletNotFoundError,
   UserRejectedError,
   CapabilityNotSupportedError,
-} from '@cantonconnect/sdk';
+} from '@partylayer/sdk';
 
 try {
   await client.connect();

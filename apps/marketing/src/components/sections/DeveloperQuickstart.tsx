@@ -6,24 +6,24 @@ const tabs = [
   {
     id: 'install',
     label: 'Install',
-    code: `npm install @cantonconnect/sdk @cantonconnect/react
+    code: `npm install @partylayer/sdk @partylayer/react
 
 # or with yarn
-yarn add @cantonconnect/sdk @cantonconnect/react
+yarn add @partylayer/sdk @partylayer/react
 
 # or with pnpm
-pnpm add @cantonconnect/sdk @cantonconnect/react`,
+pnpm add @partylayer/sdk @partylayer/react`,
     language: 'bash',
   },
   {
     id: 'init',
     label: 'Initialize',
-    code: `import { createCantonConnect } from '@cantonconnect/sdk';
+    code: `import { createPartyLayer } from '@partylayer/sdk';
 
 // Create the client with default config
-const client = createCantonConnect({
+const client = createPartyLayer({
   // Optional: specify registry URL
-  registryUrl: 'https://registry.cantonconnect.xyz',
+  registryUrl: 'https://registry.partylayer.xyz',
   
   // Optional: enable debug logging
   debug: process.env.NODE_ENV === 'development',
@@ -35,22 +35,22 @@ export default client;`,
   {
     id: 'react',
     label: 'React Setup',
-    code: `import { CantonConnectProvider } from '@cantonconnect/react';
+    code: `import { PartyLayerProvider } from '@partylayer/react';
 import client from './cantonconnect';
 
 function App() {
   return (
-    <CantonConnectProvider client={client}>
+    <PartyLayerProvider client={client}>
       <YourApp />
-    </CantonConnectProvider>
+    </PartyLayerProvider>
   );
 }
 
 // In your component:
-import { useCantonConnect } from '@cantonconnect/react';
+import { usePartyLayer } from '@partylayer/react';
 
 function ConnectButton() {
-  const { connect, disconnect, session, isConnected } = useCantonConnect();
+  const { connect, disconnect, session, isConnected } = usePartyLayer();
 
   if (isConnected) {
     return (
@@ -116,7 +116,7 @@ export function DeveloperQuickstart() {
         {/* Quick Links */}
         <div className="mt-8 flex flex-wrap justify-center gap-4">
           <a
-            href="https://github.com/cayvox/CantonConnect#readme"
+            href="https://github.com/cayvox/PartyLayer#readme"
             target="_blank"
             rel="noopener noreferrer"
             className={cn(
@@ -132,7 +132,7 @@ export function DeveloperQuickstart() {
             Full Documentation
           </a>
           <a
-            href="https://github.com/cayvox/CantonConnect/tree/main/examples"
+            href="https://github.com/cayvox/PartyLayer/tree/main/examples"
             target="_blank"
             rel="noopener noreferrer"
             className={cn(

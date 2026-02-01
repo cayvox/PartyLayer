@@ -9,10 +9,10 @@
 
 ```bash
 # That's all you need!
-npm install @cantonconnect/sdk
+npm install @partylayer/sdk
 
 # Optional: React integration
-npm install @cantonconnect/react
+npm install @partylayer/react
 ```
 
 **No need to install wallet adapters separately** - they're all bundled in the SDK!
@@ -20,11 +20,11 @@ npm install @cantonconnect/react
 ## Basic Usage (3 lines of code!)
 
 ```typescript
-import { createCantonConnect } from '@cantonconnect/sdk';
+import { createPartyLayer } from '@partylayer/sdk';
 
 // Create client - ALL wallet adapters are automatically included!
-const client = createCantonConnect({
-  registryUrl: 'https://registry.cantonconnect.xyz',
+const client = createPartyLayer({
+  registryUrl: 'https://registry.partylayer.xyz',
   network: 'devnet',
   app: { name: 'My dApp' },
 });
@@ -44,10 +44,10 @@ console.log('Connected:', session.partyId);
 ## Full Example
 
 ```typescript
-import { createCantonConnect } from '@cantonconnect/sdk';
+import { createPartyLayer } from '@partylayer/sdk';
 
-const client = createCantonConnect({
-  registryUrl: 'https://registry.cantonconnect.xyz',
+const client = createPartyLayer({
+  registryUrl: 'https://registry.partylayer.xyz',
   network: 'devnet',
   app: { name: 'My dApp' },
 });
@@ -88,12 +88,12 @@ await client.disconnect();
 
 ```tsx
 import { useState } from 'react';
-import { CantonConnectProvider, WalletModal, useSession } from '@cantonconnect/react';
-import { createCantonConnect } from '@cantonconnect/sdk';
+import { PartyLayerProvider, WalletModal, useSession } from '@partylayer/react';
+import { createPartyLayer } from '@partylayer/sdk';
 
 // Create client - no adapter imports needed!
-const client = createCantonConnect({
-  registryUrl: 'https://registry.cantonconnect.xyz',
+const client = createPartyLayer({
+  registryUrl: 'https://registry.partylayer.xyz',
   network: 'devnet',
   app: { name: 'My dApp' },
 });
@@ -101,9 +101,9 @@ const client = createCantonConnect({
 // Wrap your app
 function App() {
   return (
-    <CantonConnectProvider client={client}>
+    <PartyLayerProvider client={client}>
       <MyApp />
-    </CantonConnectProvider>
+    </PartyLayerProvider>
   );
 }
 
@@ -141,7 +141,7 @@ import {
   WalletNotFoundError,
   UserRejectedError,
   CapabilityNotSupportedError,
-} from '@cantonconnect/sdk';
+} from '@partylayer/sdk';
 
 try {
   await client.connect();

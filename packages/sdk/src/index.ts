@@ -1,6 +1,6 @@
 /**
- * @cantonconnect/sdk
- * Main SDK for CantonConnect - Public API
+ * @partylayer/sdk
+ * Main SDK for PartyLayer - Public API
  * 
  * This package exports the public API that dApps should use.
  * All internal implementation details are hidden.
@@ -12,13 +12,16 @@
  */
 
 // Public API
-export { createCantonConnect, CantonConnectClient } from './client';
+export { createPartyLayer, PartyLayerClient } from './client';
+// Backward compatibility aliases
+export { createPartyLayer as createCantonConnect, PartyLayerClient as CantonConnectClient } from './client';
 // Internal API (for adapter registration - will be hidden in future)
-export type { CantonConnectClient as _CantonConnectClientInternal } from './client';
+export type { PartyLayerClient as _PartyLayerClientInternal } from './client';
 export { DEFAULT_REGISTRY_URL } from './config';
-export type { CantonConnectConfig, ConnectOptions, WalletFilter, AdapterClass } from './config';
+export type { PartyLayerConfig, PartyLayerConfig as CantonConnectConfig, ConnectOptions, WalletFilter, AdapterClass } from './config';
 export type {
-  CantonConnectEvent,
+  PartyLayerEvent,
+  PartyLayerEvent as CantonConnectEvent,
   EventHandler,
   RegistryUpdatedEvent,
   SessionConnectedEvent,
@@ -41,11 +44,12 @@ export type {
   SignedTransaction,
   TxReceipt,
   TransactionStatus,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 
 // Re-export error types
 export {
-  CantonConnectError,
+  PartyLayerError,
+  PartyLayerError as CantonConnectError,
   WalletNotFoundError,
   WalletNotInstalledError,
   UserRejectedError,
@@ -58,8 +62,8 @@ export {
   RegistrySchemaInvalidError,
   InternalError,
   TimeoutError,
-} from '@cantonconnect/core';
-export type { ErrorCode } from '@cantonconnect/core';
+} from '@partylayer/core';
+export type { ErrorCode } from '@partylayer/core';
 
 // Re-export adapter types (for adapter developers)
 export type {
@@ -70,10 +74,10 @@ export type {
   SignMessageParams,
   SignTransactionParams,
   SubmitTransactionParams,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 
 // Re-export registry status type
-export type { RegistryStatus } from '@cantonconnect/registry-client';
+export type { RegistryStatus } from '@partylayer/registry-client';
 
 // Re-export built-in adapters (for advanced usage)
 // dApps don't need to use these directly - they're auto-registered

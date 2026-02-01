@@ -1,4 +1,4 @@
-# CantonConnect Registry Server
+# PartyLayer Registry Server
 
 Minimal production-ready server for serving wallet registry files.
 

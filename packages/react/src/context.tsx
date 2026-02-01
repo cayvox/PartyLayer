@@ -1,44 +1,44 @@
 /**
- * React context for CantonConnect
+ * React context for PartyLayer
  */
 
 import { createContext, useContext, useEffect, useState } from 'react';
 import type {
-  CantonConnectClient,
+  PartyLayerClient,
   Session,
   WalletInfo,
-} from '@cantonconnect/sdk';
+} from '@partylayer/sdk';
 
-interface CantonConnectContextValue {
-  client: CantonConnectClient | null;
+interface PartyLayerContextValue {
+  client: PartyLayerClient | null;
   session: Session | null;
   wallets: WalletInfo[];
   isLoading: boolean;
   error: Error | null;
 }
 
-const CantonConnectContext =
-  createContext<CantonConnectContextValue | null>(null);
+const PartyLayerContext =
+  createContext<PartyLayerContextValue | null>(null);
 
-export function useCantonConnectContext(): CantonConnectContextValue {
-  const context = useContext(CantonConnectContext);
+export function usePartyLayerContext(): PartyLayerContextValue {
+  const context = useContext(PartyLayerContext);
   if (!context) {
     throw new Error(
-      'useCantonConnect must be used within CantonConnectProvider'
+      'usePartyLayer must be used within PartyLayerProvider'
     );
   }
   return context;
 }
 
-interface CantonConnectProviderProps {
-  client: CantonConnectClient;
+interface PartyLayerProviderProps {
+  client: PartyLayerClient;
   children: React.ReactNode;
 }
 
-export function CantonConnectProvider({
+export function PartyLayerProvider({
   client,
   children,
-}: CantonConnectProviderProps) {
+}: PartyLayerProviderProps) {
   const [session, setSession] = useState<Session | null>(null);
   const [wallets, setWallets] = useState<WalletInfo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -105,7 +105,7 @@ export function CantonConnectProvider({
   }, [client]);
 
   return (
-    <CantonConnectContext.Provider
+    <PartyLayerContext.Provider
       value={{
         client,
         session,
@@ -115,6 +115,6 @@ export function CantonConnectProvider({
       }}
     >
       {children}
-    </CantonConnectContext.Provider>
+    </PartyLayerContext.Provider>
   );
 }

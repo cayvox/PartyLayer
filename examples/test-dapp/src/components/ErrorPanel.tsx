@@ -1,18 +1,18 @@
 import { useState, useEffect } from 'react';
-import { useCantonConnect } from '@cantonconnect/react';
-import type { CantonConnectError, ErrorEvent } from '@cantonconnect/sdk';
+import { usePartyLayer } from '@partylayer/react';
+import type { PartyLayerError, ErrorEvent } from '@partylayer/sdk';
 import './ErrorPanel.css';
 
 function ErrorPanel() {
-  const client = useCantonConnect();
-  const [currentError, setCurrentError] = useState<CantonConnectError | null>(null);
+  const client = usePartyLayer();
+  const [currentError, setCurrentError] = useState<PartyLayerError | null>(null);
 
   useEffect(() => {
     let timeoutId: ReturnType<typeof setTimeout> | null = null;
 
     const handleError = (event: ErrorEvent) => {
       if (event.error instanceof Error && 'code' in event.error) {
-        setCurrentError(event.error as CantonConnectError);
+        setCurrentError(event.error as PartyLayerError);
         // Clear any existing timeout
         if (timeoutId) {
           clearTimeout(timeoutId);

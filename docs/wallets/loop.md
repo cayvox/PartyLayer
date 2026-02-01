@@ -32,10 +32,10 @@ import { loop } from '@fivenorth/loop-sdk';
 ## Usage
 
 ```typescript
-import { createCantonConnect } from '@cantonconnect/sdk';
-import { LoopAdapter } from '@cantonconnect/adapter-loop';
+import { createPartyLayer } from '@partylayer/sdk';
+import { LoopAdapter } from '@partylayer/adapter-loop';
 
-const client = createCantonConnect({
+const client = createPartyLayer({
   registryUrl: '...',
   network: 'devnet',
   app: { name: 'My dApp' },

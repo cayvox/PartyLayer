@@ -80,7 +80,7 @@ export function WalletGrid({ installedWallets, onWalletClick }: WalletGridProps)
           <p className="text-small text-slate-500">
             Wallet providers can apply for registry inclusion.{' '}
             <a
-              href="https://github.com/cayvox/CantonConnect"
+              href="https://github.com/cayvox/PartyLayer"
               target="_blank"
               rel="noopener noreferrer"
               className="text-brand-600 hover:text-brand-500 underline underline-offset-2"

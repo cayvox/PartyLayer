@@ -4,7 +4,7 @@
 
 ## Overview
 
-CantonConnect provides transport abstractions for different wallet communication patterns:
+PartyLayer provides transport abstractions for different wallet communication patterns:
 - **DeepLinkTransport** - Mobile wallet deep links
 - **PopupTransport** - Popup window flows
 - **PostMessageTransport** - Iframe/parent communication
@@ -34,7 +34,7 @@ dApp                    Wallet App
 ### Code Example
 
 ```typescript
-import { DeepLinkTransport } from '@cantonconnect/core';
+import { DeepLinkTransport } from '@partylayer/core';
 
 const transport = new DeepLinkTransport();
 
@@ -71,7 +71,7 @@ const response = await transport.openConnectRequest(
 Use `MockTransport` for deterministic testing:
 
 ```typescript
-import { MockTransport } from '@cantonconnect/core';
+import { MockTransport } from '@partylayer/core';
 
 const mockTransport = new MockTransport();
 mockTransport.setMockResponse('test-state', {
@@ -105,7 +105,7 @@ dApp                    Popup Window          Wallet Server
 ### Code Example
 
 ```typescript
-import { PopupTransport } from '@cantonconnect/core';
+import { PopupTransport } from '@partylayer/core';
 
 const transport = new PopupTransport();
 
@@ -132,7 +132,7 @@ Communication with iframes or parent windows.
 ### Code Example
 
 ```typescript
-import { PostMessageTransport } from '@cantonconnect/core';
+import { PostMessageTransport } from '@partylayer/core';
 
 const transport = new PostMessageTransport('https://wallet.example.com');
 transport.setTargetWindow(iframe.contentWindow);
@@ -154,7 +154,7 @@ Testing and development without real wallet connections.
 ### Code Example
 
 ```typescript
-import { MockTransport } from '@cantonconnect/core';
+import { MockTransport } from '@partylayer/core';
 
 const transport = new MockTransport();
 
@@ -267,7 +267,7 @@ const adapter = new Cantor8Adapter({
 1. **Always use state parameter** - Prevents CSRF attacks
 2. **Validate origins** - Only accept callbacks from allowed origins
 3. **Set timeouts** - Prevent hanging requests
-4. **Handle errors gracefully** - Map to CantonConnect errors
+4. **Handle errors gracefully** - Map to PartyLayer errors
 5. **Test with mocks** - Use MockTransport for deterministic tests
 
 ## References

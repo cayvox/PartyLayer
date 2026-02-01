@@ -1,7 +1,7 @@
 {
-  "name": "@cantonconnect/adapter-loop",
+  "name": "@partylayer/adapter-loop",
   "version": "0.2.2",
-  "description": "5N Loop Wallet adapter for CantonConnect",
+  "description": "5N Loop Wallet adapter for PartyLayer",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -27,19 +27,19 @@
     "wallet",
     "loop"
   ],
-  "author": "CantonConnect Contributors",
+  "author": "PartyLayer Contributors",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cayvox/CantonConnect.git",
+    "url": "https://github.com/cayvox/PartyLayer.git",
     "directory": "packages/adapters/loop"
   },
-  "homepage": "https://github.com/cayvox/CantonConnect#readme",
+  "homepage": "https://github.com/cayvox/PartyLayer#readme",
   "bugs": {
-    "url": "https://github.com/cayvox/CantonConnect/issues"
+    "url": "https://github.com/cayvox/PartyLayer/issues"
   },
   "dependencies": {
-    "@cantonconnect/core": "workspace:*"
+    "@partylayer/core": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

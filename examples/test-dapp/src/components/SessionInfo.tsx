@@ -1,4 +1,4 @@
-import { useSession, useDisconnect } from '@cantonconnect/react';
+import { useSession, useDisconnect } from '@partylayer/react';
 import './SessionInfo.css';
 
 function SessionInfo() {

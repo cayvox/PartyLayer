@@ -8,8 +8,8 @@ import {
   useDisconnect,
   useSignMessage,
   WalletModal,
-} from '@cantonconnect/react';
-import type { WalletInfo } from '@cantonconnect/sdk';
+} from '@partylayer/react';
+import type { WalletInfo } from '@partylayer/sdk';
 
 export function DemoApp() {
   const { wallets, isLoading: walletsLoading } = useWallets();
@@ -42,7 +42,7 @@ export function DemoApp() {
 
   return (
     <div style={{ padding: '24px', maxWidth: '800px', margin: '0 auto' }}>
-      <h1>CantonConnect Demo</h1>
+      <h1>PartyLayer Demo</h1>
 
       {displayError && (
         <div

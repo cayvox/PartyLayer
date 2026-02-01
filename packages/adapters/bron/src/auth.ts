@@ -8,7 +8,7 @@
  * - Bron ecosystem: https://www.canton.network/ecosystem/bron-wallet
  */
 
-import type { StorageAdapter } from '@cantonconnect/core';
+import type { StorageAdapter } from '@partylayer/core';
 
 /**
  * OAuth2 configuration

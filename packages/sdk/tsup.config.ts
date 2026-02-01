@@ -14,9 +14,9 @@ export default defineConfig({
   splitting: false,
   treeshake: true,
   external: [
-    '@cantonconnect/core',
-    '@cantonconnect/registry-client',
-    '@cantonconnect/adapter-console',
-    '@cantonconnect/adapter-loop',
+    '@partylayer/core',
+    '@partylayer/registry-client',
+    '@partylayer/adapter-console',
+    '@partylayer/adapter-loop',
   ],
 });

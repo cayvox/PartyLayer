@@ -7,7 +7,7 @@ import type {
   CryptoAdapter,
   LoggerAdapter,
   TelemetryAdapter,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 
 /**
  * Default logger (console-based)
@@ -15,25 +15,25 @@ import type {
 export class DefaultLogger implements LoggerAdapter {
   debug(message: string, ...args: unknown[]): void {
     if (typeof console !== 'undefined' && console.debug) {
-      console.debug(`[CantonConnect] ${message}`, ...args);
+      console.debug(`[PartyLayer] ${message}`, ...args);
     }
   }
 
   info(message: string, ...args: unknown[]): void {
     if (typeof console !== 'undefined' && console.info) {
-      console.info(`[CantonConnect] ${message}`, ...args);
+      console.info(`[PartyLayer] ${message}`, ...args);
     }
   }
 
   warn(message: string, ...args: unknown[]): void {
     if (typeof console !== 'undefined' && console.warn) {
-      console.warn(`[CantonConnect] ${message}`, ...args);
+      console.warn(`[PartyLayer] ${message}`, ...args);
     }
   }
 
   error(message: string, error?: unknown, ...args: unknown[]): void {
     if (typeof console !== 'undefined' && console.error) {
-      console.error(`[CantonConnect] ${message}`, error, ...args);
+      console.error(`[PartyLayer] ${message}`, error, ...args);
     }
   }
 }
@@ -129,7 +129,7 @@ export class DefaultCrypto implements CryptoAdapter {
 export class DefaultStorage implements StorageAdapter {
   private prefix: string;
 
-  constructor(prefix = 'cantonconnect_') {
+  constructor(prefix = 'partylayer_') {
     this.prefix = prefix;
   }
 

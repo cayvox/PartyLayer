@@ -16,15 +16,15 @@ import type {
   AdapterConnectResult,
   SignMessageParams,
   SignTransactionParams,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 import {
   toWalletId,
   toSignature,
   toTransactionHash,
   UserRejectedError,
-  mapUnknownErrorToCantonConnectError,
+  mapUnknownErrorToPartyLayerError,
   type CapabilityKey,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 import { BronAuthClient, type BronAuthConfig } from './auth';
 import { BronApiClient, type BronApiConfig } from './api';
 
@@ -171,7 +171,7 @@ export class BronAdapter implements WalletAdapter {
         capabilities: ['connect', 'signMessage', 'signTransaction', 'remoteSigner'],
       };
     } catch (err) {
-      throw mapUnknownErrorToCantonConnectError(err, {
+      throw mapUnknownErrorToPartyLayerError(err, {
         walletId: this.walletId,
         phase: 'connect',
         transport: 'remote',
@@ -181,15 +181,15 @@ export class BronAdapter implements WalletAdapter {
 
   async disconnect(
     _ctx: AdapterContext,
-    _session: import('@cantonconnect/core').Session
+    _session: import('@partylayer/core').Session
   ): Promise<void> {
     await this.authClient.logout();
   }
 
   async restore(
     _ctx: AdapterContext,
-    persisted: import('@cantonconnect/core').PersistedSession
-  ): Promise<import('@cantonconnect/core').Session | null> {
+    persisted: import('@partylayer/core').PersistedSession
+  ): Promise<import('@partylayer/core').Session | null> {
     // Check if we have a session ID and access token
     const sessionId = persisted.metadata?.sessionId;
     if (typeof sessionId !== 'string') {
@@ -215,9 +215,9 @@ export class BronAdapter implements WalletAdapter {
 
   async signMessage(
     _ctx: AdapterContext,
-    session: import('@cantonconnect/core').Session,
+    session: import('@partylayer/core').Session,
     params: SignMessageParams
-  ): Promise<import('@cantonconnect/core').SignedMessage> {
+  ): Promise<import('@partylayer/core').SignedMessage> {
     try {
       const sessionId = session.metadata?.sessionId;
       if (typeof sessionId !== 'string') {
@@ -263,7 +263,7 @@ export class BronAdapter implements WalletAdapter {
         partyId: session.partyId,
       };
     } catch (err) {
-      throw mapUnknownErrorToCantonConnectError(err, {
+      throw mapUnknownErrorToPartyLayerError(err, {
         walletId: this.walletId,
         phase: 'signMessage',
         transport: 'remote',
@@ -273,9 +273,9 @@ export class BronAdapter implements WalletAdapter {
 
   async signTransaction(
     _ctx: AdapterContext,
-    session: import('@cantonconnect/core').Session,
+    session: import('@partylayer/core').Session,
     params: SignTransactionParams
-  ): Promise<import('@cantonconnect/core').SignedTransaction> {
+  ): Promise<import('@partylayer/core').SignedTransaction> {
     try {
       const sessionId = session.metadata?.sessionId;
       if (typeof sessionId !== 'string') {
@@ -331,7 +331,7 @@ export class BronAdapter implements WalletAdapter {
         partyId: session.partyId,
       };
     } catch (err) {
-      throw mapUnknownErrorToCantonConnectError(err, {
+      throw mapUnknownErrorToPartyLayerError(err, {
         walletId: this.walletId,
         phase: 'signTransaction',
         transport: 'remote',

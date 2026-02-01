@@ -1,21 +1,21 @@
 import { useState, useEffect } from 'react';
-import { useCantonConnect } from '@cantonconnect/react';
-import type { CantonConnectEvent } from '@cantonconnect/sdk';
+import { usePartyLayer } from '@partylayer/react';
+import type { PartyLayerEvent } from '@partylayer/sdk';
 import './EventLog.css';
 
 interface EventEntry {
   timestamp: number;
-  event: CantonConnectEvent;
+  event: PartyLayerEvent;
 }
 
 function EventLog() {
-  const client = useCantonConnect();
+  const client = usePartyLayer();
   const [events, setEvents] = useState<EventEntry[]>([]);
 
   useEffect(() => {
     if (!client) return;
 
-    const handleEvent = (event: CantonConnectEvent) => {
+    const handleEvent = (event: PartyLayerEvent) => {
       setEvents((prev) => [
         { timestamp: Date.now(), event },
         ...prev.slice(0, 49), // Keep last 50 events

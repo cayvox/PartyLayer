@@ -15,8 +15,8 @@ import type {
   SignRequest,
   SignResponse,
   JobStatus,
-} from '@cantonconnect/core';
-import { toPartyId } from '@cantonconnect/core';
+} from '@partylayer/core';
+import { toPartyId } from '@partylayer/core';
 
 /**
  * Vendor configuration

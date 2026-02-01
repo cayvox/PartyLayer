@@ -1,6 +1,6 @@
-# CantonConnect Adapter Starter
+# PartyLayer Adapter Starter
 
-A starter template for building wallet adapters for CantonConnect SDK.
+A starter template for building wallet adapters for PartyLayer SDK.
 
 ## Quick Start
 
@@ -32,7 +32,7 @@ A starter template for building wallet adapters for CantonConnect SDK.
 
 ## Adapter Contract
 
-All adapters must implement the `WalletAdapter` interface from `@cantonconnect/core`:
+All adapters must implement the `WalletAdapter` interface from `@partylayer/core`:
 
 ```typescript
 interface WalletAdapter {
@@ -70,13 +70,13 @@ Declare capabilities your wallet supports:
 
 ## Error Mapping
 
-Always use `mapUnknownErrorToCantonConnectError()` to normalize errors:
+Always use `mapUnknownErrorToPartyLayerError()` to normalize errors:
 
 ```typescript
 try {
   // Wallet SDK call
 } catch (err) {
-  throw mapUnknownErrorToCantonConnectError(err, {
+  throw mapUnknownErrorToPartyLayerError(err, {
     walletId: this.walletId,
     phase: 'connect', // or 'signMessage', 'signTransaction', etc.
     transport: 'injected', // or 'popup', 'deeplink', 'remote'
@@ -134,11 +134,11 @@ cantonconnect-conformance report --input conformance-report.json
 Test your adapter in a demo dApp:
 
 ```typescript
-import { createCantonConnect } from '@cantonconnect/sdk';
+import { createPartyLayer } from '@partylayer/sdk';
 import { MyWalletAdapter } from '@mywallet/adapter';
 
-const client = createCantonConnect({
-  registryUrl: 'https://registry.cantonconnect.xyz',
+const client = createPartyLayer({
+  registryUrl: 'https://registry.partylayer.xyz',
   network: 'devnet',
   app: { name: 'My dApp' },
 });
@@ -198,4 +198,4 @@ See existing adapters for reference:
 
 - Documentation: `docs/wallet-provider-guide.md`
 - Issues: GitHub Issues
-- Security: security@cantonconnect.xyz
+- Security: security@partylayer.xyz

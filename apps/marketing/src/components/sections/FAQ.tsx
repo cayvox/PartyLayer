@@ -3,9 +3,9 @@ import { cn } from '@/design/cn';
 
 const faqItems = [
   {
-    question: 'Is CantonConnect open source?',
+    question: 'Is PartyLayer open source?',
     answer:
-      'Yes! CantonConnect is fully open source under the MIT license. You can view the source code, submit issues, and contribute on GitHub. We believe in transparency and community-driven development.',
+      'Yes! PartyLayer is fully open source under the MIT license. You can view the source code, submit issues, and contribute on GitHub. We believe in transparency and community-driven development.',
   },
   {
     question: 'How does registry verification work?',
@@ -15,7 +15,7 @@ const faqItems = [
   {
     question: 'Which networks are supported?',
     answer:
-      'CantonConnect supports all Canton networks including mainnet, testnet, and devnet environments. The SDK automatically detects the connected network and adapts accordingly. Each wallet adapter handles network-specific connection logic.',
+      'PartyLayer supports all Canton networks including mainnet, testnet, and devnet environments. The SDK automatically detects the connected network and adapts accordingly. Each wallet adapter handles network-specific connection logic.',
   },
   {
     question: 'What error codes should I handle?',
@@ -44,7 +44,7 @@ export function FAQ() {
         <div className="text-center mb-14">
           <h2 className="text-h2 text-fg mb-3">Frequently asked questions</h2>
           <p className="text-body text-slate-500">
-            Everything you need to know about CantonConnect.
+            Everything you need to know about PartyLayer.
           </p>
         </div>
 
@@ -114,7 +114,7 @@ export function FAQ() {
           <p className="text-body text-slate-500">
             Still have questions?{' '}
             <a
-              href="https://github.com/cayvox/CantonConnect/discussions"
+              href="https://github.com/cayvox/PartyLayer/discussions"
               target="_blank"
               rel="noopener noreferrer"
               className="text-brand-600 hover:text-brand-500 underline underline-offset-2"

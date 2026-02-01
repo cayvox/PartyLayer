@@ -1,10 +1,10 @@
-# @cantonconnect/core
+# @partylayer/core
 
 <div align="center">
 
-**Core types, errors, and abstractions for CantonConnect**
+**Core types, errors, and abstractions for PartyLayer**
 
-[![npm version](https://img.shields.io/npm/v/@cantonconnect/core.svg?style=flat-square)](https://www.npmjs.com/package/@cantonconnect/core)
+[![npm version](https://img.shields.io/npm/v/@partylayer/core.svg?style=flat-square)](https://www.npmjs.com/package/@partylayer/core)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
@@ -14,20 +14,20 @@
 
 ## Overview
 
-`@cantonconnect/core` provides the foundational types, error classes, and abstractions used by the CantonConnect SDK ecosystem. This package is primarily intended for:
+`@partylayer/core` provides the foundational types, error classes, and abstractions used by the PartyLayer SDK ecosystem. This package is primarily intended for:
 
 - **Wallet adapter developers** building custom adapters
 - **SDK contributors** working on the core SDK
 - **Advanced users** who need direct access to types and utilities
 
-> **Note**: Most dApp developers should use `@cantonconnect/sdk` instead, which re-exports the necessary types from this package.
+> **Note**: Most dApp developers should use `@partylayer/sdk` instead, which re-exports the necessary types from this package.
 
 ---
 
 ## Installation
 
 ```bash
-npm install @cantonconnect/core
+npm install @partylayer/core
 ```
 
 ---
@@ -69,14 +69,14 @@ import type {
   CryptoAdapter,
   LoggerAdapter,
   TelemetryAdapter,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 ```
 
 ### Error Classes
 
 ```typescript
 import {
-  CantonConnectError,
+  PartyLayerError,
   WalletNotFoundError,
   WalletNotInstalledError,
   UserRejectedError,
@@ -89,7 +89,7 @@ import {
   RegistrySchemaInvalidError,
   InternalError,
   TimeoutError,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 ```
 
 ### Transport Classes
@@ -99,7 +99,7 @@ import {
   PostMessageTransport,
   DeepLinkTransport,
   MockTransport,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 ```
 
 ### Utilities
@@ -119,8 +119,8 @@ import {
   installGuard,
 
   // Error mapping
-  mapUnknownErrorToCantonConnectError,
-} from '@cantonconnect/core';
+  mapUnknownErrorToPartyLayerError,
+} from '@partylayer/core';
 ```
 
 ---
@@ -140,8 +140,8 @@ import type {
   SignedTransaction,
   SignMessageParams,
   SignTransactionParams,
-} from '@cantonconnect/core';
-import { toWalletId, toSignature } from '@cantonconnect/core';
+} from '@partylayer/core';
+import { toWalletId, toSignature } from '@partylayer/core';
 
 export class MyWalletAdapter implements WalletAdapter {
   readonly walletId = toWalletId('my-wallet');
@@ -197,18 +197,18 @@ export class MyWalletAdapter implements WalletAdapter {
 
 ## Error Handling
 
-All errors extend `CantonConnectError` and include an error code:
+All errors extend `PartyLayerError` and include an error code:
 
 ```typescript
 import { 
-  CantonConnectError, 
+  PartyLayerError, 
   WalletNotInstalledError 
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 
 try {
   // ... wallet operation
 } catch (error) {
-  if (error instanceof CantonConnectError) {
+  if (error instanceof PartyLayerError) {
     console.log('Error code:', error.code);
     console.log('Message:', error.message);
     console.log('Cause:', error.cause);
@@ -236,17 +236,17 @@ try {
 
 | Package | Description |
 |---------|-------------|
-| [@cantonconnect/sdk](https://www.npmjs.com/package/@cantonconnect/sdk) | Main SDK for dApps |
-| [@cantonconnect/react](https://www.npmjs.com/package/@cantonconnect/react) | React integration |
-| [@cantonconnect/adapter-starter](https://www.npmjs.com/package/@cantonconnect/adapter-starter) | Template for new adapters |
+| [@partylayer/sdk](https://www.npmjs.com/package/@partylayer/sdk) | Main SDK for dApps |
+| [@partylayer/react](https://www.npmjs.com/package/@partylayer/react) | React integration |
+| [@partylayer/adapter-starter](https://www.npmjs.com/package/@partylayer/adapter-starter) | Template for new adapters |
 
 ---
 
 ## Links
 
-- [GitHub Repository](https://github.com/cayvox/CantonConnect)
-- [Wallet Provider Guide](https://github.com/cayvox/CantonConnect/blob/main/docs/wallet-provider-guide.md)
-- [Report Issues](https://github.com/cayvox/CantonConnect/issues)
+- [GitHub Repository](https://github.com/cayvox/PartyLayer)
+- [Wallet Provider Guide](https://github.com/cayvox/PartyLayer/blob/main/docs/wallet-provider-guide.md)
+- [Report Issues](https://github.com/cayvox/PartyLayer/issues)
 
 ---
 

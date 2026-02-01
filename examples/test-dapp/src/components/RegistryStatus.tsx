@@ -1,4 +1,4 @@
-import { useRegistryStatus } from '@cantonconnect/react';
+import { useRegistryStatus } from '@partylayer/react';
 import './RegistryStatus.css';
 
 function RegistryStatus() {

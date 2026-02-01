@@ -1,22 +1,22 @@
-# CantonConnect API Reference
+# PartyLayer API Reference
 
 **References:**
 - [Wallet Integration Guide](https://docs.digitalasset.com/integrate/devnet/index.html)
 - [Signing transactions from dApps](https://docs.digitalasset.com/integrate/devnet/signing-transactions-from-dapps/index.html)
 - [OpenRPC dApp API spec](https://github.com/hyperledger-labs/splice-wallet-kernel/blob/main/api-specs/openrpc-dapp-api.json)
 
-## createCantonConnect
+## createPartyLayer
 
-Creates a new CantonConnect client instance.
+Creates a new PartyLayer client instance.
 
 ```typescript
-function createCantonConnect(config: CantonConnectConfig): CantonConnectClient
+function createPartyLayer(config: PartyLayerConfig): PartyLayerClient
 ```
 
 ### Configuration
 
 ```typescript
-interface CantonConnectConfig {
+interface PartyLayerConfig {
   registryUrl: string;
   channel?: 'stable' | 'beta';
   network: NetworkId;
@@ -32,7 +32,7 @@ interface CantonConnectConfig {
 }
 ```
 
-## CantonConnectClient
+## PartyLayerClient
 
 Main client interface for interacting with Canton wallets.
 
@@ -99,7 +99,7 @@ submitTransaction(params: SubmitTransactionParams): Promise<TxReceipt>
 Subscribe to events.
 
 ```typescript
-on<T extends CantonConnectEvent>(
+on<T extends PartyLayerEvent>(
   event: T['type'],
   handler: EventHandler<T>
 ): () => void
@@ -110,7 +110,7 @@ on<T extends CantonConnectEvent>(
 Unsubscribe from events.
 
 ```typescript
-off<T extends CantonConnectEvent>(
+off<T extends PartyLayerEvent>(
   event: T['type'],
   handler: EventHandler<T>
 ): void

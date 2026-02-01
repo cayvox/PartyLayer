@@ -1,10 +1,10 @@
-# @cantonconnect/react
+# @partylayer/react
 
 <div align="center">
 
-**React hooks and components for CantonConnect**
+**React hooks and components for PartyLayer**
 
-[![npm version](https://img.shields.io/npm/v/@cantonconnect/react.svg?style=flat-square)](https://www.npmjs.com/package/@cantonconnect/react)
+[![npm version](https://img.shields.io/npm/v/@partylayer/react.svg?style=flat-square)](https://www.npmjs.com/package/@partylayer/react)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
 [![React](https://img.shields.io/badge/React-18+-61dafb.svg?style=flat-square)](https://reactjs.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
@@ -15,7 +15,7 @@
 
 ## Overview
 
-`@cantonconnect/react` provides React hooks and components for seamlessly integrating Canton Network wallet connectivity into your React application. Built on top of `@cantonconnect/sdk`, it offers a declarative API with built-in state management.
+`@partylayer/react` provides React hooks and components for seamlessly integrating Canton Network wallet connectivity into your React application. Built on top of `@partylayer/sdk`, it offers a declarative API with built-in state management.
 
 ### Features
 
@@ -30,7 +30,7 @@
 ## Installation
 
 ```bash
-npm install @cantonconnect/sdk @cantonconnect/react
+npm install @partylayer/sdk @partylayer/react
 ```
 
 ---
@@ -40,19 +40,19 @@ npm install @cantonconnect/sdk @cantonconnect/react
 ### 1. Set Up the Provider
 
 ```tsx
-import { createCantonConnect } from '@cantonconnect/sdk';
-import { CantonConnectProvider } from '@cantonconnect/react';
+import { createPartyLayer } from '@partylayer/sdk';
+import { PartyLayerProvider } from '@partylayer/react';
 
-const client = createCantonConnect({
+const client = createPartyLayer({
   network: 'devnet',
   app: { name: 'My dApp' },
 });
 
 function App() {
   return (
-    <CantonConnectProvider client={client}>
+    <PartyLayerProvider client={client}>
       <MyApp />
-    </CantonConnectProvider>
+    </PartyLayerProvider>
   );
 }
 ```
@@ -60,7 +60,7 @@ function App() {
 ### 2. Use Hooks in Your Components
 
 ```tsx
-import { useSession, useConnect, useDisconnect } from '@cantonconnect/react';
+import { useSession, useConnect, useDisconnect } from '@partylayer/react';
 
 function WalletButton() {
   const session = useSession();
@@ -88,7 +88,7 @@ function WalletButton() {
 
 ```tsx
 import { useState } from 'react';
-import { WalletModal, useSession } from '@cantonconnect/react';
+import { WalletModal, useSession } from '@partylayer/react';
 
 function ConnectButton() {
   const [isOpen, setIsOpen] = useState(false);
@@ -190,12 +190,12 @@ const handleSign = async () => {
 };
 ```
 
-### `useCantonConnect()`
+### `usePartyLayer()`
 
 Returns the underlying SDK client for advanced usage.
 
 ```tsx
-const client = useCantonConnect();
+const client = usePartyLayer();
 
 // Access SDK methods directly
 const wallets = await client.listWallets();
@@ -217,21 +217,21 @@ if (status?.stale) {
 
 ## Components
 
-### `CantonConnectProvider`
+### `PartyLayerProvider`
 
 The context provider that must wrap your application.
 
 ```tsx
-<CantonConnectProvider client={client}>
+<PartyLayerProvider client={client}>
   {children}
-</CantonConnectProvider>
+</PartyLayerProvider>
 ```
 
 **Props:**
 
 | Prop | Type | Required | Description |
 |------|------|----------|-------------|
-| `client` | `CantonConnectClient` | Yes | The SDK client instance |
+| `client` | `PartyLayerClient` | Yes | The SDK client instance |
 | `children` | `ReactNode` | Yes | Child components |
 
 ### `WalletModal`
@@ -264,14 +264,14 @@ For Next.js applications, initialize the client on the client side:
 'use client';
 
 import { useEffect, useState } from 'react';
-import { createCantonConnect, CantonConnectClient } from '@cantonconnect/sdk';
-import { CantonConnectProvider } from '@cantonconnect/react';
+import { createPartyLayer, PartyLayerClient } from '@partylayer/sdk';
+import { PartyLayerProvider } from '@partylayer/react';
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [client, setClient] = useState<CantonConnectClient | null>(null);
+  const [client, setClient] = useState<PartyLayerClient | null>(null);
 
   useEffect(() => {
-    const cantonClient = createCantonConnect({
+    const cantonClient = createPartyLayer({
       network: 'devnet',
       app: { name: 'My Next.js App' },
     });
@@ -285,9 +285,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <CantonConnectProvider client={client}>
+    <PartyLayerProvider client={client}>
       {children}
-    </CantonConnectProvider>
+    </PartyLayerProvider>
   );
 }
 ```
@@ -299,7 +299,7 @@ export function Providers({ children }: { children: React.ReactNode }) {
 All hooks and components are fully typed:
 
 ```typescript
-import type { Session, WalletInfo } from '@cantonconnect/react';
+import type { Session, WalletInfo } from '@partylayer/react';
 
 // Session type
 const session: Session | null = useSession();
@@ -314,18 +314,18 @@ const { wallets }: { wallets: WalletInfo[] } = useWallets();
 
 ```tsx
 import { useState } from 'react';
-import { createCantonConnect } from '@cantonconnect/sdk';
+import { createPartyLayer } from '@partylayer/sdk';
 import {
-  CantonConnectProvider,
+  PartyLayerProvider,
   useSession,
   useWallets,
   useConnect,
   useDisconnect,
   useSignMessage,
   WalletModal,
-} from '@cantonconnect/react';
+} from '@partylayer/react';
 
-const client = createCantonConnect({
+const client = createPartyLayer({
   network: 'devnet',
   app: { name: 'My dApp' },
 });
@@ -371,9 +371,9 @@ function WalletStatus() {
 
 export default function App() {
   return (
-    <CantonConnectProvider client={client}>
+    <PartyLayerProvider client={client}>
       <WalletStatus />
-    </CantonConnectProvider>
+    </PartyLayerProvider>
   );
 }
 ```
@@ -384,16 +384,16 @@ export default function App() {
 
 | Package | Description |
 |---------|-------------|
-| [@cantonconnect/sdk](https://www.npmjs.com/package/@cantonconnect/sdk) | Core SDK (required) |
-| [@cantonconnect/core](https://www.npmjs.com/package/@cantonconnect/core) | Core types and abstractions |
+| [@partylayer/sdk](https://www.npmjs.com/package/@partylayer/sdk) | Core SDK (required) |
+| [@partylayer/core](https://www.npmjs.com/package/@partylayer/core) | Core types and abstractions |
 
 ---
 
 ## Links
 
-- [GitHub Repository](https://github.com/cayvox/CantonConnect)
-- [Documentation](https://github.com/cayvox/CantonConnect#readme)
-- [Report Issues](https://github.com/cayvox/CantonConnect/issues)
+- [GitHub Repository](https://github.com/cayvox/PartyLayer)
+- [Documentation](https://github.com/cayvox/PartyLayer#readme)
+- [Report Issues](https://github.com/cayvox/PartyLayer/issues)
 - [Canton Network](https://www.canton.network/)
 
 ---

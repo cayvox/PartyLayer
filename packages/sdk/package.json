@@ -1,7 +1,7 @@
 {
-  "name": "@cantonconnect/sdk",
+  "name": "@partylayer/sdk",
   "version": "0.2.4",
-  "description": "Main SDK for CantonConnect - WalletConnect-like experience for Canton Network",
+  "description": "Main SDK for PartyLayer - WalletConnect-like experience for Canton Network",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -27,24 +27,24 @@
     "sdk",
     "dapp"
   ],
-  "author": "CantonConnect Contributors",
+  "author": "PartyLayer Contributors",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cayvox/CantonConnect.git",
+    "url": "https://github.com/cayvox/PartyLayer.git",
     "directory": "packages/sdk"
   },
-  "homepage": "https://github.com/cayvox/CantonConnect#readme",
+  "homepage": "https://github.com/cayvox/PartyLayer#readme",
   "bugs": {
-    "url": "https://github.com/cayvox/CantonConnect/issues"
+    "url": "https://github.com/cayvox/PartyLayer/issues"
   },
   "dependencies": {
-    "@cantonconnect/core": "workspace:*",
-    "@cantonconnect/registry-client": "workspace:*",
-    "@cantonconnect/adapter-console": "workspace:*",
-    "@cantonconnect/adapter-loop": "workspace:*",
-    "@cantonconnect/adapter-cantor8": "workspace:*",
-    "@cantonconnect/adapter-bron": "workspace:*"
+    "@partylayer/core": "workspace:*",
+    "@partylayer/registry-client": "workspace:*",
+    "@partylayer/adapter-console": "workspace:*",
+    "@partylayer/adapter-loop": "workspace:*",
+    "@partylayer/adapter-cantor8": "workspace:*",
+    "@partylayer/adapter-bron": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

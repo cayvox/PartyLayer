@@ -4,7 +4,7 @@
  * Dynamically loads adapter modules (ESM/CJS safe)
  */
 
-import type { WalletAdapter } from '@cantonconnect/core';
+import type { WalletAdapter } from '@partylayer/core';
 import { resolve } from 'path';
 import { pathToFileURL } from 'url';
 

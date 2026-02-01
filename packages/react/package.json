@@ -1,7 +1,7 @@
 {
-  "name": "@cantonconnect/react",
+  "name": "@partylayer/react",
   "version": "0.2.4",
-  "description": "React hooks and components for CantonConnect",
+  "description": "React hooks and components for PartyLayer",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -26,23 +26,23 @@
     "wallet",
     "react"
   ],
-  "author": "CantonConnect Contributors",
+  "author": "PartyLayer Contributors",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cayvox/CantonConnect.git",
+    "url": "https://github.com/cayvox/PartyLayer.git",
     "directory": "packages/react"
   },
-  "homepage": "https://github.com/cayvox/CantonConnect#readme",
+  "homepage": "https://github.com/cayvox/PartyLayer#readme",
   "bugs": {
-    "url": "https://github.com/cayvox/CantonConnect/issues"
+    "url": "https://github.com/cayvox/PartyLayer/issues"
   },
   "peerDependencies": {
     "react": ">=18.0.0"
   },
   "dependencies": {
-    "@cantonconnect/sdk": "workspace:*",
-    "@cantonconnect/registry-client": "workspace:*"
+    "@partylayer/sdk": "workspace:*",
+    "@partylayer/registry-client": "workspace:*"
   },
   "devDependencies": {
     "@types/react": "^18.2.0",

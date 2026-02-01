@@ -1,6 +1,6 @@
 # Release Process
 
-This document describes how to cut releases and publish packages for CantonConnect.
+This document describes how to cut releases and publish packages for PartyLayer.
 
 ## Versioning Strategy
 
@@ -47,7 +47,7 @@ Edit the generated changeset file to add a clear description:
 
 ```markdown
 ---
-"@cantonconnect/sdk": patch
+"@partylayer/sdk": patch
 ---
 
 Fixed session restoration bug when wallet adapter doesn't support restore

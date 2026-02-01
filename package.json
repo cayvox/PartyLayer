@@ -1,17 +1,17 @@
 {
-  "name": "cantonconnect",
+  "name": "partylayer",
   "version": "0.1.0",
   "private": true,
-  "description": "CantonConnect - WalletConnect-like SDK for Canton Network wallets",
+  "description": "PartyLayer - WalletConnect-like SDK for Canton Network wallets",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cayvox/CantonConnect.git"
+    "url": "https://github.com/cayvox/PartyLayer.git"
   },
-  "homepage": "https://github.com/cayvox/CantonConnect#readme",
+  "homepage": "https://github.com/cayvox/PartyLayer#readme",
   "bugs": {
-    "url": "https://github.com/cayvox/CantonConnect/issues"
+    "url": "https://github.com/cayvox/PartyLayer/issues"
   },
-  "author": "CantonConnect Contributors",
+  "author": "PartyLayer Contributors",
   "scripts": {
     "build": "pnpm -r build",
     "test": "pnpm -r test",

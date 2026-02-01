@@ -1,5 +1,5 @@
 /**
- * Event types for CantonConnect SDK
+ * Event types for PartyLayer SDK
  */
 
 import type {
@@ -7,7 +7,7 @@ import type {
   SessionId,
   TransactionHash,
   TransactionStatus,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 
 /**
  * Registry updated event
@@ -82,7 +82,7 @@ export interface ErrorEvent {
 /**
  * All event types
  */
-export type CantonConnectEvent =
+export type PartyLayerEvent =
   | RegistryUpdatedEvent
   | RegistryStatusEvent
   | SessionConnectedEvent
@@ -94,6 +94,6 @@ export type CantonConnectEvent =
 /**
  * Event handler type
  */
-export type EventHandler<T extends CantonConnectEvent = CantonConnectEvent> = (
+export type EventHandler<T extends PartyLayerEvent = PartyLayerEvent> = (
   event: T
 ) => void | Promise<void>;

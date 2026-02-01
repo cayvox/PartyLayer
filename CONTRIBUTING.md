@@ -1,6 +1,6 @@
-# Contributing to CantonConnect
+# Contributing to PartyLayer
 
-Thank you for your interest in contributing to CantonConnect! This document provides guidelines and instructions for contributing.
+Thank you for your interest in contributing to PartyLayer! This document provides guidelines and instructions for contributing.
 
 ## Table of Contents
 
@@ -48,7 +48,7 @@ cd wallet-sdk
 3. Add the upstream remote:
 
 ```bash
-git remote add upstream https://github.com/cayvox/CantonConnect.git
+git remote add upstream https://github.com/cayvox/PartyLayer.git
 ```
 
 ---
@@ -221,7 +221,7 @@ export function connect(options: any): any {
 
 - **Files**: `kebab-case.ts` (e.g., `wallet-adapter.ts`)
 - **Classes**: `PascalCase` (e.g., `ConsoleAdapter`)
-- **Functions**: `camelCase` (e.g., `createCantonConnect`)
+- **Functions**: `camelCase` (e.g., `createPartyLayer`)
 - **Constants**: `UPPER_SNAKE_CASE` (e.g., `DEFAULT_TIMEOUT`)
 - **Types/Interfaces**: `PascalCase` (e.g., `WalletMetadata`)
 
@@ -230,7 +230,7 @@ export function connect(options: any): any {
 ```typescript
 // 1. Imports (external, then internal)
 import { useState } from 'react';
-import type { Session } from '@cantonconnect/core';
+import type { Session } from '@partylayer/core';
 
 // 2. Types/Interfaces
 interface MyComponentProps {
@@ -253,12 +253,12 @@ function helperFunction() {
 
 ### Error Handling
 
-- Use typed error classes from `@cantonconnect/core`
+- Use typed error classes from `@partylayer/core`
 - Provide meaningful error messages
 - Include error codes for debugging
 
 ```typescript
-import { WalletNotInstalledError } from '@cantonconnect/core';
+import { WalletNotInstalledError } from '@partylayer/core';
 
 throw new WalletNotInstalledError(
   this.walletId,
@@ -323,10 +323,10 @@ BREAKING CHANGE: Session type has been renamed to WalletSession"
 pnpm test
 
 # Specific package
-pnpm --filter @cantonconnect/core test
+pnpm --filter @partylayer/core test
 
 # Watch mode
-pnpm --filter @cantonconnect/core test --watch
+pnpm --filter @partylayer/core test --watch
 
 # With coverage
 pnpm test -- --coverage
@@ -385,21 +385,21 @@ describe('createSession', () => {
 
 ```typescript
 /**
- * Creates a new CantonConnect client instance.
+ * Creates a new PartyLayer client instance.
  *
  * @param config - Client configuration options
- * @returns A configured CantonConnect client
+ * @returns A configured PartyLayer client
  *
  * @example
  * ```typescript
- * const client = createCantonConnect({
- *   registryUrl: 'https://registry.cantonconnect.xyz',
+ * const client = createPartyLayer({
+ *   registryUrl: 'https://registry.partylayer.xyz',
  *   network: 'devnet',
  *   app: { name: 'My dApp' },
  * });
  * ```
  */
-export function createCantonConnect(config: CantonConnectConfig): CantonConnectClient {
+export function createPartyLayer(config: PartyLayerConfig): PartyLayerClient {
   // ...
 }
 ```
@@ -408,10 +408,10 @@ export function createCantonConnect(config: CantonConnectConfig): CantonConnectC
 
 ## Questions?
 
-- Open a [Discussion](https://github.com/cayvox/CantonConnect/discussions) for questions
-- Check existing [Issues](https://github.com/cayvox/CantonConnect/issues) before opening new ones
+- Open a [Discussion](https://github.com/cayvox/PartyLayer/discussions) for questions
+- Check existing [Issues](https://github.com/cayvox/PartyLayer/issues) before opening new ones
 - Join our community channels for real-time help
 
 ---
 
-Thank you for contributing to CantonConnect!
+Thank you for contributing to PartyLayer!

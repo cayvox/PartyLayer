@@ -1,5 +1,5 @@
 {
-  "name": "cantonconnect-demo",
+  "name": "partylayer-demo",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -10,12 +10,12 @@
     "test:e2e": "playwright test"
   },
   "dependencies": {
-    "@cantonconnect/react": "workspace:*",
-    "@cantonconnect/sdk": "workspace:*",
-    "@cantonconnect/adapter-console": "workspace:*",
-    "@cantonconnect/adapter-loop": "workspace:*",
-    "@cantonconnect/adapter-cantor8": "workspace:*",
-    "@cantonconnect/adapter-bron": "workspace:*",
+    "@partylayer/react": "workspace:*",
+    "@partylayer/sdk": "workspace:*",
+    "@partylayer/adapter-console": "workspace:*",
+    "@partylayer/adapter-loop": "workspace:*",
+    "@partylayer/adapter-cantor8": "workspace:*",
+    "@partylayer/adapter-bron": "workspace:*",
     "next": "^14.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"

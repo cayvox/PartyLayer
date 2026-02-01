@@ -1,7 +1,7 @@
 {
-  "name": "@cantonconnect/adapter-bron",
+  "name": "@partylayer/adapter-bron",
   "version": "0.2.2",
-  "description": "Bron Wallet adapter for CantonConnect",
+  "description": "Bron Wallet adapter for PartyLayer",
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
@@ -26,19 +26,19 @@
     "wallet",
     "bron"
   ],
-  "author": "CantonConnect Contributors",
+  "author": "PartyLayer Contributors",
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cayvox/CantonConnect.git",
+    "url": "https://github.com/cayvox/PartyLayer.git",
     "directory": "packages/adapters/bron"
   },
-  "homepage": "https://github.com/cayvox/CantonConnect#readme",
+  "homepage": "https://github.com/cayvox/PartyLayer#readme",
   "bugs": {
-    "url": "https://github.com/cayvox/CantonConnect/issues"
+    "url": "https://github.com/cayvox/PartyLayer/issues"
   },
   "dependencies": {
-    "@cantonconnect/core": "workspace:*"
+    "@partylayer/core": "workspace:*"
   },
   "devDependencies": {
     "@types/node": "^20.11.0",

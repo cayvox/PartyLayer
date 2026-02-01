@@ -5,7 +5,7 @@
     "publishedAt": "2026-01-29T00:00:00Z",
     "channel": "beta",
     "sequence": 2,
-    "publisher": "CantonConnect"
+    "publisher": "PartyLayer"
   },
   "wallets": [
     {
@@ -24,7 +24,7 @@
         "multiParty": false
       },
       "adapter": {
-        "type": "@cantonconnect/adapter-console"
+        "type": "@partylayer/adapter-console"
       },
       "installation": {
         "windowProperty": "consoleWallet"
@@ -47,7 +47,7 @@
         "multiParty": false
       },
       "adapter": {
-        "type": "@cantonconnect/adapter-loop"
+        "type": "@partylayer/adapter-loop"
       },
       "installation": {
         "scriptTag": "@fivenorth/loop-sdk"
@@ -70,7 +70,7 @@
         "multiParty": false
       },
       "adapter": {
-        "type": "@cantonconnect/adapter-cantor8"
+        "type": "@partylayer/adapter-cantor8"
       },
       "installation": {
         "deeplink": "cantor8://"
@@ -93,7 +93,7 @@
         "multiParty": false
       },
       "adapter": {
-        "type": "@cantonconnect/adapter-bron",
+        "type": "@partylayer/adapter-bron",
         "requiresConfig": true
       },
       "installation": {

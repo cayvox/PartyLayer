@@ -1,6 +1,6 @@
 /**
- * @cantonconnect/core
- * Core types, errors, and abstractions for CantonConnect
+ * @partylayer/core
+ * Core types, errors, and abstractions for PartyLayer
  */
 
 export * from './types';

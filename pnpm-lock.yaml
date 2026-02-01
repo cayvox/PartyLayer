@@ -54,22 +54,22 @@ importers:
 
   apps/demo:
     dependencies:
-      '@cantonconnect/adapter-bron':
+      '@partylayer/adapter-bron':
         specifier: workspace:*
         version: link:../../packages/adapters/bron
-      '@cantonconnect/adapter-cantor8':
+      '@partylayer/adapter-cantor8':
         specifier: workspace:*
         version: link:../../packages/adapters/cantor8
-      '@cantonconnect/adapter-console':
+      '@partylayer/adapter-console':
         specifier: workspace:*
         version: link:../../packages/adapters/console
-      '@cantonconnect/adapter-loop':
+      '@partylayer/adapter-loop':
         specifier: workspace:*
         version: link:../../packages/adapters/loop
-      '@cantonconnect/react':
+      '@partylayer/react':
         specifier: workspace:*
         version: link:../../packages/react
-      '@cantonconnect/sdk':
+      '@partylayer/sdk':
         specifier: workspace:*
         version: link:../../packages/sdk
       next:
@@ -168,10 +168,10 @@ importers:
 
   examples/test-dapp:
     dependencies:
-      '@cantonconnect/react':
+      '@partylayer/react':
         specifier: workspace:*
         version: link:../../packages/react
-      '@cantonconnect/sdk':
+      '@partylayer/sdk':
         specifier: workspace:*
         version: link:../../packages/sdk
       react:
@@ -214,7 +214,7 @@ importers:
 
   packages/adapter-starter:
     dependencies:
-      '@cantonconnect/core':
+      '@partylayer/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -227,7 +227,7 @@ importers:
 
   packages/adapters/bron:
     dependencies:
-      '@cantonconnect/core':
+      '@partylayer/core':
         specifier: workspace:*
         version: link:../../core
     devDependencies:
@@ -240,7 +240,7 @@ importers:
 
   packages/adapters/cantor8:
     dependencies:
-      '@cantonconnect/core':
+      '@partylayer/core':
         specifier: workspace:*
         version: link:../../core
     devDependencies:
@@ -253,7 +253,7 @@ importers:
 
   packages/adapters/console:
     dependencies:
-      '@cantonconnect/core':
+      '@partylayer/core':
         specifier: workspace:*
         version: link:../../core
     devDependencies:
@@ -269,7 +269,7 @@ importers:
 
   packages/adapters/loop:
     dependencies:
-      '@cantonconnect/core':
+      '@partylayer/core':
         specifier: workspace:*
         version: link:../../core
     devDependencies:
@@ -285,7 +285,7 @@ importers:
 
   packages/conformance-runner:
     dependencies:
-      '@cantonconnect/core':
+      '@partylayer/core':
         specifier: workspace:*
         version: link:../core
       commander:
@@ -313,10 +313,10 @@ importers:
 
   packages/react:
     dependencies:
-      '@cantonconnect/registry-client':
+      '@partylayer/registry-client':
         specifier: workspace:*
         version: link:../registry-client
-      '@cantonconnect/sdk':
+      '@partylayer/sdk':
         specifier: workspace:*
         version: link:../sdk
       react:
@@ -335,7 +335,7 @@ importers:
 
   packages/registry-cli:
     dependencies:
-      '@cantonconnect/registry-client':
+      '@partylayer/registry-client':
         specifier: workspace:*
         version: link:../registry-client
       commander:
@@ -354,7 +354,7 @@ importers:
 
   packages/registry-client:
     dependencies:
-      '@cantonconnect/core':
+      '@partylayer/core':
         specifier: workspace:*
         version: link:../core
     devDependencies:
@@ -370,22 +370,22 @@ importers:
 
   packages/sdk:
     dependencies:
-      '@cantonconnect/adapter-bron':
+      '@partylayer/adapter-bron':
         specifier: workspace:*
         version: link:../adapters/bron
-      '@cantonconnect/adapter-cantor8':
+      '@partylayer/adapter-cantor8':
         specifier: workspace:*
         version: link:../adapters/cantor8
-      '@cantonconnect/adapter-console':
+      '@partylayer/adapter-console':
         specifier: workspace:*
         version: link:../adapters/console
-      '@cantonconnect/adapter-loop':
+      '@partylayer/adapter-loop':
         specifier: workspace:*
         version: link:../adapters/loop
-      '@cantonconnect/core':
+      '@partylayer/core':
         specifier: workspace:*
         version: link:../core
-      '@cantonconnect/registry-client':
+      '@partylayer/registry-client':
         specifier: workspace:*
         version: link:../registry-client
     devDependencies:

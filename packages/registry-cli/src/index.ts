@@ -22,7 +22,7 @@ import {
   getSignaturePath,
 } from './registry';
 import { signRegistry, writeSignature } from './sign';
-import type { RegistryWalletEntry, RegistryChannel } from '@cantonconnect/registry-client';
+import type { RegistryWalletEntry, RegistryChannel } from '@partylayer/registry-client';
 
 program
   .name('cantonconnect-registry')

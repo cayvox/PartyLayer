@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
 /**
- * Smoke tests for CantonConnect demo app
+ * Smoke tests for PartyLayer demo app
  * 
  * These tests validate:
  * 1. Page loads successfully
@@ -11,12 +11,12 @@ import { test, expect } from '@playwright/test';
  * 5. Error handling for non-installed wallets
  */
 
-test.describe('CantonConnect Demo Smoke Tests', () => {
+test.describe('PartyLayer Demo Smoke Tests', () => {
   test('page loads successfully', async ({ page }) => {
     await page.goto('/');
     
     // Check main heading
-    await expect(page.getByRole('heading', { name: /CantonConnect Demo/i })).toBeVisible();
+    await expect(page.getByRole('heading', { name: /PartyLayer Demo/i })).toBeVisible();
   });
 
   test('connect modal opens', async ({ page }) => {
@@ -90,15 +90,15 @@ test.describe('CantonConnect Demo Smoke Tests', () => {
       await page.waitForTimeout(2000);
       
       // Verify page is still functional
-      await expect(page.getByRole('heading', { name: /CantonConnect Demo/i })).toBeVisible();
+      await expect(page.getByRole('heading', { name: /PartyLayer Demo/i })).toBeVisible();
     } else {
       // No wallets available - this is also a valid state
-      await expect(page.getByRole('heading', { name: /CantonConnect Demo/i })).toBeVisible();
+      await expect(page.getByRole('heading', { name: /PartyLayer Demo/i })).toBeVisible();
     }
   });
 
   test.skip('debug page loads', async ({ page }) => {
-    // Skip this test - debug page requires CantonConnectProvider context
+    // Skip this test - debug page requires PartyLayerProvider context
     // which is only available when navigating from home page.
     // Manual testing confirms debug page works when accessed from home page.
     await page.goto('/debug');

@@ -1,8 +1,8 @@
 /**
- * CantonConnect Client Initialization
+ * PartyLayer Client Initialization
  * 
- * This file demonstrates the SIMPLEST way to integrate CantonConnect.
- * Just import @cantonconnect/sdk - all wallet adapters are built-in!
+ * This file demonstrates the SIMPLEST way to integrate PartyLayer.
+ * Just import @partylayer/sdk - all wallet adapters are built-in!
  * 
  * NO need to:
  * - Install adapter packages separately
@@ -10,11 +10,11 @@
  * - Load wallet SDKs (Loop SDK is lazy-loaded from CDN automatically)
  */
 
-import { createCantonConnect } from '@cantonconnect/sdk';
-import type { CantonConnectClient } from '@cantonconnect/sdk';
+import { createPartyLayer } from '@partylayer/sdk';
+import type { PartyLayerClient } from '@partylayer/sdk';
 
 /**
- * Initialize CantonConnect client
+ * Initialize PartyLayer client
  * 
  * This is ALL a dApp needs to do to support ALL wallets!
  * 
@@ -32,7 +32,7 @@ import type { CantonConnectClient } from '@cantonconnect/sdk';
  * const session = await client.connect({ walletId: 'console' });
  * ```
  */
-export function createClient(): CantonConnectClient {
+export function createClient(): PartyLayerClient {
   const registryUrl = import.meta.env.VITE_REGISTRY_URL || 'http://localhost:3001';
   const channel = (import.meta.env.VITE_REGISTRY_CHANNEL || 'stable') as 'stable' | 'beta';
   const network = (import.meta.env.VITE_NETWORK || 'devnet') as 'devnet' | 'testnet' | 'mainnet';
@@ -40,7 +40,7 @@ export function createClient(): CantonConnectClient {
   // That's it! All wallet adapters are automatically registered:
   // - Console Wallet (browser extension)
   // - 5N Loop (QR code / popup - SDK lazy-loaded from CDN)
-  const client = createCantonConnect({
+  const client = createPartyLayer({
     registryUrl,
     channel,
     network,

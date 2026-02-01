@@ -13,13 +13,13 @@
  * - Wallet Integration Guide: https://docs.digitalasset.com/integrate/devnet/index.html
  */
 
-import type { WalletInfo } from '@cantonconnect/core';
+import type { WalletInfo } from '@partylayer/core';
 import {
   RegistryFetchFailedError,
   RegistryVerificationFailedError,
   RegistrySchemaInvalidError,
   WalletNotFoundError,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 import type {
   WalletRegistryV1,
   RegistryWalletEntry,
@@ -62,7 +62,7 @@ export interface RegistryClientOptions {
 /**
  * Default registry URL
  */
-const DEFAULT_REGISTRY_URL = 'https://registry.cantonconnect.xyz';
+const DEFAULT_REGISTRY_URL = 'https://registry.partylayer.xyz';
 
 /**
  * Registry client

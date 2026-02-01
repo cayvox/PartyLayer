@@ -1,20 +1,20 @@
 /**
- * Configuration types for CantonConnect SDK
+ * Configuration types for PartyLayer SDK
  */
 
-import type { NetworkId, WalletId, WalletAdapter } from '@cantonconnect/core';
+import type { NetworkId, WalletId, WalletAdapter } from '@partylayer/core';
 import type {
   StorageAdapter,
   CryptoAdapter,
   TelemetryAdapter,
   LoggerAdapter,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 
 /**
- * Default registry URL for CantonConnect
+ * Default registry URL for PartyLayer
  * This points to the official registry endpoint.
  */
-export const DEFAULT_REGISTRY_URL = 'https://registry.cantonconnect.xyz';
+export const DEFAULT_REGISTRY_URL = 'https://registry.partylayer.xyz';
 
 /**
  * Adapter class type (for instantiation)
@@ -22,12 +22,12 @@ export const DEFAULT_REGISTRY_URL = 'https://registry.cantonconnect.xyz';
 export type AdapterClass = new () => WalletAdapter;
 
 /**
- * CantonConnect configuration
+ * PartyLayer configuration
  */
-export interface CantonConnectConfig {
+export interface PartyLayerConfig {
   /** 
    * Registry URL (optional)
-   * @default 'https://registry.cantonconnect.xyz/v1/wallets.json'
+   * @default 'https://registry.partylayer.xyz/v1/wallets.json'
    */
   registryUrl?: string;
   /** Registry channel */
@@ -56,14 +56,14 @@ export interface CantonConnectConfig {
    * });
    * 
    * // Custom: only specific adapters
-   * import { ConsoleAdapter } from '@cantonconnect/sdk';
-   * const client = createCantonConnect({
+   * import { ConsoleAdapter } from '@partylayer/sdk';
+   * const client = createPartyLayer({
    *   adapters: [new ConsoleAdapter()], // Only Console Wallet
    *   // ...
    * });
    * 
    * // With Bron (enterprise wallet with OAuth)
-   * import { BronAdapter, getBuiltinAdapters } from '@cantonconnect/sdk';
+   * import { BronAdapter, getBuiltinAdapters } from '@partylayer/sdk';
    * const client = createCantonConnect({
    *   adapters: [
    *     ...getBuiltinAdapters(),

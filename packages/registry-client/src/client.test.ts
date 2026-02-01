@@ -7,7 +7,7 @@ import { RegistryClient } from './client';
 import type { WalletRegistryV1 } from './schema';
 import {
   RegistryVerificationFailedError,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 
 describe('RegistryClient', () => {
   let client: RegistryClient;

@@ -3,7 +3,7 @@
  */
 
 import type { RegistryChannel } from './schema';
-import type { CantonConnectError } from '@cantonconnect/core';
+import type { PartyLayerError } from '@partylayer/core';
 
 /**
  * Registry status information
@@ -24,7 +24,7 @@ export interface RegistryStatus {
   /** ETag from last successful fetch */
   etag?: string;
   /** Error if verification/fetch failed */
-  error?: CantonConnectError;
+  error?: PartyLayerError;
 }
 
 /**

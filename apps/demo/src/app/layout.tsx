@@ -2,8 +2,8 @@ import type { Metadata } from 'next';
 import './globals.css';
 
 export const metadata: Metadata = {
-  title: 'CantonConnect Demo',
-  description: 'Demo dApp for CantonConnect SDK',
+  title: 'PartyLayer Demo',
+  description: 'Demo dApp for PartyLayer SDK',
 };
 
 export default function RootLayout({

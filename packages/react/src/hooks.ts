@@ -1,5 +1,5 @@
 /**
- * React hooks for CantonConnect
+ * React hooks for PartyLayer
  */
 
 import { useState, useCallback, useEffect } from 'react';
@@ -13,16 +13,16 @@ import type {
   SubmitTransactionParams,
   ConnectOptions,
   RegistryStatus,
-} from '@cantonconnect/sdk';
-import { useCantonConnectContext } from './context';
+} from '@partylayer/sdk';
+import { usePartyLayerContext } from './context';
 
 /**
- * Hook to access CantonConnect client
+ * Hook to access PartyLayer client
  */
-export function useCantonConnect() {
-  const { client } = useCantonConnectContext();
+export function usePartyLayer() {
+  const { client } = usePartyLayerContext();
   if (!client) {
-    throw new Error('CantonConnect client not initialized');
+    throw new Error('PartyLayer client not initialized');
   }
   return client;
 }
@@ -31,7 +31,7 @@ export function useCantonConnect() {
  * Hook to get available wallets
  */
 export function useWallets() {
-  const { wallets, isLoading, error } = useCantonConnectContext();
+  const { wallets, isLoading, error } = usePartyLayerContext();
   return { wallets, isLoading, error };
 }
 
@@ -39,7 +39,7 @@ export function useWallets() {
  * Hook to get active session
  */
 export function useSession() {
-  const { session } = useCantonConnectContext();
+  const { session } = usePartyLayerContext();
   return session;
 }
 
@@ -50,7 +50,7 @@ export function useRegistryStatus(): {
   status: RegistryStatus | null;
   refresh: () => Promise<void>;
 } {
-  const client = useCantonConnect();
+  const client = usePartyLayer();
   const [status, setStatus] = useState<RegistryStatus | null>(null);
 
   useEffect(() => {
@@ -91,7 +91,7 @@ export function useRegistryStatus(): {
  * Hook to connect to a wallet
  */
 export function useConnect() {
-  const client = useCantonConnect();
+  const client = usePartyLayer();
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -121,7 +121,7 @@ export function useConnect() {
  * Hook to disconnect from a wallet
  */
 export function useDisconnect() {
-  const client = useCantonConnect();
+  const client = usePartyLayer();
   const [isDisconnecting, setIsDisconnecting] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -147,7 +147,7 @@ export function useDisconnect() {
  * Hook to sign a message
  */
 export function useSignMessage() {
-  const client = useCantonConnect();
+  const client = usePartyLayer();
   const [isSigning, setIsSigning] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -176,7 +176,7 @@ export function useSignMessage() {
  * Hook to sign a transaction
  */
 export function useSignTransaction() {
-  const client = useCantonConnect();
+  const client = usePartyLayer();
   const [isSigning, setIsSigning] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 
@@ -205,7 +205,7 @@ export function useSignTransaction() {
  * Hook to submit a transaction
  */
 export function useSubmitTransaction() {
-  const client = useCantonConnect();
+  const client = usePartyLayer();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [error, setError] = useState<Error | null>(null);
 

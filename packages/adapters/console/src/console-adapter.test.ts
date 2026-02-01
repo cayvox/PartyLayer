@@ -6,11 +6,11 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ConsoleAdapter } from './console-adapter';
-import type { AdapterContext } from '@cantonconnect/core';
+import type { AdapterContext } from '@partylayer/core';
 import {
   toWalletId,
   toPartyId,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 
 // Check if we're in a browser environment
 const isBrowser = typeof window !== 'undefined';

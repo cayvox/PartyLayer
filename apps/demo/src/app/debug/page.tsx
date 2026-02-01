@@ -1,19 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
-import { CantonConnectProvider, useCantonConnect, useRegistryStatus } from '@cantonconnect/react';
-import { createCantonConnect } from '@cantonconnect/sdk';
-import type { CantonConnectClient, CantonConnectEvent } from '@cantonconnect/sdk';
-import { ConsoleAdapter } from '@cantonconnect/adapter-console';
-import { LoopAdapter } from '@cantonconnect/adapter-loop';
+import { PartyLayerProvider, usePartyLayer, useRegistryStatus } from '@partylayer/react';
+import { createPartyLayer } from '@partylayer/sdk';
+import type { PartyLayerClient, PartyLayerEvent } from '@partylayer/sdk';
+import { ConsoleAdapter } from '@partylayer/adapter-console';
+import { LoopAdapter } from '@partylayer/adapter-loop';
 
 // Force dynamic rendering
 export const dynamic = 'force-dynamic';
 
 function DebugPageContent() {
-  const client = useCantonConnect();
+  const client = usePartyLayer();
   const { status: registryStatus, refresh: refreshRegistry } = useRegistryStatus();
-  const [events, setEvents] = useState<CantonConnectEvent[]>([]);
+  const [events, setEvents] = useState<PartyLayerEvent[]>([]);
 
   useEffect(() => {
     // Subscribe to all events
@@ -140,17 +140,17 @@ function DebugPageContent() {
 }
 
 function DebugPageWrapper() {
-  const [client, setClient] = useState<CantonConnectClient | null>(null);
+  const [client, setClient] = useState<PartyLayerClient | null>(null);
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
-    const cantonClient = createCantonConnect({
+    const cantonClient = createPartyLayer({
       registryUrl: process.env.NEXT_PUBLIC_REGISTRY_URL || 'http://localhost:3001',
       channel: (process.env.NEXT_PUBLIC_REGISTRY_CHANNEL as 'stable' | 'beta') || 'stable',
       network: (process.env.NEXT_PUBLIC_NETWORK as 'devnet' | 'testnet' | 'mainnet') || 'devnet',
       app: {
-        name: 'CantonConnect Demo Debug',
+        name: 'PartyLayer Demo Debug',
         origin: window.location.origin,
       },
     });
@@ -178,9 +178,9 @@ function DebugPageWrapper() {
   }
 
   return (
-    <CantonConnectProvider client={client}>
+    <PartyLayerProvider client={client}>
       <DebugPageContent />
-    </CantonConnectProvider>
+    </PartyLayerProvider>
   );
 }
 

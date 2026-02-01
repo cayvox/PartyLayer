@@ -1,20 +1,20 @@
 # Wallet Provider Guide
 
-**How to build a CantonConnect wallet adapter**
+**How to build a PartyLayer wallet adapter**
 
-## What is CantonConnect?
+## What is PartyLayer?
 
-CantonConnect is a developer SDK that provides a WalletConnect-like experience for Canton Network wallets. It allows dApps to connect to multiple wallet types through a single integration point.
+PartyLayer is a developer SDK that provides a WalletConnect-like experience for Canton Network wallets. It allows dApps to connect to multiple wallet types through a single integration point.
 
 ## How Adapters Work
 
-Adapters are the bridge between CantonConnect SDK and individual wallet implementations. Each adapter:
+Adapters are the bridge between PartyLayer SDK and individual wallet implementations. Each adapter:
 
 1. **Implements the WalletAdapter interface** - Standard contract for all wallets
 2. **Detects wallet availability** - Checks if wallet is installed/available
 3. **Establishes connections** - Connects to wallet and retrieves party ID
 4. **Handles signing** - Signs messages and transactions
-5. **Maps errors** - Normalizes wallet-specific errors to CantonConnect errors
+5. **Maps errors** - Normalizes wallet-specific errors to PartyLayer errors
 
 ## Getting Started
 
@@ -128,14 +128,14 @@ async signTransaction(...): Promise<SignedTransaction> {
 
 ## Error Mapping
 
-Always use `mapUnknownErrorToCantonConnectError()`:
+Always use `mapUnknownErrorToPartyLayerError()`:
 
 ```typescript
 try {
   // Wallet SDK call
   await wallet.connect();
 } catch (err) {
-  throw mapUnknownErrorToCantonConnectError(err, {
+  throw mapUnknownErrorToPartyLayerError(err, {
     walletId: this.walletId,
     phase: 'connect', // or 'signMessage', 'signTransaction', etc.
     transport: 'injected', // or 'popup', 'deeplink', 'remote'
@@ -229,4 +229,4 @@ See `docs/registry-onboarding.md` for:
 
 - Documentation: `docs/`
 - Issues: GitHub Issues
-- Security: security@cantonconnect.xyz
+- Security: security@partylayer.xyz

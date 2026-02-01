@@ -10,7 +10,7 @@ import {
   REGISTRY_SCHEMA_VERSION,
 } from './schema';
 import type { WalletRegistryV1, RegistryWalletEntry } from './schema';
-import { toWalletId } from '@cantonconnect/core';
+import { toWalletId } from '@partylayer/core';
 
 describe('registry schema validation', () => {
   const validWalletEntry: RegistryWalletEntry = {

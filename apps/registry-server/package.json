@@ -1,8 +1,8 @@
 {
-  "name": "@cantonconnect/registry-server",
+  "name": "@partylayer/registry-server",
   "version": "0.1.0",
   "private": true,
-  "description": "Minimal registry server for CantonConnect wallet registry",
+  "description": "Minimal registry server for PartyLayer wallet registry",
   "type": "module",
   "main": "./dist/index.js",
   "scripts": {

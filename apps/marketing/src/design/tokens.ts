@@ -1,5 +1,5 @@
 /**
- * Design tokens for CantonConnect marketing site
+ * Design tokens for PartyLayer marketing site
  * These values are mirrored in tailwind.config.ts for utility classes
  */
 

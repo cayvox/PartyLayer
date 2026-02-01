@@ -15,7 +15,7 @@
  * 
  * References:
  * - Wallet Integration Guide: https://docs.digitalasset.com/integrate/devnet/index.html
- * - Adapter Contract: See @cantonconnect/core/src/adapters.ts
+ * - Adapter Contract: See @partylayer/core/src/adapters.ts
  */
 
 import type {
@@ -33,7 +33,7 @@ import type {
   PersistedSession,
   CapabilityKey,
   PartyId,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 import {
   toWalletId,
   toPartyId,
@@ -42,8 +42,8 @@ import {
   WalletNotInstalledError,
   CapabilityNotSupportedError,
   UserRejectedError,
-  mapUnknownErrorToCantonConnectError,
-} from '@cantonconnect/core';
+  mapUnknownErrorToPartyLayerError,
+} from '@partylayer/core';
 
 /**
  * MyWallet Adapter
@@ -141,7 +141,7 @@ export class MyWalletAdapter implements WalletAdapter {
 
       throw new Error('Connect not implemented - please implement connect()');
     } catch (err) {
-      throw mapUnknownErrorToCantonConnectError(err, {
+      throw mapUnknownErrorToPartyLayerError(err, {
         walletId: this.walletId,
         phase: 'connect',
         transport: 'injected', // TODO: Update based on your transport

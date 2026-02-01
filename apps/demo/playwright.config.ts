@@ -1,7 +1,7 @@
 import { defineConfig, devices } from '@playwright/test';
 
 /**
- * E2E smoke tests for CantonConnect demo app
+ * E2E smoke tests for PartyLayer demo app
  * 
  * These tests validate basic functionality without requiring
  * real wallet extensions to be installed.

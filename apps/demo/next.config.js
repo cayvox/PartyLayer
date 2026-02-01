@@ -4,14 +4,14 @@ const path = require('path');
 const nextConfig = {
   reactStrictMode: true,
   transpilePackages: [
-    '@cantonconnect/react',
-    '@cantonconnect/sdk',
-    '@cantonconnect/core',
-    '@cantonconnect/registry-client',
-    '@cantonconnect/adapter-console',
-    '@cantonconnect/adapter-loop',
-    '@cantonconnect/adapter-cantor8',
-    '@cantonconnect/adapter-bron',
+    '@partylayer/react',
+    '@partylayer/sdk',
+    '@partylayer/core',
+    '@partylayer/registry-client',
+    '@partylayer/adapter-console',
+    '@partylayer/adapter-loop',
+    '@partylayer/adapter-cantor8',
+    '@partylayer/adapter-bron',
   ],
   // Ensure ESM packages work correctly
   experimental: {
@@ -22,14 +22,14 @@ const nextConfig = {
     // Resolve workspace packages
     config.resolve.alias = {
       ...config.resolve.alias,
-      '@cantonconnect/react': path.resolve(__dirname, '../../packages/react'),
-      '@cantonconnect/sdk': path.resolve(__dirname, '../../packages/sdk'),
-      '@cantonconnect/core': path.resolve(__dirname, '../../packages/core'),
-      '@cantonconnect/registry-client': path.resolve(__dirname, '../../packages/registry-client'),
-      '@cantonconnect/adapter-console': path.resolve(__dirname, '../../packages/adapters/console'),
-      '@cantonconnect/adapter-loop': path.resolve(__dirname, '../../packages/adapters/loop'),
-      '@cantonconnect/adapter-cantor8': path.resolve(__dirname, '../../packages/adapters/cantor8'),
-      '@cantonconnect/adapter-bron': path.resolve(__dirname, '../../packages/adapters/bron'),
+      '@partylayer/react': path.resolve(__dirname, '../../packages/react'),
+      '@partylayer/sdk': path.resolve(__dirname, '../../packages/sdk'),
+      '@partylayer/core': path.resolve(__dirname, '../../packages/core'),
+      '@partylayer/registry-client': path.resolve(__dirname, '../../packages/registry-client'),
+      '@partylayer/adapter-console': path.resolve(__dirname, '../../packages/adapters/console'),
+      '@partylayer/adapter-loop': path.resolve(__dirname, '../../packages/adapters/loop'),
+      '@partylayer/adapter-cantor8': path.resolve(__dirname, '../../packages/adapters/cantor8'),
+      '@partylayer/adapter-bron': path.resolve(__dirname, '../../packages/adapters/bron'),
     };
 
     return config;

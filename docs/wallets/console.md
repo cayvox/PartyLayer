@@ -21,10 +21,10 @@ Console Wallet must be installed as a browser extension. The adapter detects it 
 ## Usage
 
 ```typescript
-import { createCantonConnect } from '@cantonconnect/sdk';
-import { ConsoleAdapter } from '@cantonconnect/adapter-console';
+import { createPartyLayer } from '@partylayer/sdk';
+import { ConsoleAdapter } from '@partylayer/adapter-console';
 
-const client = createCantonConnect({
+const client = createPartyLayer({
   registryUrl: '...',
   network: 'devnet',
   app: { name: 'My dApp' },

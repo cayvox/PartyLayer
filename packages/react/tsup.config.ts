@@ -15,7 +15,7 @@ export default defineConfig({
   treeshake: true,
   external: [
     'react',
-    '@cantonconnect/sdk',
-    '@cantonconnect/registry-client',
+    '@partylayer/sdk',
+    '@partylayer/registry-client',
   ],
 });

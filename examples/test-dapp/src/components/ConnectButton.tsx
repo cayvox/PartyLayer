@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { WalletModal, useConnect } from '@cantonconnect/react';
+import { WalletModal, useConnect } from '@partylayer/react';
 import './ConnectButton.css';
 
 function ConnectButton() {

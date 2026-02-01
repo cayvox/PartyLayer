@@ -1,6 +1,6 @@
 # Production Security Guide
 
-This guide covers security requirements and best practices for deploying dApps that use CantonConnect SDK in production.
+This guide covers security requirements and best practices for deploying dApps that use PartyLayer SDK in production.
 
 ## Table of Contents
 
@@ -40,13 +40,13 @@ This guide covers security requirements and best practices for deploying dApps t
 
 CSP headers protect your dApp from XSS attacks and control resource loading.
 
-### Recommended CSP for CantonConnect
+### Recommended CSP for PartyLayer
 
 ```
 Content-Security-Policy: 
   default-src 'self';
   script-src 'self' https://cdn.jsdelivr.net;
-  connect-src 'self' https://registry.cantonconnect.xyz https://*.cantonloop.com wss://*.cantonloop.com;
+  connect-src 'self' https://registry.partylayer.xyz https://*.cantonloop.com wss://*.cantonloop.com;
   frame-src 'self' https://*.cantonloop.com;
   style-src 'self' 'unsafe-inline';
   img-src 'self' data: https:;
@@ -57,7 +57,7 @@ Content-Security-Policy:
 | Directive | Purpose | Required For |
 |-----------|---------|--------------|
 | `script-src https://cdn.jsdelivr.net` | Loop SDK lazy-loading | Loop Wallet |
-| `connect-src https://registry.cantonconnect.xyz` | Registry fetch | All wallets |
+| `connect-src https://registry.partylayer.xyz` | Registry fetch | All wallets |
 | `connect-src https://*.cantonloop.com` | Loop API | Loop Wallet |
 | `frame-src https://*.cantonloop.com` | Loop popup/iframe | Loop Wallet |
 | `style-src 'unsafe-inline'` | WalletModal styling | React components |
@@ -87,7 +87,7 @@ Create `vercel.json` in your project root:
       "headers": [
         {
           "key": "Content-Security-Policy",
-          "value": "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://registry.cantonconnect.xyz https://*.cantonloop.com wss://*.cantonloop.com; frame-src 'self' https://*.cantonloop.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;"
+          "value": "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://registry.partylayer.xyz https://*.cantonloop.com wss://*.cantonloop.com; frame-src 'self' https://*.cantonloop.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;"
         },
         {
           "key": "X-Content-Type-Options",
@@ -115,7 +115,7 @@ Create `netlify.toml` in your project root:
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://registry.cantonconnect.xyz https://*.cantonloop.com wss://*.cantonloop.com; frame-src 'self' https://*.cantonloop.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;"
+    Content-Security-Policy = "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://registry.partylayer.xyz https://*.cantonloop.com wss://*.cantonloop.com; frame-src 'self' https://*.cantonloop.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;"
     X-Content-Type-Options = "nosniff"
     X-Frame-Options = "SAMEORIGIN"
     Referrer-Policy = "strict-origin-when-cross-origin"
@@ -127,7 +127,7 @@ Create `_headers` file in your `public` folder:
 
 ```
 /*
-  Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://registry.cantonconnect.xyz https://*.cantonloop.com wss://*.cantonloop.com; frame-src 'self' https://*.cantonloop.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://registry.partylayer.xyz https://*.cantonloop.com wss://*.cantonloop.com; frame-src 'self' https://*.cantonloop.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;
   X-Content-Type-Options: nosniff
   X-Frame-Options: SAMEORIGIN
   Referrer-Policy: strict-origin-when-cross-origin
@@ -141,7 +141,7 @@ Add to `next.config.js`:
 const securityHeaders = [
   {
     key: 'Content-Security-Policy',
-    value: "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://registry.cantonconnect.xyz https://*.cantonloop.com wss://*.cantonloop.com; frame-src 'self' https://*.cantonloop.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;"
+    value: "default-src 'self'; script-src 'self' https://cdn.jsdelivr.net; connect-src 'self' https://registry.partylayer.xyz https://*.cantonloop.com wss://*.cantonloop.com; frame-src 'self' https://*.cantonloop.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;"
   },
   {
     key: 'X-Content-Type-Options',
@@ -179,7 +179,7 @@ import { defineConfig } from 'vite';
 export default defineConfig({
   server: {
     headers: {
-      'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net; connect-src 'self' https://registry.cantonconnect.xyz https://*.cantonloop.com wss://*.cantonloop.com; frame-src 'self' https://*.cantonloop.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;",
+      'Content-Security-Policy': "default-src 'self'; script-src 'self' 'unsafe-eval' https://cdn.jsdelivr.net; connect-src 'self' https://registry.partylayer.xyz https://*.cantonloop.com wss://*.cantonloop.com; frame-src 'self' https://*.cantonloop.com; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:;",
     },
   },
 });
@@ -208,7 +208,7 @@ Run through this checklist before deploying to production:
 - [ ] Production origin set (if explicitly configured)
 
 ```typescript
-const client = createCantonConnect({
+const client = createPartyLayer({
   network: 'mainnet',      // ✓ Production network
   channel: 'stable',       // ✓ Stable registry
   app: { 
@@ -273,7 +273,7 @@ import {
   WalletNotInstalledError,
   UserRejectedError,
   TimeoutError 
-} from '@cantonconnect/sdk';
+} from '@partylayer/sdk';
 
 try {
   await client.connect({ walletId: 'console' });
@@ -346,9 +346,9 @@ class WalletErrorBoundary extends Component<
 
 // Usage
 <WalletErrorBoundary fallback={<WalletErrorFallback />}>
-  <CantonConnectProvider client={client}>
+  <PartyLayerProvider client={client}>
     <App />
-  </CantonConnectProvider>
+  </PartyLayerProvider>
 </WalletErrorBoundary>
 ```
 
@@ -374,7 +374,7 @@ These features work automatically - no configuration needed.
 If you discover a security vulnerability:
 
 1. **Do not** disclose publicly
-2. Email: security@cantonconnect.xyz
+2. Email: security@partylayer.xyz
 3. Include: Description, steps to reproduce, potential impact
 
 We follow responsible disclosure and will credit reporters (with permission).

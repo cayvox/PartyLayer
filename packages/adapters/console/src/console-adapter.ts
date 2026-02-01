@@ -23,15 +23,15 @@ import type {
   PersistedSession,
   CapabilityKey,
   PartyId,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 import {
   toWalletId,
   toPartyId,
   toTransactionHash,
   toSignature,
   WalletNotInstalledError,
-  mapUnknownErrorToCantonConnectError,
-} from '@cantonconnect/core';
+  mapUnknownErrorToPartyLayerError,
+} from '@partylayer/core';
 
 /**
  * Console Wallet Provider interface
@@ -268,7 +268,7 @@ export class ConsoleAdapter implements WalletAdapter {
         capabilities: this.getCapabilities(),
       };
     } catch (err) {
-      throw mapUnknownErrorToCantonConnectError(err, {
+      throw mapUnknownErrorToPartyLayerError(err, {
         walletId: this.walletId,
         phase: 'connect',
         transport: 'injected',
@@ -384,7 +384,7 @@ export class ConsoleAdapter implements WalletAdapter {
         domain: params.domain,
       };
     } catch (err) {
-      throw mapUnknownErrorToCantonConnectError(err, {
+      throw mapUnknownErrorToPartyLayerError(err, {
         walletId: this.walletId,
         phase: 'signMessage',
         transport: 'injected',
@@ -435,7 +435,7 @@ export class ConsoleAdapter implements WalletAdapter {
         partyId: session.partyId,
       };
     } catch (err) {
-      throw mapUnknownErrorToCantonConnectError(err, {
+      throw mapUnknownErrorToPartyLayerError(err, {
         walletId: this.walletId,
         phase: 'signTransaction',
         transport: 'injected',
@@ -485,7 +485,7 @@ export class ConsoleAdapter implements WalletAdapter {
         throw new Error('Console Wallet does not support transaction submission');
       }
     } catch (err) {
-      throw mapUnknownErrorToCantonConnectError(err, {
+      throw mapUnknownErrorToPartyLayerError(err, {
         walletId: this.walletId,
         phase: 'submitTransaction',
         transport: 'injected',

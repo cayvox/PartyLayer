@@ -4,7 +4,7 @@
 
 import { readFileSync, existsSync } from 'fs';
 import { webcrypto } from 'crypto';
-import type { RegistrySignature } from '@cantonconnect/registry-client';
+import type { RegistrySignature } from '@partylayer/registry-client';
 import { getRegistryPath, getSignaturePath } from './registry';
 
 const crypto = webcrypto as Crypto;

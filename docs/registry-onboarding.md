@@ -1,10 +1,10 @@
 # Registry Onboarding Guide
 
-**How to get your wallet listed in the CantonConnect registry**
+**How to get your wallet listed in the PartyLayer registry**
 
 ## Overview
 
-The CantonConnect wallet registry is a signed, versioned JSON file that lists available wallets. Wallets start in the `beta` channel and are promoted to `stable` after validation.
+The PartyLayer wallet registry is a signed, versioned JSON file that lists available wallets. Wallets start in the `beta` channel and are promoted to `stable` after validation.
 
 ## Required Registry Fields
 
@@ -157,7 +157,7 @@ cantonconnect-registry promote \
 
 2. Add public key to SDK config:
    ```typescript
-   const client = createCantonConnect({
+   const client = createPartyLayer({
      registryPublicKeys: [
        'old-public-key-base64',
        'new-public-key-base64', // Add new key
@@ -215,4 +215,4 @@ If a bad registry is published:
 ## Support
 
 - Registry CLI: `cantonconnect-registry --help`
-- Security: security@cantonconnect.xyz
+- Security: security@partylayer.xyz

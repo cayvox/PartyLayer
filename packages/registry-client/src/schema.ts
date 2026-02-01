@@ -13,8 +13,8 @@
  * - Wallet Integration Guide: https://docs.digitalasset.com/integrate/devnet/index.html
  */
 
-import type { WalletInfo, NetworkId, CapabilityKey } from '@cantonconnect/core';
-import { toWalletId } from '@cantonconnect/core';
+import type { WalletInfo, NetworkId, CapabilityKey } from '@partylayer/core';
+import { toWalletId } from '@partylayer/core';
 
 /**
  * Registry schema version

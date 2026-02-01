@@ -4,7 +4,7 @@
 
 import { useState, useEffect } from 'react';
 import { useWallets, useConnect, useRegistryStatus } from './hooks';
-import type { WalletId } from '@cantonconnect/sdk';
+import type { WalletId } from '@partylayer/sdk';
 
 interface WalletModalProps {
   isOpen: boolean;

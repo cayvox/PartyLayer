@@ -1,7 +1,7 @@
 /**
- * CantonConnect Client - Public API Implementation
+ * PartyLayer Client - Public API Implementation
  * 
- * This is the main public API for CantonConnect SDK.
+ * This is the main public API for PartyLayer SDK.
  * All dApps should use this API exclusively.
  * 
  * References:
@@ -21,25 +21,25 @@ import type {
   TxReceipt,
   WalletAdapter,
   AdapterContext,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 import {
   toSessionId,
   WalletNotFoundError,
   CapabilityNotSupportedError,
-  mapUnknownErrorToCantonConnectError,
+  mapUnknownErrorToPartyLayerError,
   capabilityGuard,
   installGuard,
-} from '@cantonconnect/core';
-import { RegistryClient } from '@cantonconnect/registry-client';
-import type { RegistryStatus } from '@cantonconnect/registry-client';
+} from '@partylayer/core';
+import { RegistryClient } from '@partylayer/registry-client';
+import type { RegistryStatus } from '@partylayer/registry-client';
 import {
   DEFAULT_REGISTRY_URL,
-  type CantonConnectConfig,
+  type PartyLayerConfig,
   type ConnectOptions,
   type WalletFilter,
 } from './config';
 import type {
-  CantonConnectEvent,
+  PartyLayerEvent,
   EventHandler,
 } from './events';
 import {
@@ -53,26 +53,26 @@ import type {
   SignMessageParams,
   SignTransactionParams,
   SubmitTransactionParams,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 
 /**
- * CantonConnect Client
+ * PartyLayer Client
  * 
  * Main client interface for dApps to interact with Canton wallets.
  */
-export class CantonConnectClient {
-  private config: CantonConnectConfig;
+export class PartyLayerClient {
+  private config: PartyLayerConfig;
   private adapters = new Map<WalletId, WalletAdapter>();
   private eventHandlers = new Map<string, Set<EventHandler>>();
   private activeSession: Session | null = null;
   public readonly registryClient: RegistryClient; // Expose for React hooks
-  private logger: import('@cantonconnect/core').LoggerAdapter;
-  private crypto: import('@cantonconnect/core').CryptoAdapter;
-  private storage: import('@cantonconnect/core').StorageAdapter;
-  private telemetry?: import('@cantonconnect/core').TelemetryAdapter;
+  private logger: import('@partylayer/core').LoggerAdapter;
+  private crypto: import('@partylayer/core').CryptoAdapter;
+  private storage: import('@partylayer/core').StorageAdapter;
+  private telemetry?: import('@partylayer/core').TelemetryAdapter;
   private origin: string;
 
-  constructor(config: CantonConnectConfig) {
+  constructor(config: PartyLayerConfig) {
     this.config = config;
 
     // Determine origin
@@ -95,12 +95,12 @@ export class CantonConnectClient {
     const adaptersToRegister = config.adapters ?? getBuiltinAdapters();
     
     for (const adapterOrClass of adaptersToRegister) {
-      let adapter: import('@cantonconnect/core').WalletAdapter;
+      let adapter: import('@partylayer/core').WalletAdapter;
       
       // Check if it's a class (function) or instance (object)
       if (typeof adapterOrClass === 'function') {
         // It's a class - instantiate it
-        adapter = new (adapterOrClass as new () => import('@cantonconnect/core').WalletAdapter)();
+        adapter = new (adapterOrClass as new () => import('@partylayer/core').WalletAdapter)();
       } else {
         // It's already an instance
         adapter = adapterOrClass;
@@ -129,7 +129,7 @@ export class CantonConnectClient {
     this.restoreSession().catch((err) => {
       this.emit('error', {
         type: 'error',
-        error: mapUnknownErrorToCantonConnectError(err, {
+        error: mapUnknownErrorToPartyLayerError(err, {
           phase: 'restore',
         }),
       });
@@ -177,7 +177,7 @@ export class CantonConnectClient {
       // Update registry status even on error (may have fallback info)
       this.updateRegistryStatus();
       
-      const error = mapUnknownErrorToCantonConnectError(err, {
+      const error = mapUnknownErrorToPartyLayerError(err, {
         phase: 'connect',
       });
       this.emit('error', { type: 'error', error });
@@ -251,7 +251,7 @@ export class CantonConnectClient {
       const walletEntry = await this.registryClient.getWalletEntry(String(selectedWallet.walletId));
       if (walletEntry.originAllowlist && walletEntry.originAllowlist.length > 0) {
         if (!walletEntry.originAllowlist.includes(this.origin)) {
-          const { OriginNotAllowedError } = await import('@cantonconnect/core');
+          const { OriginNotAllowedError } = await import('@partylayer/core');
           throw new OriginNotAllowedError(
             this.origin,
             walletEntry.originAllowlist
@@ -317,7 +317,7 @@ export class CantonConnectClient {
       return session;
     } catch (err) {
       const timeoutMs = options?.timeoutMs || 30000;
-      const error = mapUnknownErrorToCantonConnectError(err, {
+      const error = mapUnknownErrorToPartyLayerError(err, {
         phase: 'connect',
         walletId: options?.walletId ? String(options.walletId) : undefined,
         timeoutMs,
@@ -352,7 +352,7 @@ export class CantonConnectClient {
         sessionId,
       });
     } catch (err) {
-      const error = mapUnknownErrorToCantonConnectError(err, {
+      const error = mapUnknownErrorToPartyLayerError(err, {
         phase: 'connect', // Use connect as default phase
       });
       this.emit('error', { type: 'error', error });
@@ -402,7 +402,7 @@ export class CantonConnectClient {
       const ctx = this.createAdapterContext();
       return await adapter.signMessage(ctx, session, params);
     } catch (err) {
-      const error = mapUnknownErrorToCantonConnectError(err, {
+      const error = mapUnknownErrorToPartyLayerError(err, {
         phase: 'signMessage',
         walletId: String(session.walletId),
       });
@@ -443,7 +443,7 @@ export class CantonConnectClient {
 
       return result;
     } catch (err) {
-      const error = mapUnknownErrorToCantonConnectError(err, {
+      const error = mapUnknownErrorToPartyLayerError(err, {
         phase: 'signTransaction',
         walletId: String(session.walletId),
       });
@@ -484,7 +484,7 @@ export class CantonConnectClient {
 
       return result;
     } catch (err) {
-      const error = mapUnknownErrorToCantonConnectError(err, {
+      const error = mapUnknownErrorToPartyLayerError(err, {
         phase: 'submitTransaction',
         walletId: String(session.walletId),
       });
@@ -496,7 +496,7 @@ export class CantonConnectClient {
   /**
    * Subscribe to events
    */
-  on<T extends CantonConnectEvent>(
+  on<T extends PartyLayerEvent>(
     event: T['type'],
     handler: EventHandler<T>
   ): () => void {
@@ -514,7 +514,7 @@ export class CantonConnectClient {
   /**
    * Unsubscribe from events
    */
-  off<T extends CantonConnectEvent>(
+  off<T extends PartyLayerEvent>(
     event: T['type'],
     handler: EventHandler<T>
   ): void {
@@ -678,7 +678,7 @@ export class CantonConnectClient {
   /**
    * Emit event to handlers
    */
-  private emit<T extends CantonConnectEvent>(
+  private emit<T extends PartyLayerEvent>(
     event: T['type'],
     payload: T
   ): void {
@@ -702,8 +702,8 @@ export class CantonConnectClient {
  * 
  * @example
  * ```typescript
- * const client = createCantonConnect({
- *   registryUrl: 'https://registry.cantonconnect.xyz',
+ * const client = createPartyLayer({
+ *   registryUrl: 'https://registry.partylayer.xyz',
  *   channel: 'stable',
  *   network: 'devnet',
  *   app: { name: 'My dApp' }
@@ -712,8 +712,8 @@ export class CantonConnectClient {
  * const session = await client.connect();
  * ```
  */
-export function createCantonConnect(
-  config: CantonConnectConfig
-): CantonConnectClient {
-  return new CantonConnectClient(config);
+export function createPartyLayer(
+  config: PartyLayerConfig
+): PartyLayerClient {
+  return new PartyLayerClient(config);
 }

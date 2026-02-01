@@ -7,8 +7,8 @@
  * - Bron developer portal: https://developer.bron.org/
  */
 
-import type { PartyId } from '@cantonconnect/core';
-import { toPartyId } from '@cantonconnect/core';
+import type { PartyId } from '@partylayer/core';
+import { toPartyId } from '@partylayer/core';
 
 /**
  * Bron API configuration

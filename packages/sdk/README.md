@@ -1,10 +1,10 @@
-# @cantonconnect/sdk
+# @partylayer/sdk
 
 <div align="center">
 
 **The official SDK for connecting dApps to Canton Network wallets**
 
-[![npm version](https://img.shields.io/npm/v/@cantonconnect/sdk.svg?style=flat-square)](https://www.npmjs.com/package/@cantonconnect/sdk)
+[![npm version](https://img.shields.io/npm/v/@partylayer/sdk.svg?style=flat-square)](https://www.npmjs.com/package/@partylayer/sdk)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](https://opensource.org/licenses/MIT)
 
@@ -14,7 +14,7 @@
 
 ## Overview
 
-`@cantonconnect/sdk` provides a unified interface for connecting your decentralized application (dApp) to multiple Canton Network wallets. Similar to WalletConnect, it abstracts wallet-specific implementations behind a simple, type-safe API.
+`@partylayer/sdk` provides a unified interface for connecting your decentralized application (dApp) to multiple Canton Network wallets. Similar to WalletConnect, it abstracts wallet-specific implementations behind a simple, type-safe API.
 
 ### Features
 
@@ -29,13 +29,13 @@
 ## Installation
 
 ```bash
-npm install @cantonconnect/sdk
+npm install @partylayer/sdk
 ```
 
 For React applications, also install the React integration:
 
 ```bash
-npm install @cantonconnect/sdk @cantonconnect/react
+npm install @partylayer/sdk @partylayer/react
 ```
 
 ---
@@ -45,9 +45,9 @@ npm install @cantonconnect/sdk @cantonconnect/react
 ### 1. Create a Client
 
 ```typescript
-import { createCantonConnect } from '@cantonconnect/sdk';
+import { createPartyLayer } from '@partylayer/sdk';
 
-const client = createCantonConnect({
+const client = createPartyLayer({
   network: 'devnet',
   app: { name: 'My dApp' },
 });
@@ -129,7 +129,7 @@ await client.disconnect();
 ## Configuration
 
 ```typescript
-const client = createCantonConnect({
+const client = createPartyLayer({
   // Required
   network: 'devnet', // 'devnet' | 'testnet' | 'mainnet'
   app: {
@@ -153,9 +153,9 @@ const client = createCantonConnect({
 
 ## API Reference
 
-### `createCantonConnect(config)`
+### `createPartyLayer(config)`
 
-Creates a new CantonConnect client instance.
+Creates a new PartyLayer client instance.
 
 ### Client Methods
 
@@ -194,7 +194,7 @@ import {
   UserRejectedError,
   SessionExpiredError,
   TimeoutError,
-} from '@cantonconnect/sdk';
+} from '@partylayer/sdk';
 
 try {
   await client.connect({ walletId: 'console' });
@@ -216,9 +216,9 @@ try {
 Bron requires OAuth2 configuration:
 
 ```typescript
-import { createCantonConnect, BronAdapter, getBuiltinAdapters } from '@cantonconnect/sdk';
+import { createPartyLayer, BronAdapter, getBuiltinAdapters } from '@partylayer/sdk';
 
-const client = createCantonConnect({
+const client = createPartyLayer({
   network: 'devnet',
   app: { name: 'My dApp' },
   adapters: [
@@ -252,9 +252,9 @@ import type {
   SignedMessage,
   SignedTransaction,
   TxReceipt,
-  CantonConnectConfig,
+  PartyLayerConfig,
   ConnectOptions,
-} from '@cantonconnect/sdk';
+} from '@partylayer/sdk';
 ```
 
 ---
@@ -263,16 +263,16 @@ import type {
 
 | Package | Description |
 |---------|-------------|
-| [@cantonconnect/react](https://www.npmjs.com/package/@cantonconnect/react) | React hooks and components |
-| [@cantonconnect/core](https://www.npmjs.com/package/@cantonconnect/core) | Core types and abstractions |
+| [@partylayer/react](https://www.npmjs.com/package/@partylayer/react) | React hooks and components |
+| [@partylayer/core](https://www.npmjs.com/package/@partylayer/core) | Core types and abstractions |
 
 ---
 
 ## Links
 
-- [GitHub Repository](https://github.com/cayvox/CantonConnect)
-- [Documentation](https://github.com/cayvox/CantonConnect#readme)
-- [Report Issues](https://github.com/cayvox/CantonConnect/issues)
+- [GitHub Repository](https://github.com/cayvox/PartyLayer)
+- [Documentation](https://github.com/cayvox/PartyLayer#readme)
+- [Report Issues](https://github.com/cayvox/PartyLayer/issues)
 - [Canton Network](https://www.canton.network/)
 
 ---

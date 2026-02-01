@@ -1,6 +1,6 @@
-# CantonConnect Test DApp
+# PartyLayer Test DApp
 
-A minimal but real dApp demonstrating CantonConnect integration using only the public API.
+A minimal but real dApp demonstrating PartyLayer integration using only the public API.
 
 ## Features
 
@@ -9,7 +9,7 @@ A minimal but real dApp demonstrating CantonConnect integration using only the p
 - ✅ Show registry status (verified, channel, cache/network)
 - ✅ Error handling with error codes
 - ✅ Event log (session, registry, error events)
-- ✅ Uses only public API (`@cantonconnect/sdk`, `@cantonconnect/react`)
+- ✅ Uses only public API (`@partylayer/sdk`, `@partylayer/react`)
 
 ## Prerequisites
 
@@ -57,7 +57,7 @@ Open http://localhost:5173
 
 ### 1. App Loads
 - ✅ Page loads without errors
-- ✅ "CantonConnect Test DApp" header visible
+- ✅ "PartyLayer Test DApp" header visible
 - ✅ Registry status panel shows "Loading..." then updates
 
 ### 2. Registry Status
@@ -153,24 +153,24 @@ test-dapp/
 
 This dApp uses **only** the public API:
 
-### From `@cantonconnect/sdk`:
-- `createCantonConnect()` - Client creation
-- `CantonConnectClient` - Client type
-- `CantonConnectEvent` - Event types
-- `CantonConnectError` - Error types
+### From `@partylayer/sdk`:
+- `createPartyLayer()` - Client creation
+- `PartyLayerClient` - Client type
+- `PartyLayerEvent` - Event types
+- `PartyLayerError` - Error types
 
-### From `@cantonconnect/react`:
-- `CantonConnectProvider` - React provider
-- `useCantonConnect()` - Main hook
+### From `@partylayer/react`:
+- `PartyLayerProvider` - React provider
+- `usePartyLayer()` - Main hook
 - `useSession()` - Session hook
 - `useRegistryStatus()` - Registry status hook
 - `useDisconnect()` - Disconnect hook
 - `WalletModal` - Wallet selection modal
 
-### From `@cantonconnect/adapter-console`:
+### From `@partylayer/adapter-console`:
 - `ConsoleAdapter` - Console Wallet adapter
 
-### From `@cantonconnect/adapter-loop`:
+### From `@partylayer/adapter-loop`:
 - `LoopAdapter` - 5N Loop Wallet adapter
 
 **No internal imports** - everything uses documented public API.
@@ -179,12 +179,12 @@ This dApp uses **only** the public API:
 
 ```typescript
 // src/cantonconnect.ts
-import { createCantonConnect } from '@cantonconnect/sdk';
-import { ConsoleAdapter } from '@cantonconnect/adapter-console';
-import { LoopAdapter } from '@cantonconnect/adapter-loop';
+import { createPartyLayer } from '@partylayer/sdk';
+import { ConsoleAdapter } from '@partylayer/adapter-console';
+import { LoopAdapter } from '@partylayer/adapter-loop';
 
-export const client = createCantonConnect({
-  registryUrl: 'https://registry.cantonconnect.xyz',
+export const client = createPartyLayer({
+  registryUrl: 'https://registry.partylayer.xyz',
   channel: 'stable',
   network: 'devnet',
   // Register the wallet adapters you want to support
@@ -212,7 +212,7 @@ export const client = createCantonConnect({
 **Cause:** Wallet extension not installed  
 **Fix:** Install Console/Loop wallet extension, or use mock mode
 
-### Error: "Module not found: @cantonconnect/sdk"
+### Error: "Module not found: @partylayer/sdk"
 **Cause:** Packages not installed  
 **Fix:** Run `pnpm install` from wallet-sdk root (workspace setup)
 
@@ -230,7 +230,7 @@ export const client = createCantonConnect({
 
 ```
 ┌─────────────────────────────────────────┐
-│     CantonConnect Test DApp            │
+│     PartyLayer Test DApp            │
 │     Minimal integration example         │
 └─────────────────────────────────────────┘
 

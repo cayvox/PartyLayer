@@ -1,5 +1,5 @@
 {
-  "name": "cantonconnect-test-dapp",
+  "name": "partylayer-test-dapp",
   "version": "1.0.1",
   "private": true,
   "type": "module",
@@ -10,8 +10,8 @@
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {
-    "@cantonconnect/sdk": "workspace:*",
-    "@cantonconnect/react": "workspace:*",
+    "@partylayer/sdk": "workspace:*",
+    "@partylayer/react": "workspace:*",
     "react": "^18.2.0",
     "react-dom": "^18.2.0"
   },

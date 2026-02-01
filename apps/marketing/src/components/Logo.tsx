@@ -39,7 +39,7 @@ export function Logo({ className, showIcon = true, size = 'md' }: LogoProps) {
           <circle cx="16" cy="16" r="4" fill="#0B0F1A" />
         </svg>
       )}
-      <span className={styles.text}>CantonConnect</span>
+      <span className={styles.text}>PartyLayer</span>
     </a>
   );
 }

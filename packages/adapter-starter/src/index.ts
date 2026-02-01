@@ -1,5 +1,5 @@
 /**
- * @cantonconnect/adapter-starter
+ * @partylayer/adapter-starter
  * Starter template for building CantonConnect wallet adapters
  */
 

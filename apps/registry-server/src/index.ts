@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 /**
- * CantonConnect Registry Server
+ * PartyLayer Registry Server
  * 
  * Minimal production-ready server for serving wallet registry files.
  * 
@@ -156,7 +156,7 @@ app.get('/v1/:channel/registry.sig', (req, res) => {
 
 // Start server
 app.listen(PORT, () => {
-  console.log(`CantonConnect Registry Server`);
+  console.log(`PartyLayer Registry Server`);
   console.log(`  Port: ${PORT}`);
   console.log(`  Registry directory: ${REGISTRY_DIR}`);
   console.log(`  Health: http://localhost:${PORT}/health`);

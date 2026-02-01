@@ -1,12 +1,12 @@
 <div align="center">
 
-# CantonConnect
+# PartyLayer
 
 **WalletConnect-like SDK for Canton Network**
 
 Connect your dApp to multiple Canton wallets with a single integration.
 
-[![npm version](https://img.shields.io/npm/v/@cantonconnect/sdk.svg?style=flat-square)](https://www.npmjs.com/package/@cantonconnect/sdk)
+[![npm version](https://img.shields.io/npm/v/@partylayer/sdk.svg?style=flat-square)](https://www.npmjs.com/package/@partylayer/sdk)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](./LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](./CONTRIBUTING.md)
@@ -17,11 +17,11 @@ Connect your dApp to multiple Canton wallets with a single integration.
 
 ---
 
-## What is CantonConnect?
+## What is PartyLayer?
 
-CantonConnect is a production-grade SDK that enables decentralized applications (dApps) on the [Canton Network](https://www.canton.network/) to connect with multiple wallet providers through a unified interface. Inspired by WalletConnect, it abstracts away the complexity of integrating with different wallets.
+PartyLayer is a production-grade SDK that enables decentralized applications (dApps) on the [Canton Network](https://www.canton.network/) to connect with multiple wallet providers through a unified interface. Inspired by WalletConnect, it abstracts away the complexity of integrating with different wallets.
 
-### Why CantonConnect?
+### Why PartyLayer?
 
 - **Single Integration**: Connect to all Canton wallets with one SDK
 - **Type-Safe**: Full TypeScript support with strict mode
@@ -50,15 +50,15 @@ Get started in under 3 minutes:
 ### 1. Install
 
 ```bash
-npm install @cantonconnect/sdk @cantonconnect/react
+npm install @partylayer/sdk @partylayer/react
 ```
 
 ### 2. Create Client
 
 ```typescript
-import { createCantonConnect } from '@cantonconnect/sdk';
+import { createPartyLayer } from '@partylayer/sdk';
 
-const client = createCantonConnect({
+const client = createPartyLayer({
   network: 'devnet',
   app: { name: 'My dApp' },
 });
@@ -85,13 +85,13 @@ const signed = await client.signMessage({ message: 'Hello, Canton!' });
 ### 4. React Integration
 
 ```tsx
-import { CantonConnectProvider, WalletModal, useSession } from '@cantonconnect/react';
+import { PartyLayerProvider, WalletModal, useSession } from '@partylayer/react';
 
 function App() {
   return (
-    <CantonConnectProvider client={client}>
+    <PartyLayerProvider client={client}>
       <MyDApp />
-    </CantonConnectProvider>
+    </PartyLayerProvider>
   );
 }
 
@@ -120,24 +120,24 @@ function ConnectButton() {
 
 ```bash
 # npm
-npm install @cantonconnect/sdk
+npm install @partylayer/sdk
 
 # yarn
-yarn add @cantonconnect/sdk
+yarn add @partylayer/sdk
 
 # pnpm
-pnpm add @cantonconnect/sdk
+pnpm add @partylayer/sdk
 ```
 
 ### React Integration
 
 ```bash
-npm install @cantonconnect/sdk @cantonconnect/react
+npm install @partylayer/sdk @partylayer/react
 ```
 
 ### TypeScript
 
-CantonConnect is written in TypeScript and includes type definitions out of the box. No additional `@types` packages needed.
+PartyLayer is written in TypeScript and includes type definitions out of the box. No additional `@types` packages needed.
 
 **Minimum Requirements:**
 - Node.js 18+
@@ -151,11 +151,11 @@ CantonConnect is written in TypeScript and includes type definitions out of the 
 ### Vanilla JavaScript
 
 ```typescript
-import { createCantonConnect } from '@cantonconnect/sdk';
+import { createPartyLayer } from '@partylayer/sdk';
 
 // Initialize
-const client = createCantonConnect({
-  registryUrl: 'https://registry.cantonconnect.xyz',
+const client = createPartyLayer({
+  registryUrl: 'https://registry.partylayer.xyz',
   network: 'devnet',
   app: { name: 'My dApp' },
 });
@@ -195,28 +195,28 @@ await client.disconnect();
 
 ```tsx
 import {
-  CantonConnectProvider,
-  useCantonConnect,
+  PartyLayerProvider,
+  usePartyLayer,
   useSession,
   useWallets,
   useConnect,
   useDisconnect,
   useSignMessage,
   WalletModal,
-} from '@cantonconnect/react';
+} from '@partylayer/react';
 
 // Provider setup
 function App() {
-  const client = useMemo(() => createCantonConnect({
-    registryUrl: 'https://registry.cantonconnect.xyz',
+  const client = useMemo(() => createPartyLayer({
+    registryUrl: 'https://registry.partylayer.xyz',
     network: 'devnet',
     app: { name: 'My dApp' },
   }), []);
 
   return (
-    <CantonConnectProvider client={client}>
+    <PartyLayerProvider client={client}>
       <MyDApp />
-    </CantonConnectProvider>
+    </PartyLayerProvider>
   );
 }
 
@@ -262,16 +262,16 @@ function WalletStatus() {
 // app/providers.tsx
 'use client';
 
-import { CantonConnectProvider } from '@cantonconnect/react';
-import { createCantonConnect } from '@cantonconnect/sdk';
-import { ConsoleAdapter } from '@cantonconnect/adapter-console';
-import { LoopAdapter } from '@cantonconnect/adapter-loop';
+import { PartyLayerProvider } from '@partylayer/react';
+import { createPartyLayer } from '@partylayer/sdk';
+import { ConsoleAdapter } from '@partylayer/adapter-console';
+import { LoopAdapter } from '@partylayer/adapter-loop';
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [client, setClient] = useState<CantonConnectClient | null>(null);
+  const [client, setClient] = useState<PartyLayerClient | null>(null);
 
   useEffect(() => {
-    const cantonClient = createCantonConnect({
+    const cantonClient = createPartyLayer({
       registryUrl: process.env.NEXT_PUBLIC_REGISTRY_URL!,
       network: 'devnet',
       app: { name: 'My Next.js App' },
@@ -288,9 +288,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
   if (!client) return <div>Loading...</div>;
 
   return (
-    <CantonConnectProvider client={client}>
+    <PartyLayerProvider client={client}>
       {children}
-    </CantonConnectProvider>
+    </PartyLayerProvider>
   );
 }
 ```
@@ -300,9 +300,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
 Bron requires OAuth2 configuration and is not auto-registered. Add it manually:
 
 ```typescript
-import { createCantonConnect, BronAdapter, getBuiltinAdapters } from '@cantonconnect/sdk';
+import { createPartyLayer, BronAdapter, getBuiltinAdapters } from '@partylayer/sdk';
 
-const client = createCantonConnect({
+const client = createPartyLayer({
   network: 'devnet',
   app: { name: 'My dApp' },
   adapters: [
@@ -332,7 +332,7 @@ import {
   UserRejectedError,
   SessionExpiredError,
   TimeoutError,
-} from '@cantonconnect/sdk';
+} from '@partylayer/sdk';
 
 try {
   await client.connect({ walletId: 'console' });
@@ -361,11 +361,11 @@ try {
 graph TD
     subgraph dApp[dApp Application]
         A[Your App]
-        B["@cantonconnect/react"]
+        B["@partylayer/react"]
     end
 
-    subgraph SDK[CantonConnect SDK]
-        C["@cantonconnect/sdk"]
+    subgraph SDK[PartyLayer SDK]
+        C["@partylayer/sdk"]
         D[Session Manager]
         E[Event System]
         F[Storage]
@@ -404,25 +404,25 @@ graph TD
 
 | Package | Description |
 |---------|-------------|
-| `@cantonconnect/core` | Core types, errors, and transport abstractions |
-| `@cantonconnect/sdk` | Main SDK with session management and event system |
-| `@cantonconnect/react` | React hooks, provider, and wallet modal |
-| `@cantonconnect/registry-client` | Registry fetching, caching, and validation |
-| `@cantonconnect/adapter-console` | Console Wallet adapter |
-| `@cantonconnect/adapter-loop` | 5N Loop adapter |
-| `@cantonconnect/adapter-cantor8` | Cantor8 adapter |
-| `@cantonconnect/adapter-bron` | Bron adapter |
+| `@partylayer/core` | Core types, errors, and transport abstractions |
+| `@partylayer/sdk` | Main SDK with session management and event system |
+| `@partylayer/react` | React hooks, provider, and wallet modal |
+| `@partylayer/registry-client` | Registry fetching, caching, and validation |
+| `@partylayer/adapter-console` | Console Wallet adapter |
+| `@partylayer/adapter-loop` | 5N Loop adapter |
+| `@partylayer/adapter-cantor8` | Cantor8 adapter |
+| `@partylayer/adapter-bron` | Bron adapter |
 
 ---
 
 ## API Reference
 
-### createCantonConnect
+### createPartyLayer
 
-Creates a new CantonConnect client instance.
+Creates a new PartyLayer client instance.
 
 ```typescript
-const client = createCantonConnect(config: CantonConnectConfig);
+const client = createPartyLayer(config: PartyLayerConfig);
 ```
 
 #### Configuration Options
@@ -431,7 +431,7 @@ const client = createCantonConnect(config: CantonConnectConfig);
 |--------|------|----------|---------|-------------|
 | `network` | `'devnet' \| 'testnet' \| 'mainnet'` | Yes | - | Target network |
 | `app.name` | `string` | Yes | - | Your application name |
-| `registryUrl` | `string` | No | `https://registry.cantonconnect.xyz/v1/wallets.json` | URL of the wallet registry |
+| `registryUrl` | `string` | No | `https://registry.partylayer.xyz/v1/wallets.json` | URL of the wallet registry |
 | `app.origin` | `string` | No | `window.location.origin` | Application origin |
 | `channel` | `'stable' \| 'beta'` | No | `'stable'` | Registry channel |
 | `storage` | `StorageAdapter` | No | `localStorage` | Custom storage adapter |
@@ -456,7 +456,7 @@ const client = createCantonConnect(config: CantonConnectConfig);
 
 | Hook | Description |
 |------|-------------|
-| `useCantonConnect()` | Access the SDK client instance |
+| `usePartyLayer()` | Access the SDK client instance |
 | `useSession()` | Get the current session |
 | `useWallets()` | Get available wallets |
 | `useConnect()` | Connect hook with loading state |
@@ -479,7 +479,7 @@ const client = createCantonConnect(config: CantonConnectConfig);
 
 ## Security
 
-CantonConnect implements several security measures:
+PartyLayer implements several security measures:
 
 ### Origin Binding
 Sessions are bound to the domain that created them, preventing cross-site session hijacking.
@@ -509,7 +509,7 @@ The wallet registry supports cryptographic signatures to prevent tampering.
 
 ```bash
 # Clone the repository
-git clone https://github.com/cayvox/CantonConnect.git
+git clone https://github.com/cayvox/PartyLayer.git
 cd wallet-sdk
 
 # Install dependencies
@@ -606,7 +606,7 @@ Currently supported: Console Wallet, 5N Loop, Cantor8, and Bron. All adapters ar
 <details>
 <summary><strong>Do I need to install wallet adapters separately?</strong></summary>
 
-No! All wallet adapters are bundled with `@cantonconnect/sdk`. Just install the SDK and you're ready to go.
+No! All wallet adapters are bundled with `@partylayer/sdk`. Just install the SDK and you're ready to go.
 </details>
 
 <details>
@@ -618,13 +618,13 @@ Sessions are encrypted and stored in localStorage. On page reload, the SDK attem
 <details>
 <summary><strong>Is the SDK compatible with Next.js?</strong></summary>
 
-Yes! CantonConnect works with Next.js. Use the `'use client'` directive and initialize the client in a `useEffect` hook to ensure it runs only on the client side.
+Yes! PartyLayer works with Next.js. Use the `'use client'` directive and initialize the client in a `useEffect` hook to ensure it runs only on the client side.
 </details>
 
 <details>
 <summary><strong>How do I handle connection errors?</strong></summary>
 
-CantonConnect exports typed error classes. Use `try-catch` with `instanceof` checks to handle specific error types like `WalletNotInstalledError` or `UserRejectedError`.
+PartyLayer exports typed error classes. Use `try-catch` with `instanceof` checks to handle specific error types like `WalletNotInstalledError` or `UserRejectedError`.
 </details>
 
 ---
@@ -643,8 +643,8 @@ CantonConnect exports typed error classes. Use `try-catch` with `instanceof` che
 
 ## Support
 
-- [GitHub Issues](https://github.com/cayvox/CantonConnect/issues) - Bug reports and feature requests
-- [Discussions](https://github.com/cayvox/CantonConnect/discussions) - Questions and community
+- [GitHub Issues](https://github.com/cayvox/PartyLayer/issues) - Bug reports and feature requests
+- [Discussions](https://github.com/cayvox/PartyLayer/discussions) - Questions and community
 
 ---
 
@@ -666,6 +666,6 @@ MIT License - see [LICENSE](./LICENSE) for details.
 
 **Built with ❤️ for the Canton Network ecosystem**
 
-[Website](https://cantonconnect.xyz) | [Documentation](./docs/) | [GitHub](https://github.com/cayvox/CantonConnect)
+[Website](https://partylayer.xyz) | [Documentation](./docs/) | [GitHub](https://github.com/cayvox/PartyLayer)
 
 </div>

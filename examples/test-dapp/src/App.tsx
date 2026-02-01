@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { CantonConnectProvider } from '@cantonconnect/react';
+import { PartyLayerProvider } from '@partylayer/react';
 import { createClient } from './cantonconnect';
-import type { CantonConnectClient } from '@cantonconnect/sdk';
+import type { PartyLayerClient } from '@partylayer/sdk';
 import ConnectButton from './components/ConnectButton';
 import SessionInfo from './components/SessionInfo';
 import RegistryStatus from './components/RegistryStatus';
@@ -10,7 +10,7 @@ import EventLog from './components/EventLog';
 import './App.css';
 
 function App() {
-  const [client, setClient] = useState<CantonConnectClient | null>(null);
+  const [client, setClient] = useState<PartyLayerClient | null>(null);
 
   useEffect(() => {
     // Initialize client only on client side
@@ -28,16 +28,16 @@ function App() {
   if (!client) {
     return (
       <div className="app">
-        <div className="loading">Initializing CantonConnect...</div>
+        <div className="loading">Initializing PartyLayer...</div>
       </div>
     );
   }
 
   return (
-    <CantonConnectProvider client={client}>
+    <PartyLayerProvider client={client}>
       <div className="app">
         <header className="app-header">
-          <h1>CantonConnect Test DApp</h1>
+          <h1>PartyLayer Test DApp</h1>
           <p>Minimal integration example using public API</p>
         </header>
 
@@ -56,7 +56,7 @@ function App() {
           <EventLog />
         </main>
       </div>
-    </CantonConnectProvider>
+    </PartyLayerProvider>
   );
 }
 

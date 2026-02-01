@@ -7,5 +7,5 @@
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",
-  "ignore": ["cantonconnect-demo", "@cantonconnect/registry-server", "cantonconnect-test-dapp"]
+  "ignore": ["cantonconnect-demo", "@partylayer/registry-server", "cantonconnect-test-dapp"]
 }

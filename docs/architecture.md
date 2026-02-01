@@ -1,8 +1,8 @@
-# CantonConnect Architecture
+# PartyLayer Architecture
 
 ## Overview
 
-CantonConnect provides a unified SDK for dApps to connect to multiple Canton Network wallets through a single integration. The architecture is designed to be:
+PartyLayer provides a unified SDK for dApps to connect to multiple Canton Network wallets through a single integration. The architecture is designed to be:
 
 - **Modular**: Separate packages for core, SDK, adapters, and React bindings
 - **Extensible**: Easy to add new wallet adapters
@@ -15,13 +15,13 @@ CantonConnect provides a unified SDK for dApps to connect to multiple Canton Net
 ┌─────────────────────────────────────────────────────────────┐
 │                      dApp Application                       │
 │  ┌──────────────────────────────────────────────────────┐  │
-│  │         @cantonconnect/react (Hooks/UI)              │  │
+│  │         @partylayer/react (Hooks/UI)              │  │
 │  └──────────────────────────────────────────────────────┘  │
 └─────────────────────────────────────────────────────────────┘
                             │
                             ▼
 ┌─────────────────────────────────────────────────────────────┐
-│              @cantonconnect/sdk (Main SDK)                  │
+│              @partylayer/sdk (Main SDK)                  │
 │  ┌──────────────────────────────────────────────────────┐  │
 │  │  Session Management │ Event System │ Storage         │  │
 │  └──────────────────────────────────────────────────────┘  │
@@ -29,7 +29,7 @@ CantonConnect provides a unified SDK for dApps to connect to multiple Canton Net
          │                    │                    │
          ▼                    ▼                    ▼
 ┌─────────────────┐  ┌─────────────────┐  ┌─────────────────┐
-│  @cantonconnect │  │  @cantonconnect │  │  @cantonconnect │
+│  @partylayer │  │  @partylayer │  │  @partylayer │
 │  /core          │  │  /registry-     │  │  /adapters/*    │
 │                 │  │  client        │  │                 │
 │  Types          │  │                 │  │  Console        │
@@ -47,7 +47,7 @@ CantonConnect provides a unified SDK for dApps to connect to multiple Canton Net
 
 ## Package Structure
 
-### `@cantonconnect/core`
+### `@partylayer/core`
 
 Core types, errors, and abstractions used across all packages.
 
@@ -58,7 +58,7 @@ Core types, errors, and abstractions used across all packages.
 - `transport.ts`: Transport abstractions for wallet communication
 - `session.ts`: Session management utilities
 
-### `@cantonconnect/registry-client`
+### `@partylayer/registry-client`
 
 Client for fetching and caching the wallet registry.
 
@@ -68,7 +68,7 @@ Client for fetching and caching the wallet registry.
 - Caches registry with TTL
 - Converts registry entries to WalletMetadata
 
-### `@cantonconnect/sdk`
+### `@partylayer/sdk`
 
 Main SDK implementation that orchestrates wallet connections.
 
@@ -78,7 +78,7 @@ Main SDK implementation that orchestrates wallet connections.
 - Event system for connect/disconnect/transaction updates
 - Connection, signing, and transaction submission flows
 
-### `@cantonconnect/adapters/*`
+### `@partylayer/adapters/*`
 
 Wallet-specific adapter implementations.
 
@@ -90,13 +90,13 @@ Each adapter implements the `WalletAdapter` interface:
 - `submitTransaction()`: Submit signed transactions
 - `restoreSession()`: Restore existing session (if supported)
 
-### `@cantonconnect/react`
+### `@partylayer/react`
 
 React hooks and components for easy integration.
 
 **Exports:**
-- `CantonConnectProvider`: Context provider
-- `useCantonConnect()`: Access SDK instance
+- `PartyLayerProvider`: Context provider
+- `usePartyLayer()`: Access SDK instance
 - `useWallets()`: Get available wallets
 - `useSessions()`: Get active sessions
 - `useConnect()`: Connect hook
@@ -209,7 +209,7 @@ The wallet registry is a versioned JSON document:
     "version": "1.0.0",
     "schemaVersion": "1.0.0",
     "timestamp": 1234567890,
-    "publisher": "CantonConnect",
+    "publisher": "PartyLayer",
     "previousVersion": "0.9.0"
   },
   "wallets": [

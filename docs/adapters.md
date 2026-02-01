@@ -8,7 +8,7 @@ This document describes the contract that all wallet adapters must implement.
 
 ## WalletAdapter Interface
 
-All adapters must implement the `WalletAdapter` interface from `@cantonconnect/core`.
+All adapters must implement the `WalletAdapter` interface from `@partylayer/core`.
 
 ### Required Properties
 
@@ -86,12 +86,12 @@ interface AdapterContext {
 All external errors must be mapped using:
 
 ```typescript
-import { mapUnknownErrorToCantonConnectError } from '@cantonconnect/core';
+import { mapUnknownErrorToPartyLayerError } from '@partylayer/core';
 
 try {
   // Wallet SDK call
 } catch (err) {
-  throw mapUnknownErrorToCantonConnectError(err, {
+  throw mapUnknownErrorToPartyLayerError(err, {
     walletId: this.walletId,
     phase: 'connect', // or 'signMessage', 'signTransaction', etc.
     transport: 'injected', // or 'popup', 'deeplink', 'remote'
@@ -104,7 +104,7 @@ try {
 Use helper functions to check capabilities:
 
 ```typescript
-import { capabilityGuard, installGuard } from '@cantonconnect/core';
+import { capabilityGuard, installGuard } from '@partylayer/core';
 
 // Check installation
 await installGuard(adapter);

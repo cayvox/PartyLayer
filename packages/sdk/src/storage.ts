@@ -3,7 +3,7 @@
  * Stores session metadata (no private keys) with encryption
  */
 
-import type { Session } from '@cantonconnect/core';
+import type { Session } from '@partylayer/core';
 // InvalidSessionError removed - use SessionExpiredError or OriginNotAllowedError instead
 
 /**

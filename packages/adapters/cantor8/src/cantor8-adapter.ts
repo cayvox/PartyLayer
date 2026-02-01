@@ -16,16 +16,16 @@ import type {
   AdapterConnectResult,
   SignMessageParams,
   SignTransactionParams,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 import {
   toWalletId,
   toSignature,
   toTransactionHash,
   UserRejectedError,
-  mapUnknownErrorToCantonConnectError,
+  mapUnknownErrorToPartyLayerError,
   type CapabilityKey,
-} from '@cantonconnect/core';
-import { DeepLinkTransport, MockTransport } from '@cantonconnect/core';
+} from '@partylayer/core';
+import { DeepLinkTransport, MockTransport } from '@partylayer/core';
 import type {
   Cantor8VendorModule,
   Cantor8VendorConfig,
@@ -102,14 +102,14 @@ export class Cantor8Adapter implements WalletAdapter {
     ctx: AdapterContext,
     opts?: {
       timeoutMs?: number;
-      partyId?: import('@cantonconnect/core').PartyId;
+      partyId?: import('@partylayer/core').PartyId;
     }
   ): Promise<AdapterConnectResult> {
     try {
       // Create connect request
       const state = this.generateState();
       const redirectUri = this.vendorConfig.redirectUri || `${ctx.origin}/callback`;
-      const request: import('@cantonconnect/core').ConnectRequest = {
+      const request: import('@partylayer/core').ConnectRequest = {
         appName: ctx.appName,
         origin: ctx.origin,
         network: ctx.network,
@@ -122,7 +122,7 @@ export class Cantor8Adapter implements WalletAdapter {
       const connectUrl = this.vendorModule.createConnectUrl(request, this.vendorConfig);
 
       // Open via transport
-      const transportOptions: import('@cantonconnect/core').TransportOptions = {
+      const transportOptions: import('@partylayer/core').TransportOptions = {
         timeoutMs: opts?.timeoutMs || 60000,
         allowedOrigins: [ctx.origin],
         origin: ctx.origin,
@@ -162,7 +162,7 @@ export class Cantor8Adapter implements WalletAdapter {
         capabilities: (response.capabilities || ['connect', 'signMessage']) as CapabilityKey[],
       };
     } catch (err) {
-      throw mapUnknownErrorToCantonConnectError(err, {
+      throw mapUnknownErrorToPartyLayerError(err, {
         walletId: this.walletId,
         phase: 'connect',
         transport: 'deeplink',
@@ -172,7 +172,7 @@ export class Cantor8Adapter implements WalletAdapter {
 
   disconnect(
     _ctx: AdapterContext,
-    _session: import('@cantonconnect/core').Session
+    _session: import('@partylayer/core').Session
   ): Promise<void> {
     // Cantor8 doesn't have explicit disconnect - session expires naturally
     // Clear any stored session tokens
@@ -184,8 +184,8 @@ export class Cantor8Adapter implements WalletAdapter {
 
   restore(
     _ctx: AdapterContext,
-    persisted: import('@cantonconnect/core').PersistedSession
-  ): Promise<import('@cantonconnect/core').Session | null> {
+    persisted: import('@partylayer/core').PersistedSession
+  ): Promise<import('@partylayer/core').Session | null> {
     // Check if we have a session token
     const sessionToken = persisted.metadata?.sessionToken;
     if (typeof sessionToken !== 'string') {
@@ -207,13 +207,13 @@ export class Cantor8Adapter implements WalletAdapter {
 
   async signMessage(
     ctx: AdapterContext,
-    session: import('@cantonconnect/core').Session,
+    session: import('@partylayer/core').Session,
     params: SignMessageParams
-  ): Promise<import('@cantonconnect/core').SignedMessage> {
+  ): Promise<import('@partylayer/core').SignedMessage> {
     try {
       const state = this.generateState();
       const redirectUri = this.vendorConfig.redirectUri || `${ctx.origin}/callback`;
-      const request: import('@cantonconnect/core').SignRequest = {
+      const request: import('@partylayer/core').SignRequest = {
         message: params.message,
         state,
         redirectUri,
@@ -221,7 +221,7 @@ export class Cantor8Adapter implements WalletAdapter {
 
       const signUrl = this.vendorModule.createSignUrl(request, this.vendorConfig);
 
-      const transportOptions: import('@cantonconnect/core').TransportOptions = {
+      const transportOptions: import('@partylayer/core').TransportOptions = {
         timeoutMs: 60000,
         allowedOrigins: [ctx.origin],
         origin: ctx.origin,
@@ -250,7 +250,7 @@ export class Cantor8Adapter implements WalletAdapter {
         partyId: session.partyId,
       };
     } catch (err) {
-      throw mapUnknownErrorToCantonConnectError(err, {
+      throw mapUnknownErrorToPartyLayerError(err, {
         walletId: this.walletId,
         phase: 'signMessage',
         transport: 'deeplink',
@@ -260,13 +260,13 @@ export class Cantor8Adapter implements WalletAdapter {
 
   async signTransaction(
     ctx: AdapterContext,
-    session: import('@cantonconnect/core').Session,
+    session: import('@partylayer/core').Session,
     params: SignTransactionParams
-  ): Promise<import('@cantonconnect/core').SignedTransaction> {
+  ): Promise<import('@partylayer/core').SignedTransaction> {
     try {
       const state = this.generateState();
       const redirectUri = this.vendorConfig.redirectUri || `${ctx.origin}/callback`;
-      const request: import('@cantonconnect/core').SignRequest = {
+      const request: import('@partylayer/core').SignRequest = {
         transaction: params.tx,
         state,
         redirectUri,
@@ -274,7 +274,7 @@ export class Cantor8Adapter implements WalletAdapter {
 
       const signUrl = this.vendorModule.createSignUrl(request, this.vendorConfig);
 
-      const transportOptions: import('@cantonconnect/core').TransportOptions = {
+      const transportOptions: import('@partylayer/core').TransportOptions = {
         timeoutMs: 60000,
         allowedOrigins: [ctx.origin],
         origin: ctx.origin,
@@ -337,7 +337,7 @@ export class Cantor8Adapter implements WalletAdapter {
         partyId: session.partyId,
       };
     } catch (err) {
-      throw mapUnknownErrorToCantonConnectError(err, {
+      throw mapUnknownErrorToPartyLayerError(err, {
         walletId: this.walletId,
         phase: 'signTransaction',
         transport: 'deeplink',

@@ -27,7 +27,7 @@ cantonconnect-registry add-wallet \
   --channel beta \
   --walletId mywallet \
   --name "My Wallet" \
-  --adapterPackage "@cantonconnect/adapter-mywallet" \
+  --adapterPackage "@partylayer/adapter-mywallet" \
   --adapterRange ">=0.1.0" \
   --homepage "https://mywallet.com" \
   --icon "https://mywallet.com/icon.png" \
@@ -112,7 +112,7 @@ cantonconnect-registry sign --channel stable --key registry/keys/new.key
 Add new public key to `registryPublicKeys` array:
 
 ```typescript
-const client = createCantonConnect({
+const client = createPartyLayer({
   registryPublicKeys: [
     'old-public-key-base64', // Keep for backward compatibility
     'new-public-key-base64', // Add new key

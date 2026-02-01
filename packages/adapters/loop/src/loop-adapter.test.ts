@@ -6,12 +6,12 @@
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { LoopAdapter } from './loop-adapter';
-import type { AdapterContext } from '@cantonconnect/core';
+import type { AdapterContext } from '@partylayer/core';
 import {
   CapabilityNotSupportedError,
   toWalletId,
   toPartyId,
-} from '@cantonconnect/core';
+} from '@partylayer/core';
 
 // Check if we're in a browser environment
 const isBrowser = typeof window !== 'undefined';
@@ -89,13 +89,13 @@ describe('LoopAdapter', () => {
   describe('signTransaction', () => {
     it('should throw CapabilityNotSupportedError', async () => {
       const session = {
-        sessionId: 'test' as import('@cantonconnect/core').SessionId,
+        sessionId: 'test' as import('@partylayer/core').SessionId,
         walletId: toWalletId('loop'),
         partyId: toPartyId('party::test'),
         network: 'devnet',
         createdAt: Date.now(),
         origin: 'https://test.com',
-        capabilitiesSnapshot: [] as import('@cantonconnect/core').CapabilityKey[],
+        capabilitiesSnapshot: [] as import('@partylayer/core').CapabilityKey[],
       };
 
       await expect(

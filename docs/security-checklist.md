@@ -1,6 +1,6 @@
 # Security Checklist for Wallet Providers
 
-**Security requirements for CantonConnect wallet adapters**
+**Security requirements for PartyLayer wallet adapters**
 
 ## State Parameter (Nonce)
 
@@ -110,7 +110,7 @@ try {
   // Wallet operation
 } catch (err) {
   // Map to user-friendly error
-  throw mapUnknownErrorToCantonConnectError(err, {
+  throw mapUnknownErrorToPartyLayerError(err, {
     walletId: this.walletId,
     phase: 'connect',
   });
@@ -229,6 +229,6 @@ const { verifier, challenge } = await generatePKCE();
 
 ## Reporting Security Issues
 
-Report security vulnerabilities to: security@cantonconnect.xyz
+Report security vulnerabilities to: security@partylayer.xyz
 
 Do not disclose vulnerabilities publicly until patched.

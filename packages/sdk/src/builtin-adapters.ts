@@ -1,23 +1,23 @@
 /**
  * Built-in wallet adapters
  * 
- * These adapters are automatically registered when creating a CantonConnect client.
+ * These adapters are automatically registered when creating a PartyLayer client.
  * dApp developers don't need to install or configure these separately.
  */
 
-import type { WalletAdapter } from '@cantonconnect/core';
-import { ConsoleAdapter } from '@cantonconnect/adapter-console';
-import { LoopAdapter } from '@cantonconnect/adapter-loop';
-import { Cantor8Adapter } from '@cantonconnect/adapter-cantor8';
+import type { WalletAdapter } from '@partylayer/core';
+import { ConsoleAdapter } from '@partylayer/adapter-console';
+import { LoopAdapter } from '@partylayer/adapter-loop';
+import { Cantor8Adapter } from '@partylayer/adapter-cantor8';
 
 // Note: BronAdapter requires OAuth config and is not included by default.
-// Import it separately: import { BronAdapter } from '@cantonconnect/adapter-bron';
+// Import it separately: import { BronAdapter } from '@partylayer/adapter-bron';
 
 /**
  * Get all built-in adapters
  * 
  * This function returns instances of all supported wallet adapters.
- * Called automatically by createCantonConnect() unless custom adapters are provided.
+ * Called automatically by createPartyLayer() unless custom adapters are provided.
  * 
  * Included adapters:
  * - ConsoleAdapter: Console Wallet browser extension
@@ -25,7 +25,7 @@ import { Cantor8Adapter } from '@cantonconnect/adapter-cantor8';
  * - Cantor8Adapter: Cantor8 wallet with deep link transport
  * 
  * Note: BronAdapter is NOT included by default because it requires OAuth configuration.
- * To use Bron, install @cantonconnect/adapter-bron and register it manually.
+ * To use Bron, install @partylayer/adapter-bron and register it manually.
  */
 export function getBuiltinAdapters(): WalletAdapter[] {
   return [
@@ -45,9 +45,9 @@ export { ConsoleAdapter, LoopAdapter, Cantor8Adapter };
  * 
  * @example
  * ```typescript
- * import { BronAdapter } from '@cantonconnect/sdk';
+ * import { BronAdapter } from '@partylayer/sdk';
  * 
- * const client = createCantonConnect({
+ * const client = createPartyLayer({
  *   // ... config
  *   adapters: [
  *     ...getBuiltinAdapters(),
@@ -59,5 +59,5 @@ export { ConsoleAdapter, LoopAdapter, Cantor8Adapter };
  * });
  * ```
  */
-export { BronAdapter } from '@cantonconnect/adapter-bron';
-export type { BronAdapterConfig, BronAuthConfig, BronApiConfig } from '@cantonconnect/adapter-bron';
+export { BronAdapter } from '@partylayer/adapter-bron';
+export type { BronAdapterConfig, BronAuthConfig, BronApiConfig } from '@partylayer/adapter-bron';
