@@ -132,7 +132,7 @@ Test various error scenarios:
 ```
 test-dapp/
 ├── src/
-│   ├── cantonconnect.ts      # Client initialization
+│   ├── partylayer.ts         # Client initialization
 │   ├── main.tsx              # React entry point
 │   ├── App.tsx               # Main app component
 │   ├── App.css               # App styles
@@ -178,7 +178,7 @@ This dApp uses **only** the public API:
 ## Integration Example
 
 ```typescript
-// src/cantonconnect.ts
+// src/partylayer.ts
 import { createPartyLayer } from '@partylayer/sdk';
 import { ConsoleAdapter } from '@partylayer/adapter-console';
 import { LoopAdapter } from '@partylayer/adapter-loop';

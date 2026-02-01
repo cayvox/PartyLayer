@@ -196,10 +196,10 @@ See `docs/security-checklist.md` for complete checklist.
 pnpm build
 
 # Run conformance tests
-cantonconnect-conformance run --adapter ./dist
+partylayer-conformance run --adapter ./dist
 
 # View report
-cantonconnect-conformance report --input conformance-report.json
+partylayer-conformance report --input conformance-report.json
 ```
 
 ### Interpreting Results

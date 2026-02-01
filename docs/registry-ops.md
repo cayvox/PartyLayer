@@ -23,7 +23,7 @@ This guide covers how to safely update, promote, and rollback the wallet registr
 
 ```bash
 # Add to beta first (staged rollout)
-cantonconnect-registry add-wallet \
+partylayer-registry add-wallet \
   --channel beta \
   --walletId mywallet \
   --name "My Wallet" \
@@ -35,57 +35,57 @@ cantonconnect-registry add-wallet \
   --key registry/keys/dev.key
 
 # Verify
-cantonconnect-registry verify --channel beta --pubkey registry/keys/dev.pub
+partylayer-registry verify --channel beta --pubkey registry/keys/dev.pub
 
 # Check status
-cantonconnect-registry print-status --channel beta
+partylayer-registry print-status --channel beta
 ```
 
 ### Promote from Beta to Stable
 
 ```bash
 # Promote beta registry to stable
-cantonconnect-registry promote \
+partylayer-registry promote \
   --from beta \
   --to stable \
   --key registry/keys/dev.key
 
 # Verify stable
-cantonconnect-registry verify --channel stable --pubkey registry/keys/dev.pub
+partylayer-registry verify --channel stable --pubkey registry/keys/dev.pub
 ```
 
 ### Update Existing Wallet
 
 ```bash
-cantonconnect-registry update-wallet \
+partylayer-registry update-wallet \
   --channel stable \
   --walletId mywallet \
   --name "Updated Wallet Name" \
   --homepage "https://newurl.com"
 
 # Sign after update
-cantonconnect-registry sign --channel stable --key registry/keys/dev.key
+partylayer-registry sign --channel stable --key registry/keys/dev.key
 ```
 
 ### Remove Wallet
 
 ```bash
-cantonconnect-registry remove-wallet \
+partylayer-registry remove-wallet \
   --channel stable \
   --walletId deprecated-wallet
 
 # Sign after removal
-cantonconnect-registry sign --channel stable --key registry/keys/dev.key
+partylayer-registry sign --channel stable --key registry/keys/dev.key
 ```
 
 ### Bump Sequence (Force Refresh)
 
 ```bash
 # Increment sequence without changing wallets
-cantonconnect-registry bump-sequence --channel stable
+partylayer-registry bump-sequence --channel stable
 
 # Sign
-cantonconnect-registry sign --channel stable --key registry/keys/dev.pub
+partylayer-registry sign --channel stable --key registry/keys/dev.pub
 ```
 
 ## Key Rotation
@@ -101,10 +101,10 @@ pnpm registry:sign --generate-key
 
 ```bash
 # Sign with old key
-cantonconnect-registry sign --channel stable --key registry/keys/old.key
+partylayer-registry sign --channel stable --key registry/keys/old.key
 
 # Sign with new key (overwrites)
-cantonconnect-registry sign --channel stable --key registry/keys/new.key
+partylayer-registry sign --channel stable --key registry/keys/new.key
 ```
 
 ### 3. Update SDK Configs
@@ -149,10 +149,10 @@ git checkout HEAD~1 -- registry/v1/stable/registry.json
 # Edit metadata.sequence if needed
 
 # Sign with current key
-cantonconnect-registry sign --channel stable --key registry/keys/dev.key
+partylayer-registry sign --channel stable --key registry/keys/dev.key
 
 # Verify
-cantonconnect-registry verify --channel stable --pubkey registry/keys/dev.pub
+partylayer-registry verify --channel stable --pubkey registry/keys/dev.pub
 ```
 
 ### 3. SDK Behavior
@@ -166,7 +166,7 @@ cantonconnect-registry verify --channel stable --pubkey registry/keys/dev.pub
 
 1. **Add to Beta**:
    ```bash
-   cantonconnect-registry add-wallet --channel beta ...
+   partylayer-registry add-wallet --channel beta ...
    ```
 
 2. **Monitor Beta Usage**:
@@ -176,7 +176,7 @@ cantonconnect-registry verify --channel stable --pubkey registry/keys/dev.pub
 
 3. **Promote to Stable**:
    ```bash
-   cantonconnect-registry promote --from beta --to stable --key ...
+   partylayer-registry promote --from beta --to stable --key ...
    ```
 
 4. **Monitor Stable**:

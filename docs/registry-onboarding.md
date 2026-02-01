@@ -90,7 +90,7 @@ If your wallet supports origin allowlist:
 ### Step 1: Add to Beta Registry
 
 ```bash
-cantonconnect-registry add-wallet \
+partylayer-registry add-wallet \
   --channel beta \
   --walletId mywallet \
   --name "My Wallet" \
@@ -112,7 +112,7 @@ cd packages/adapters/mywallet
 pnpm build
 
 # Run conformance
-cantonconnect-conformance run --adapter ./dist
+partylayer-conformance run --adapter ./dist
 
 # Verify all tests pass
 ```
@@ -120,7 +120,7 @@ cantonconnect-conformance run --adapter ./dist
 ### Step 3: Sign Registry
 
 ```bash
-cantonconnect-registry sign \
+partylayer-registry sign \
   --channel beta \
   --key ./registry/keys/dev-private.pem
 ```
@@ -128,7 +128,7 @@ cantonconnect-registry sign \
 ### Step 4: Verify Registry
 
 ```bash
-cantonconnect-registry verify \
+partylayer-registry verify \
   --channel beta \
   --pubkey ./registry/keys/dev-public.pem
 ```
@@ -138,7 +138,7 @@ cantonconnect-registry verify \
 After beta testing period:
 
 ```bash
-cantonconnect-registry promote \
+partylayer-registry promote \
   --from beta \
   --to stable \
   --key ./registry/keys/dev-private.pem
@@ -167,7 +167,7 @@ cantonconnect-registry promote \
 
 3. Sign registry with new key:
    ```bash
-   cantonconnect-registry sign --channel stable --key new-private.pem
+   partylayer-registry sign --channel stable --key new-private.pem
    ```
 
 4. After transition period, remove old key from config.
@@ -178,15 +178,15 @@ If a bad registry is published:
 
 1. **Identify last-known-good sequence**:
    ```bash
-   cantonconnect-registry print-status --channel stable
+   partylayer-registry print-status --channel stable
    ```
 
 2. **Restore from cache** (SDK automatically uses last-known-good)
 
 3. **Fix registry** and publish with higher sequence:
    ```bash
-   cantonconnect-registry bump-sequence --channel stable
-   cantonconnect-registry sign --channel stable --key private.pem
+   partylayer-registry bump-sequence --channel stable
+   partylayer-registry sign --channel stable --key private.pem
    ```
 
 ## Required Fields Checklist
@@ -214,5 +214,5 @@ If a bad registry is published:
 
 ## Support
 
-- Registry CLI: `cantonconnect-registry --help`
+- Registry CLI: `partylayer-registry --help`
 - Security: security@partylayer.xyz
