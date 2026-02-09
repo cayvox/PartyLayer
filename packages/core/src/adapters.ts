@@ -91,10 +91,45 @@ export interface LoggerAdapter {
 
 /**
  * Telemetry interface
+ * 
+ * Extended in 0.3.0 with optional metrics methods.
+ * All new methods are optional to maintain backward compatibility.
  */
 export interface TelemetryAdapter {
+  /** Track a named event with optional properties */
   track(event: string, properties?: Record<string, unknown>): void;
+  
+  /** Track an error occurrence */
   error(error: Error, properties?: Record<string, unknown>): void;
+  
+  /**
+   * Increment a metric counter
+   * @param metric - Metric name (e.g., 'wallet_connect_attempts')
+   * @param value - Value to increment by (default: 1)
+   * @since 0.3.0
+   */
+  increment?(metric: string, value?: number): void;
+  
+  /**
+   * Set a gauge metric value
+   * @param metric - Metric name
+   * @param value - Current value
+   * @since 0.3.0
+   */
+  gauge?(metric: string, value: number): void;
+  
+  /**
+   * Flush buffered metrics to backend
+   * @since 0.3.0
+   */
+  flush?(): Promise<void>;
+  
+  /**
+   * Check if telemetry is enabled
+   * @returns true if telemetry should be collected
+   * @since 0.3.0
+   */
+  isEnabled?(): boolean;
 }
 
 /**

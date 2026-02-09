@@ -17,6 +17,61 @@ import type {
 export const DEFAULT_REGISTRY_URL = 'https://registry.partylayer.xyz';
 
 /**
+ * Telemetry configuration for opt-in metrics collection
+ * 
+ * @since 0.3.0
+ */
+export interface TelemetryConfig {
+  /** 
+   * Enable telemetry collection
+   * @default false
+   */
+  enabled: boolean;
+  
+  /** 
+   * Metrics backend endpoint URL
+   * If not provided, metrics are collected but not sent
+   */
+  endpoint?: string;
+  
+  /**
+   * Sampling rate (0.0 to 1.0)
+   * @default 1.0 (100% of events)
+   */
+  sampleRate?: number;
+  
+  /**
+   * Application identifier (will be hashed for privacy)
+   * Used to calculate Monthly Active dApps (MAD)
+   */
+  appId?: string;
+  
+  /**
+   * Include hashed origin in metrics
+   * @default false
+   */
+  includeOrigin?: boolean;
+  
+  /**
+   * Number of events to buffer before sending
+   * @default 10
+   */
+  batchSize?: number;
+  
+  /**
+   * Interval to flush metrics in milliseconds
+   * @default 30000 (30 seconds)
+   */
+  flushIntervalMs?: number;
+  
+  /**
+   * Network to include in metrics
+   * If not provided, uses the SDK's configured network
+   */
+  network?: NetworkId;
+}
+
+/**
  * Adapter class type (for instantiation)
  */
 export type AdapterClass = new () => WalletAdapter;
@@ -80,8 +135,17 @@ export interface PartyLayerConfig {
   crypto?: CryptoAdapter;
   /** Registry public keys for signature verification (ed25519) */
   registryPublicKeys?: string[];
-  /** Telemetry adapter (optional) */
-  telemetry?: TelemetryAdapter;
+  /** 
+   * Telemetry configuration or adapter
+   * 
+   * Can be either:
+   * - TelemetryConfig object for built-in metrics collection
+   * - TelemetryAdapter instance for custom telemetry
+   * 
+   * @default undefined (telemetry disabled)
+   * @since 0.3.0 - Added TelemetryConfig support
+   */
+  telemetry?: TelemetryAdapter | TelemetryConfig;
   /** Logger adapter (optional) */
   logger?: LoggerAdapter;
   /** Application metadata */

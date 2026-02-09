@@ -95,3 +95,55 @@ export type {
   BronAuthConfig,
   BronApiConfig,
 } from './builtin-adapters';
+
+// Telemetry and metrics (0.3.0+)
+export type { TelemetryConfig } from './config';
+export {
+  MetricsTelemetryAdapter,
+  createTelemetryAdapter,
+  isTelemetryConfig,
+} from './metrics-telemetry';
+
+// Re-export metrics constants from core
+export {
+  METRICS,
+  ENABLEMENT_METRICS,
+  ERROR_METRICS,
+  REGISTRY_METRICS,
+  errorMetricName,
+} from '@partylayer/core';
+export type { MetricName, MetricsPayload } from '@partylayer/core';
+
+// CIP-0103 Provider support
+export {
+  createProviderBridge,
+  PartyLayerProvider,
+  ProviderRpcError,
+  RPC_ERRORS,
+  JSON_RPC_ERRORS,
+  discoverInjectedProviders,
+  waitForProvider,
+  isCIP0103Provider,
+  CIP0103EventBus,
+  toCAIP2Network,
+  fromCAIP2Network,
+  isValidCAIP2,
+  CANTON_NETWORKS,
+  CIP0103_METHODS,
+  CIP0103_MANDATORY_METHODS,
+  CIP0103_EVENTS,
+} from '@partylayer/provider';
+
+export type {
+  CIP0103Provider,
+  CIP0103ConnectResult,
+  CIP0103StatusEvent,
+  CIP0103Account,
+  CIP0103Network,
+  CIP0103TxChangedEvent,
+  CIP0103TxStatus,
+  CIP0103Method,
+  CIP0103Event,
+  DiscoveredProvider,
+  PartyLayerProviderOptions,
+} from '@partylayer/provider';

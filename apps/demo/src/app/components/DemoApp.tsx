@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import {
   useWallets,
   useSession,
@@ -10,6 +10,7 @@ import {
   WalletModal,
 } from '@partylayer/react';
 import type { WalletInfo } from '@partylayer/sdk';
+import { useTelemetry } from '../context/TelemetryContext';
 
 export function DemoApp() {
   const { wallets, isLoading: walletsLoading } = useWallets();
@@ -20,6 +21,18 @@ export function DemoApp() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [message, setMessage] = useState('Hello, Canton!');
   const [signature, setSignature] = useState<string | null>(null);
+  const [metricsDisplay, setMetricsDisplay] = useState<Record<string, number>>({});
+  
+  // Telemetry context
+  const { telemetryEnabled, onToggle, getMetrics } = useTelemetry();
+  
+  // Update metrics display every second
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setMetricsDisplay(getMetrics());
+    }, 1000);
+    return () => clearInterval(interval);
+  }, [getMetrics]);
 
   const handleSignMessage = async () => {
     if (!session) return;
@@ -216,6 +229,60 @@ export function DemoApp() {
           setIsModalOpen(false);
         }}
       />
+
+      {/* Telemetry Metrics Panel */}
+      <div style={{ 
+        marginTop: '24px', 
+        padding: '16px', 
+        backgroundColor: '#f0f8ff', 
+        borderRadius: '8px',
+        border: '1px solid #007bff'
+      }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '12px' }}>
+          <h2 style={{ margin: 0 }}>Telemetry Metrics</h2>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+            <input 
+              type="checkbox" 
+              checked={telemetryEnabled} 
+              onChange={onToggle}
+              style={{ width: '18px', height: '18px' }}
+            />
+            <span>{telemetryEnabled ? 'Enabled' : 'Disabled'}</span>
+          </label>
+        </div>
+        
+        {telemetryEnabled ? (
+          <div>
+            <p style={{ fontSize: '12px', color: '#666', marginBottom: '12px' }}>
+              Metrics are collected locally. Endpoint: {process.env.NEXT_PUBLIC_METRICS_ENDPOINT || 'Not configured'}
+            </p>
+            {Object.keys(metricsDisplay).length === 0 ? (
+              <p style={{ color: '#666', fontStyle: 'italic' }}>No metrics collected yet. Try connecting to a wallet.</p>
+            ) : (
+              <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '14px' }}>
+                <thead>
+                  <tr style={{ borderBottom: '1px solid #ccc' }}>
+                    <th style={{ textAlign: 'left', padding: '8px' }}>Metric</th>
+                    <th style={{ textAlign: 'right', padding: '8px' }}>Value</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(metricsDisplay).map(([name, value]) => (
+                    <tr key={name} style={{ borderBottom: '1px solid #eee' }}>
+                      <td style={{ padding: '8px', fontFamily: 'monospace' }}>{name}</td>
+                      <td style={{ padding: '8px', textAlign: 'right', fontWeight: 'bold' }}>{value}</td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+          </div>
+        ) : (
+          <p style={{ color: '#666' }}>
+            Enable telemetry to see SDK metrics. Metrics are privacy-safe and do not contain any PII.
+          </p>
+        )}
+      </div>
     </div>
   );
 }

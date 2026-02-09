@@ -49,6 +49,8 @@ import {
   DefaultTelemetry,
 } from './adapters';
 import { getBuiltinAdapters } from './builtin-adapters';
+import { createTelemetryAdapter } from './metrics-telemetry';
+import { METRICS, errorMetricName } from '@partylayer/core';
 import type {
   SignMessageParams,
   SignTransactionParams,
@@ -88,7 +90,10 @@ export class PartyLayerClient {
     this.logger = config.logger || new DefaultLogger();
     this.crypto = config.crypto || new DefaultCrypto();
     this.storage = config.storage || new DefaultStorage();
-    this.telemetry = config.telemetry || new DefaultTelemetry();
+    
+    // Initialize telemetry - supports both TelemetryAdapter and TelemetryConfig
+    const telemetryAdapter = createTelemetryAdapter(config.telemetry);
+    this.telemetry = telemetryAdapter || new DefaultTelemetry();
 
     // Register wallet adapters
     // If no adapters provided, use all built-in adapters (Console, Loop, etc.)
@@ -189,6 +194,9 @@ export class PartyLayerClient {
    * Connect to a wallet
    */
   async connect(options?: ConnectOptions): Promise<Session> {
+    // Track connect attempt
+    this.telemetry?.increment?.(METRICS.WALLET_CONNECT_ATTEMPTS);
+    
     try {
       // Get available wallets
       const wallets = await this.listWallets({
@@ -307,6 +315,10 @@ export class PartyLayerClient {
 
       // Update registry status (may have changed during fetch)
       this.updateRegistryStatus();
+
+      // Track successful connection
+      this.telemetry?.increment?.(METRICS.WALLET_CONNECT_SUCCESS);
+      this.telemetry?.increment?.(METRICS.SESSIONS_CREATED);
 
       // Emit event
       this.emit('session:connected', {
@@ -525,9 +537,40 @@ export class PartyLayerClient {
   }
 
   /**
+   * Get a CIP-0103 Provider backed by this client.
+   *
+   * This is the backward-compatibility bridge. The returned Provider
+   * routes all request() calls through the existing PartyLayerClient
+   * methods and maps events to CIP-0103 format.
+   *
+   * **Limitations** (bridge path only):
+   * - Async wallets (userUrl pattern) are not supported. The bridge always
+   *   returns `{ isConnected: true }` from `connect()` without async flow.
+   *   For async wallet support, use `PartyLayerProvider` directly.
+   * - `ledgerApi` method throws UNSUPPORTED_METHOD (not available via legacy SDK).
+   * - `txChanged` events for `executed` state use best-effort payload values
+   *   (`updateId` set to commandId, `completionOffset` set to 0).
+   * - `signed` transaction state is never emitted (legacy SDK has no signed state).
+   *
+   * @returns CIP-0103 compliant Provider
+   */
+  asProvider(): import('@partylayer/core').CIP0103Provider {
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
+    const { createProviderBridge } = require('@partylayer/provider') as typeof import('@partylayer/provider');
+    return createProviderBridge(this);
+  }
+
+  /**
    * Destroy client and cleanup
    */
   destroy(): void {
+    // Flush and destroy telemetry if it supports it
+    if (this.telemetry && 'destroy' in this.telemetry && typeof this.telemetry.destroy === 'function') {
+      (this.telemetry as { destroy: () => void }).destroy();
+    } else if (this.telemetry?.flush) {
+      this.telemetry.flush().catch(() => {});
+    }
+    
     this.eventHandlers.clear();
     this.activeSession = null;
   }
@@ -586,6 +629,9 @@ export class PartyLayerClient {
    * Restore session from storage
    */
   private async restoreSession(): Promise<Session | null> {
+    // Track restore attempt
+    this.telemetry?.increment?.(METRICS.RESTORE_ATTEMPTS);
+    
     try {
       const encrypted = await this.storage.get('active_session');
       if (!encrypted) {
@@ -619,6 +665,11 @@ export class PartyLayerClient {
           this.activeSession = restored;
           // Persist restored session (may have updated metadata)
           await this.persistSession(restored);
+          
+          // Track successful restore
+          this.telemetry?.increment?.(METRICS.SESSIONS_RESTORED);
+          this.telemetry?.increment?.(METRICS.WALLET_CONNECT_SUCCESS);
+          
           // Emit session:connected event with reason="restore"
           this.emit('session:connected', {
             type: 'session:connected',
@@ -652,6 +703,16 @@ export class PartyLayerClient {
   private updateRegistryStatus(): void {
     const status = this.registryClient.getStatus();
     if (status) {
+      // Track registry metrics
+      if (status.source === 'network') {
+        this.telemetry?.increment?.(METRICS.REGISTRY_FETCH);
+      } else if (status.source === 'cache') {
+        this.telemetry?.increment?.(METRICS.REGISTRY_CACHE_HIT);
+      }
+      if (status.stale) {
+        this.telemetry?.increment?.(METRICS.REGISTRY_STALE);
+      }
+      
       this.emit('registry:status', {
         type: 'registry:status',
         status: {
@@ -682,6 +743,14 @@ export class PartyLayerClient {
     event: T['type'],
     payload: T
   ): void {
+    // Track error metrics
+    if (event === 'error' && 'error' in payload) {
+      const error = payload.error as { code?: string };
+      if (error.code) {
+        this.telemetry?.increment?.(errorMetricName(error.code));
+      }
+    }
+    
     const handlers = this.eventHandlers.get(event);
     if (handlers) {
       for (const handler of handlers) {

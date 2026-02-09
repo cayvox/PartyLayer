@@ -50,3 +50,7 @@ temp/
 artifacts/
 fixtures/registry/tampered/
 fixtures/registry/downgrade/
+
+# Internal documentation (not for public)
+PROJECT_OVERVIEW.md
+CHATGPT_BRIEF.md

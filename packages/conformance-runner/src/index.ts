@@ -86,4 +86,31 @@ program
     }
   });
 
+program
+  .command('run-cip0103')
+  .description('Run CIP-0103 conformance tests against a Provider')
+  .option('--output <path>', 'Output JSON report path', 'cip0103-report.json')
+  .action(async (options) => {
+    try {
+      const { runCIP0103ConformanceTests, formatCIP0103Report } = await import('./cip0103-tests');
+      const { PartyLayerProvider } = await import('@partylayer/provider');
+
+      console.log('Running CIP-0103 conformance tests...');
+
+      const provider = new PartyLayerProvider();
+      const report = await runCIP0103ConformanceTests(provider);
+
+      writeFileSync(options.output, JSON.stringify(report, null, 2));
+      console.log(`\nReport written to: ${options.output}`);
+      console.log('\n' + formatCIP0103Report(report));
+
+      if (report.failed > 0) {
+        process.exit(1);
+      }
+    } catch (err) {
+      console.error('Error running CIP-0103 conformance tests:', err);
+      process.exit(1);
+    }
+  });
+
 program.parse();

@@ -1,9 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { PartyLayerProvider } from '@partylayer/react';
-import { createPartyLayer } from '@partylayer/sdk';
-import type { PartyLayerClient } from '@partylayer/sdk';
+import { createPartyLayer, MetricsTelemetryAdapter } from '@partylayer/sdk';
+import type { PartyLayerClient, TelemetryConfig } from '@partylayer/sdk';
 import { ConsoleAdapter } from '@partylayer/adapter-console';
 import { LoopAdapter } from '@partylayer/adapter-loop';
 import { Cantor8Adapter } from '@partylayer/adapter-cantor8';
@@ -16,10 +16,39 @@ import { DemoApp } from './components/DemoApp';
  */
 function PartyLayerWrapper({ children }: { children: React.ReactNode }) {
   const [client, setClient] = useState<PartyLayerClient | null>(null);
+  const [telemetryEnabled, setTelemetryEnabled] = useState(false);
+  const [telemetryAdapter, setTelemetryAdapter] = useState<MetricsTelemetryAdapter | null>(null);
+
+  // Toggle telemetry handler
+  const handleTelemetryToggle = useCallback(() => {
+    setTelemetryEnabled((prev) => !prev);
+  }, []);
+
+  // Get current metrics for display
+  const getMetrics = useCallback(() => {
+    if (telemetryAdapter) {
+      return telemetryAdapter.getMetrics();
+    }
+    return {};
+  }, [telemetryAdapter]);
 
   useEffect(() => {
     // Only run on client side
     if (typeof window === 'undefined') return;
+
+    // Create telemetry config
+    const telemetryConfig: TelemetryConfig = {
+      enabled: telemetryEnabled,
+      endpoint: process.env.NEXT_PUBLIC_METRICS_ENDPOINT,
+      appId: 'partylayer-demo',
+      network: (process.env.NEXT_PUBLIC_NETWORK as 'devnet' | 'testnet' | 'mainnet') || 'devnet',
+      batchSize: 10,
+      flushIntervalMs: 30000,
+    };
+
+    // Create telemetry adapter for debugging
+    const adapter = new MetricsTelemetryAdapter(telemetryConfig);
+    setTelemetryAdapter(adapter);
 
     // Create PartyLayer client using public API
     const cantonClient = createPartyLayer({
@@ -35,6 +64,7 @@ function PartyLayerWrapper({ children }: { children: React.ReactNode }) {
         name: 'PartyLayer Demo',
         origin: typeof window !== 'undefined' ? window.location.origin : undefined,
       },
+      telemetry: adapter,
     });
 
     // Register adapters only on client side
@@ -64,9 +94,10 @@ function PartyLayerWrapper({ children }: { children: React.ReactNode }) {
 
     // Cleanup on unmount
     return () => {
+      adapter.destroy();
       cantonClient.destroy();
     };
-  }, []);
+  }, [telemetryEnabled]);
 
   if (!client) {
     return (
@@ -77,9 +108,21 @@ function PartyLayerWrapper({ children }: { children: React.ReactNode }) {
   }
 
   return (
-    <PartyLayerProvider client={client}>{children}</PartyLayerProvider>
+    <PartyLayerProvider client={client}>
+      {/* Pass telemetry state and handlers to children */}
+      <TelemetryContext.Provider value={{ 
+        telemetryEnabled, 
+        onToggle: handleTelemetryToggle, 
+        getMetrics 
+      }}>
+        {children}
+      </TelemetryContext.Provider>
+    </PartyLayerProvider>
   );
 }
+
+// Import TelemetryContext from separate file
+import { TelemetryContext } from './context/TelemetryContext';
 
 export default function Home() {
   return (
