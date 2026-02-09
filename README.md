@@ -11,7 +11,7 @@ Connect your dApp to multiple Canton wallets with a single integration.
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=flat-square)](./LICENSE)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](./CONTRIBUTING.md)
 
-[Quick Start](#quick-start) | [Documentation](#documentation) | [Examples](#usage-examples) | [API Reference](#api-reference) | [Contributing](#contributing)
+[Quick Start](#quick-start) | [CIP-0103](#cip-0103-canton-dapp-standard-compliance) | [Documentation](#documentation) | [Examples](#usage-examples) | [API Reference](#api-reference) | [Contributing](#contributing)
 
 </div>
 
@@ -23,6 +23,7 @@ PartyLayer is a production-grade SDK that enables decentralized applications (dA
 
 ### Why PartyLayer?
 
+- **CIP-0103 Compliant**: Implements the Canton dApp Standard for wallet-dApp communication
 - **Single Integration**: Connect to all Canton wallets with one SDK
 - **Type-Safe**: Full TypeScript support with strict mode
 - **React Ready**: First-class React hooks and components
@@ -404,10 +405,12 @@ graph TD
 
 | Package | Description |
 |---------|-------------|
-| `@partylayer/core` | Core types, errors, and transport abstractions |
+| `@partylayer/core` | Core types, errors, transport abstractions, and CIP-0103 type definitions |
 | `@partylayer/sdk` | Main SDK with session management and event system |
+| `@partylayer/provider` | CIP-0103 native Provider, bridge, wallet discovery, and error model |
 | `@partylayer/react` | React hooks, provider, and wallet modal |
 | `@partylayer/registry-client` | Registry fetching, caching, and validation |
+| `@partylayer/conformance-runner` | CLI for adapter and CIP-0103 conformance testing |
 | `@partylayer/adapter-console` | Console Wallet adapter |
 | `@partylayer/adapter-loop` | 5N Loop adapter |
 | `@partylayer/adapter-cantor8` | Cantor8 adapter |
@@ -498,6 +501,166 @@ The wallet registry supports cryptographic signatures to prevent tampering.
 
 ---
 
+## CIP-0103 (Canton dApp Standard) Compliance
+
+PartyLayer implements [CIP-0103](https://www.canton.network/cip-0103), the Canton dApp Standard for wallet-dApp communication. The `@partylayer/provider` package provides a spec-compliant Provider interface.
+
+### Provider Model
+
+PartyLayer offers two paths to CIP-0103 compliance:
+
+**Native Provider** (`PartyLayerProvider`) — wraps any CIP-0103-compliant wallet provider (e.g. `window.canton.*`). This is the recommended path for new integrations.
+
+```typescript
+import { PartyLayerProvider, discoverInjectedProviders } from '@partylayer/provider';
+
+// Discover injected CIP-0103 wallets
+const wallets = discoverInjectedProviders();
+
+// Create a Provider backed by a native wallet
+const provider = new PartyLayerProvider({ wallet: wallets[0].provider });
+```
+
+**Legacy Bridge** (`createProviderBridge`) — wraps an existing `PartyLayerClient` instance as a CIP-0103 Provider. Use this for backward compatibility with the adapter-based SDK.
+
+```typescript
+import { createPartyLayer } from '@partylayer/sdk';
+
+const client = createPartyLayer({ network: 'devnet', app: { name: 'My dApp' } });
+const provider = client.asProvider();
+```
+
+### CIP-0103 Methods
+
+All 10 mandatory methods are implemented on both paths:
+
+| Method | Description |
+|--------|-------------|
+| `connect` | Establish wallet connection |
+| `disconnect` | Close wallet connection |
+| `isConnected` | Check connection status |
+| `status` | Get full provider status (connection, identity, network, session) |
+| `getActiveNetwork` | Get active network as a CAIP-2 identifier |
+| `listAccounts` | List available accounts |
+| `getPrimaryAccount` | Get the primary account |
+| `signMessage` | Sign an arbitrary message |
+| `prepareExecute` | Prepare and submit a transaction |
+| `ledgerApi` | Proxy Ledger API requests (native path only) |
+
+### Usage Example
+
+```typescript
+import { PartyLayerProvider } from '@partylayer/provider';
+
+const provider = new PartyLayerProvider({ wallet: nativeWallet });
+
+// Connect
+const result = await provider.request({ method: 'connect' });
+console.log(result.isConnected); // true
+
+// Listen for status changes
+provider.on('statusChanged', (status) => {
+  console.log('Connection:', status.connection.isConnected);
+  console.log('Network:', status.network?.networkId);
+});
+
+// Listen for transaction lifecycle
+provider.on('txChanged', (event) => {
+  switch (event.status) {
+    case 'pending':  console.log('Tx pending:', event.commandId); break;
+    case 'executed': console.log('Tx executed:', event.payload.updateId); break;
+    case 'failed':   console.log('Tx failed:', event.commandId); break;
+  }
+});
+
+// Sign a message
+const signature = await provider.request({
+  method: 'signMessage',
+  params: { message: 'Hello, Canton!' },
+});
+
+// Prepare and execute a transaction
+await provider.request({
+  method: 'prepareExecute',
+  params: { /* transaction payload */ },
+});
+```
+
+### Sync and Async Wallet Support
+
+The native `PartyLayerProvider` supports both synchronous and asynchronous wallet flows:
+
+- **Sync wallets** return results immediately from `connect()` and `prepareExecute()`.
+- **Async wallets** (e.g. mobile wallets with QR codes) return a `userUrl` from `connect()`. The Provider handles the async flow automatically: it opens the URL, waits for the `connected` event, and resolves the Promise when the wallet confirms.
+
+> **Note**: The legacy bridge (`client.asProvider()`) only supports synchronous wallets. For async wallet flows, use the native `PartyLayerProvider` directly.
+
+### Error Model
+
+The CIP-0103 Provider uses `ProviderRpcError` with standard numeric error codes from EIP-1193 and EIP-1474:
+
+**EIP-1193 (Provider) Codes:**
+
+| Code | Name | Description |
+|------|------|-------------|
+| 4001 | User Rejected | User rejected the request |
+| 4100 | Unauthorized | Not authorized for this operation |
+| 4200 | Unsupported Method | Method not supported by this provider |
+| 4900 | Disconnected | Provider is disconnected |
+| 4901 | Chain Disconnected | Provider is disconnected from the requested chain |
+
+**EIP-1474 (JSON-RPC) Codes:**
+
+| Code | Name | Description |
+|------|------|-------------|
+| -32700 | Parse Error | Invalid JSON |
+| -32600 | Invalid Request | Request object is invalid |
+| -32601 | Method Not Found | Method does not exist |
+| -32602 | Invalid Params | Invalid method parameters |
+| -32603 | Internal Error | Internal provider error |
+| -32000 | Invalid Input | Missing or invalid parameter |
+| -32001 | Resource Not Found | Requested resource not found |
+| -32002 | Resource Unavailable | Requested resource is not available |
+| -32003 | Transaction Rejected | Transaction was rejected |
+| -32004 | Method Not Supported | Method is not implemented |
+| -32005 | Limit Exceeded | Rate or resource limit exceeded |
+
+```typescript
+import { ProviderRpcError, RPC_ERRORS } from '@partylayer/provider';
+
+try {
+  await provider.request({ method: 'signMessage', params: { message: 'test' } });
+} catch (err) {
+  if (err instanceof ProviderRpcError) {
+    switch (err.code) {
+      case RPC_ERRORS.USER_REJECTED:
+        console.log('User declined');
+        break;
+      case RPC_ERRORS.DISCONNECTED:
+        console.log('Not connected');
+        break;
+      default:
+        console.log(`Error ${err.code}: ${err.message}`);
+    }
+  }
+}
+```
+
+### Conformance Testing
+
+The `@partylayer/conformance-runner` package validates CIP-0103 compliance for any Provider implementation:
+
+```typescript
+import { runCIP0103ConformanceTests, formatCIP0103Report } from '@partylayer/conformance-runner';
+
+const report = await runCIP0103ConformanceTests(provider);
+console.log(formatCIP0103Report(report));
+// ═══ CIP-0103 Conformance Report ═══
+// Total: 18  Passed: 18  Failed: 0
+```
+
+---
+
 ## Development
 
 ### Prerequisites
@@ -509,8 +672,8 @@ The wallet registry supports cryptographic signatures to prevent tampering.
 
 ```bash
 # Clone the repository
-git clone https://github.com/cayvox/PartyLayer.git
-cd wallet-sdk
+git clone https://github.com/anilkaracay/partylayer.git
+cd partylayer
 
 # Install dependencies
 pnpm install
@@ -546,10 +709,12 @@ pnpm clean
 ```
 wallet-sdk/
 ├── packages/
-│   ├── core/              # Core types and abstractions
+│   ├── core/              # Core types, errors, and CIP-0103 type definitions
 │   ├── sdk/               # Main SDK implementation
+│   ├── provider/          # CIP-0103 native Provider and bridge
 │   ├── react/             # React integration
 │   ├── registry-client/   # Registry client
+│   ├── conformance-runner/ # Adapter & CIP-0103 conformance testing CLI
 │   └── adapters/          # Wallet adapters
 │       ├── console/
 │       ├── loop/
@@ -590,7 +755,8 @@ Want to add support for a new wallet? See the [Wallet Provider Guide](./docs/wal
 - [ ] Transaction batching
 - [ ] Mobile wallet deep links
 - [ ] Offline transaction preparation
-- [ ] Wallet discovery via browser extensions
+- [x] CIP-0103 (Canton dApp Standard) compliance
+- [x] Wallet discovery via browser extensions
 - [ ] Enhanced telemetry (opt-in)
 
 ---
@@ -634,6 +800,8 @@ PartyLayer exports typed error classes. Use `try-catch` with `instanceof` checks
 - [Quick Start Guide](./docs/quick-start.md)
 - [API Reference](./docs/api.md)
 - [Architecture](./docs/architecture.md)
+- [CIP-0103 Compliance](#cip-0103-canton-dapp-standard-compliance) - Provider model, methods, error codes
+- [CIP-0103 Alignment (detailed)](./docs/CIP-0103-ALIGNMENT.md) - For Foundation reviewers and wallet providers
 - [Error Handling](./docs/errors.md)
 - [Wallet Provider Guide](./docs/wallet-provider-guide.md)
 - [Security Checklist](./docs/security-checklist.md) - For wallet providers
@@ -643,8 +811,8 @@ PartyLayer exports typed error classes. Use `try-catch` with `instanceof` checks
 
 ## Support
 
-- [GitHub Issues](https://github.com/cayvox/PartyLayer/issues) - Bug reports and feature requests
-- [Discussions](https://github.com/cayvox/PartyLayer/discussions) - Questions and community
+- [GitHub Issues](https://github.com/anilkaracay/partylayer/issues) - Bug reports and feature requests
+- [Discussions](https://github.com/anilkaracay/partylayer/discussions) - Questions and community
 
 ---
 
@@ -666,6 +834,6 @@ MIT License - see [LICENSE](./LICENSE) for details.
 
 **Built with ❤️ for the Canton Network ecosystem**
 
-[Website](https://partylayer.xyz) | [Documentation](./docs/) | [GitHub](https://github.com/cayvox/PartyLayer)
+[Website](https://partylayer.xyz) | [Documentation](./docs/) | [GitHub](https://github.com/anilkaracay/partylayer)
 
 </div>
