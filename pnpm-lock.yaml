@@ -66,6 +66,9 @@ importers:
       '@partylayer/adapter-loop':
         specifier: workspace:*
         version: link:../../packages/adapters/loop
+      '@partylayer/provider':
+        specifier: workspace:*
+        version: link:../../packages/provider
       '@partylayer/react':
         specifier: workspace:*
         version: link:../../packages/react

@@ -32,7 +32,7 @@ export interface ErrorMappingContext {
   /** Wallet ID (if applicable) */
   walletId?: string;
   /** Operation phase */
-  phase: 'connect' | 'restore' | 'signMessage' | 'signTransaction' | 'submitTransaction';
+  phase: 'connect' | 'restore' | 'signMessage' | 'signTransaction' | 'submitTransaction' | 'ledgerApi';
   /** Transport type */
   transport?: 'injected' | 'popup' | 'deeplink' | 'remote';
   /** Timeout in milliseconds (for timeout errors) */

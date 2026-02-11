@@ -34,6 +34,7 @@ export type CapabilityKey =
   | 'signMessage'
   | 'signTransaction'
   | 'submitTransaction'
+  | 'ledgerApi'
   | 'events'
   | 'deeplink'
   | 'popup'

@@ -80,6 +80,26 @@ export interface SubmitTransactionParams {
 }
 
 /**
+ * Ledger API proxy parameters (CIP-0103 ledgerApi method)
+ */
+export interface LedgerApiParams {
+  /** HTTP method for the JSON Ledger API */
+  requestMethod: 'GET' | 'POST' | 'PUT' | 'DELETE';
+  /** Resource path (e.g., "/v1/state/acs") */
+  resource: string;
+  /** Optional JSON body */
+  body?: string;
+}
+
+/**
+ * Ledger API proxy result
+ */
+export interface LedgerApiResult {
+  /** JSON response from the Ledger API */
+  response: string;
+}
+
+/**
  * Logger interface
  */
 export interface LoggerAdapter {
@@ -282,6 +302,18 @@ export interface WalletAdapter {
     session: Session,
     params: SubmitTransactionParams
   ): Promise<TxReceipt>;
+
+  /**
+   * Proxy a JSON Ledger API request (optional - only if wallet supports it)
+   * @param ctx Adapter context
+   * @param session Active session
+   * @param params Ledger API request parameters
+   */
+  ledgerApi?(
+    ctx: AdapterContext,
+    session: Session,
+    params: LedgerApiParams
+  ): Promise<LedgerApiResult>;
 
   /**
    * Subscribe to adapter events (optional)

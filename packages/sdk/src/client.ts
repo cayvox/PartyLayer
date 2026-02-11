@@ -55,6 +55,8 @@ import type {
   SignMessageParams,
   SignTransactionParams,
   SubmitTransactionParams,
+  LedgerApiParams,
+  LedgerApiResult,
 } from '@partylayer/core';
 
 /**
@@ -506,6 +508,36 @@ export class PartyLayerClient {
   }
 
   /**
+   * Proxy a JSON Ledger API request through the active wallet adapter
+   */
+  async ledgerApi(params: LedgerApiParams): Promise<LedgerApiResult> {
+    const session = await this.getActiveSession();
+    if (!session) {
+      throw new Error('No active session');
+    }
+
+    const adapter = this.adapters.get(session.walletId);
+    if (!adapter || !adapter.ledgerApi) {
+      throw new CapabilityNotSupportedError(
+        session.walletId,
+        'ledgerApi'
+      );
+    }
+
+    try {
+      const ctx = this.createAdapterContext();
+      return await adapter.ledgerApi(ctx, session, params);
+    } catch (err) {
+      const error = mapUnknownErrorToPartyLayerError(err, {
+        phase: 'ledgerApi',
+        walletId: String(session.walletId),
+      });
+      this.emit('error', { type: 'error', error });
+      throw error;
+    }
+  }
+
+  /**
    * Subscribe to events
    */
   on<T extends PartyLayerEvent>(
@@ -539,18 +571,16 @@ export class PartyLayerClient {
   /**
    * Get a CIP-0103 Provider backed by this client.
    *
-   * This is the backward-compatibility bridge. The returned Provider
-   * routes all request() calls through the existing PartyLayerClient
-   * methods and maps events to CIP-0103 format.
+   * This bridge routes all request() calls through the existing
+   * PartyLayerClient methods and maps events to CIP-0103 format.
    *
-   * **Limitations** (bridge path only):
-   * - Async wallets (userUrl pattern) are not supported. The bridge always
-   *   returns `{ isConnected: true }` from `connect()` without async flow.
-   *   For async wallet support, use `PartyLayerProvider` directly.
-   * - `ledgerApi` method throws UNSUPPORTED_METHOD (not available via legacy SDK).
-   * - `txChanged` events for `executed` state use best-effort payload values
-   *   (`updateId` set to commandId, `completionOffset` set to 0).
-   * - `signed` transaction state is never emitted (legacy SDK has no signed state).
+   * The bridge implements the full CIP-0103 specification:
+   * - All 10 mandatory methods including `ledgerApi` (when adapter supports it)
+   * - Full transaction lifecycle: pending -> signed -> executed/failed
+   * - All CIP-0103 events: statusChanged, accountsChanged, txChanged, connected
+   *
+   * **Note:** Async wallets (userUrl pattern) are not supported through the
+   * bridge. For async wallet support, use `PartyLayerProvider` directly.
    *
    * @returns CIP-0103 compliant Provider
    */

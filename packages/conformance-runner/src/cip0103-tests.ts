@@ -14,13 +14,13 @@
  */
 
 import type { CIP0103Provider } from '@partylayer/core';
-import { CIP0103_MANDATORY_METHODS } from '@partylayer/core';
+import { CIP0103_MANDATORY_METHODS, CIP0103_EVENTS } from '@partylayer/core';
 
 // ─── Types ──────────────────────────────────────────────────────────────────
 
 export interface CIP0103TestResult {
   name: string;
-  category: 'interface' | 'method' | 'event' | 'error';
+  category: 'interface' | 'method' | 'event' | 'error' | 'lifecycle';
   passed: boolean;
   error?: string;
   details?: Record<string, unknown>;
@@ -173,6 +173,126 @@ export async function runCIP0103ConformanceTests(
         : `emit() returned ${typeof emitResult}`,
   });
 
+  // ── Transaction lifecycle tests ─────────────────────────────────────
+
+  {
+    const txEvents: unknown[] = [];
+    const txHandler = (...args: unknown[]) => txEvents.push(...args);
+    provider.on(CIP0103_EVENTS.TX_CHANGED, txHandler);
+
+    try {
+      await provider.request({
+        method: 'prepareExecute',
+        params: { tx: { _conformance: true } },
+      });
+
+      // Check that 'pending' was emitted
+      results.push({
+        name: 'prepareExecute emits txChanged with "pending"',
+        category: 'lifecycle',
+        passed: txEvents.some(
+          (e) => typeof e === 'object' && e !== null && (e as Record<string, unknown>).status === 'pending',
+        ),
+        error: txEvents.length === 0 ? 'No txChanged events emitted' : undefined,
+      });
+
+      // Check that 'signed' was emitted
+      const signedEvent = txEvents.find(
+        (e) => typeof e === 'object' && e !== null && (e as Record<string, unknown>).status === 'signed',
+      ) as Record<string, unknown> | undefined;
+      results.push({
+        name: 'prepareExecute emits txChanged with "signed"',
+        category: 'lifecycle',
+        passed: !!signedEvent,
+      });
+
+      // Validate 'signed' payload shape
+      if (signedEvent) {
+        const payload = signedEvent.payload as Record<string, unknown> | undefined;
+        results.push({
+          name: 'signed event has payload.signature (string)',
+          category: 'lifecycle',
+          passed: typeof payload?.signature === 'string',
+        });
+        results.push({
+          name: 'signed event has payload.signedBy (string)',
+          category: 'lifecycle',
+          passed: typeof payload?.signedBy === 'string',
+        });
+        results.push({
+          name: 'signed event has payload.party (string)',
+          category: 'lifecycle',
+          passed: typeof payload?.party === 'string',
+        });
+      }
+
+      // Check that a terminal state was reached
+      const hasTerminal = txEvents.some(
+        (e) =>
+          typeof e === 'object' &&
+          e !== null &&
+          ((e as Record<string, unknown>).status === 'executed' ||
+            (e as Record<string, unknown>).status === 'failed'),
+      );
+      results.push({
+        name: 'prepareExecute reaches terminal tx state (executed or failed)',
+        category: 'lifecycle',
+        passed: hasTerminal,
+      });
+
+      // Validate 'executed' payload shape
+      const executedEvent = txEvents.find(
+        (e) => typeof e === 'object' && e !== null && (e as Record<string, unknown>).status === 'executed',
+      ) as Record<string, unknown> | undefined;
+      if (executedEvent) {
+        const payload = executedEvent.payload as Record<string, unknown> | undefined;
+        results.push({
+          name: 'executed event has payload.updateId (string)',
+          category: 'lifecycle',
+          passed: typeof payload?.updateId === 'string',
+        });
+        results.push({
+          name: 'executed event has payload.completionOffset (number)',
+          category: 'lifecycle',
+          passed: typeof payload?.completionOffset === 'number',
+        });
+      }
+    } catch {
+      // prepareExecute may throw — still check if events were emitted
+      results.push({
+        name: 'prepareExecute emits txChanged events (despite error)',
+        category: 'lifecycle',
+        passed: txEvents.length > 0,
+        error: txEvents.length === 0 ? 'No txChanged events emitted before error' : undefined,
+      });
+    } finally {
+      provider.removeListener(CIP0103_EVENTS.TX_CHANGED, txHandler);
+    }
+  }
+
+  // ── ledgerApi handling test ────────────────────────────────────────
+
+  try {
+    await provider.request({
+      method: 'ledgerApi',
+      params: { requestMethod: 'GET', resource: '/v1/state/acs' },
+    });
+    results.push({
+      name: 'ledgerApi returns result (supported)',
+      category: 'method',
+      passed: true,
+    });
+  } catch (err: unknown) {
+    // ProviderRpcError with numeric code = method is recognized
+    const isHandled = isNumericCodeError(err);
+    results.push({
+      name: 'ledgerApi is handled (returns result or ProviderRpcError)',
+      category: 'method',
+      passed: isHandled,
+      error: isHandled ? undefined : `Unexpected error type: ${String(err)}`,
+    });
+  }
+
   // ── Summary ───────────────────────────────────────────────────────────
 
   const passed = results.filter((r) => r.passed).length;
@@ -201,7 +321,7 @@ export function formatCIP0103Report(report: CIP0103ConformanceReport): string {
     '',
   ];
 
-  const categories = ['interface', 'method', 'event', 'error'] as const;
+  const categories = ['interface', 'method', 'event', 'error', 'lifecycle'] as const;
   for (const cat of categories) {
     const catResults = report.results.filter((r) => r.category === cat);
     if (catResults.length === 0) continue;

@@ -27,6 +27,17 @@ function createMockClient(overrides: Partial<BridgeableClient> = {}): Bridgeable
     })),
     signTransaction: vi.fn(async () => ({
       transactionHash: 'tx-hash-1' as unknown,
+      signedTx: { encoded: 'signed-data' },
+      partyId: 'party-123' as unknown,
+    })),
+    submitTransaction: vi.fn(async () => ({
+      transactionHash: 'tx-hash-1' as unknown,
+      submittedAt: Date.now(),
+      commandId: 'cmd-1',
+      updateId: 'update-1',
+    })),
+    ledgerApi: vi.fn(async () => ({
+      response: JSON.stringify({ status: 'ok' }),
     })),
     getRegistryStatus: vi.fn(() => null),
     on: vi.fn(() => () => {}),
@@ -185,7 +196,7 @@ describe('createProviderBridge', () => {
   });
 
   describe('prepareExecute', () => {
-    it('should emit txChanged with pending status', async () => {
+    it('should emit full tx lifecycle: pending -> signed -> executed', async () => {
       const provider = createProviderBridge(createMockClient());
       const handler = vi.fn();
       provider.on(CIP0103_EVENTS.TX_CHANGED, handler);
@@ -195,18 +206,121 @@ describe('createProviderBridge', () => {
         params: { tx: {} },
       });
 
-      expect(handler).toHaveBeenCalledWith(
-        expect.objectContaining({
-          status: 'pending',
-          commandId: 'tx-hash-1',
+      expect(handler).toHaveBeenCalledTimes(3);
+
+      // First call: pending
+      expect(handler.mock.calls[0][0]).toMatchObject({
+        status: 'pending',
+      });
+      const commandId = handler.mock.calls[0][0].commandId;
+      expect(typeof commandId).toBe('string');
+
+      // Second call: signed
+      expect(handler.mock.calls[1][0]).toMatchObject({
+        status: 'signed',
+        commandId,
+        payload: {
+          signature: expect.any(String),
+          signedBy: 'party-123',
+          party: 'party-123',
+        },
+      });
+
+      // Third call: executed
+      expect(handler.mock.calls[2][0]).toMatchObject({
+        status: 'executed',
+        commandId,
+        payload: {
+          updateId: 'update-1',
+          completionOffset: 0,
+        },
+      });
+    });
+
+    it('should emit pending then failed when signTransaction fails', async () => {
+      const client = createMockClient({
+        signTransaction: vi.fn(async () => {
+          throw new Error('user rejected');
         }),
-      );
+      });
+      const provider = createProviderBridge(client);
+      const handler = vi.fn();
+      provider.on(CIP0103_EVENTS.TX_CHANGED, handler);
+
+      try {
+        await provider.request({
+          method: 'prepareExecute',
+          params: { tx: {} },
+        });
+        expect.fail('should have thrown');
+      } catch (err) {
+        expect(err).toBeInstanceOf(ProviderRpcError);
+      }
+
+      expect(handler).toHaveBeenCalledTimes(2);
+      expect(handler.mock.calls[0][0].status).toBe('pending');
+      expect(handler.mock.calls[1][0].status).toBe('failed');
+    });
+
+    it('should emit pending, signed, then failed when submitTransaction fails', async () => {
+      const client = createMockClient({
+        submitTransaction: vi.fn(async () => {
+          throw new Error('submission error');
+        }),
+      });
+      const provider = createProviderBridge(client);
+      const handler = vi.fn();
+      provider.on(CIP0103_EVENTS.TX_CHANGED, handler);
+
+      try {
+        await provider.request({
+          method: 'prepareExecute',
+          params: { tx: {} },
+        });
+        expect.fail('should have thrown');
+      } catch (err) {
+        expect(err).toBeInstanceOf(ProviderRpcError);
+      }
+
+      expect(handler).toHaveBeenCalledTimes(3);
+      expect(handler.mock.calls[0][0].status).toBe('pending');
+      expect(handler.mock.calls[1][0].status).toBe('signed');
+      expect(handler.mock.calls[2][0].status).toBe('failed');
+    });
+
+    it('should use consistent commandId across all events', async () => {
+      const provider = createProviderBridge(createMockClient());
+      const handler = vi.fn();
+      provider.on(CIP0103_EVENTS.TX_CHANGED, handler);
+
+      await provider.request({
+        method: 'prepareExecute',
+        params: { tx: {} },
+      });
+
+      const commandId = handler.mock.calls[0][0].commandId;
+      expect(handler.mock.calls[1][0].commandId).toBe(commandId);
+      expect(handler.mock.calls[2][0].commandId).toBe(commandId);
     });
   });
 
   describe('ledgerApi', () => {
-    it('should throw UNSUPPORTED_METHOD', async () => {
+    it('should proxy ledgerApi request when client supports it', async () => {
       const provider = createProviderBridge(createMockClient());
+      const result = await provider.request<{ response: string }>({
+        method: 'ledgerApi',
+        params: {
+          requestMethod: 'GET',
+          resource: '/v1/state/acs',
+        },
+      });
+      expect(result.response).toBe(JSON.stringify({ status: 'ok' }));
+    });
+
+    it('should throw UNSUPPORTED_METHOD when client lacks ledgerApi', async () => {
+      const client = createMockClient();
+      delete (client as Record<string, unknown>).ledgerApi;
+      const provider = createProviderBridge(client);
       try {
         await provider.request({ method: 'ledgerApi' });
         expect.fail('should have thrown');
@@ -214,6 +328,66 @@ describe('createProviderBridge', () => {
         expect(err).toBeInstanceOf(ProviderRpcError);
         expect((err as ProviderRpcError).code).toBe(RPC_ERRORS.UNSUPPORTED_METHOD);
       }
+    });
+  });
+
+  describe('connected event', () => {
+    it('should emit connected event on session:connected', () => {
+      const handlers: Record<string, (event: unknown) => void> = {};
+      const client = createMockClient({
+        on: vi.fn((event: string, handler: (event: unknown) => void) => {
+          handlers[event] = handler;
+          return () => {};
+        }),
+      });
+      const provider = createProviderBridge(client);
+      const connectedHandler = vi.fn();
+      provider.on(CIP0103_EVENTS.CONNECTED, connectedHandler);
+
+      // Simulate session:connected event
+      handlers['session:connected']?.({
+        type: 'session:connected',
+        session: {
+          partyId: 'party-123',
+          network: 'devnet',
+        },
+      });
+
+      expect(connectedHandler).toHaveBeenCalledWith(
+        expect.objectContaining({
+          isConnected: true,
+        }),
+      );
+    });
+
+    it('should emit statusChanged and accountsChanged alongside connected', () => {
+      const handlers: Record<string, (event: unknown) => void> = {};
+      const client = createMockClient({
+        on: vi.fn((event: string, handler: (event: unknown) => void) => {
+          handlers[event] = handler;
+          return () => {};
+        }),
+      });
+      const provider = createProviderBridge(client);
+
+      const statusHandler = vi.fn();
+      const accountsHandler = vi.fn();
+      const connectedHandler = vi.fn();
+      provider.on(CIP0103_EVENTS.STATUS_CHANGED, statusHandler);
+      provider.on(CIP0103_EVENTS.ACCOUNTS_CHANGED, accountsHandler);
+      provider.on(CIP0103_EVENTS.CONNECTED, connectedHandler);
+
+      handlers['session:connected']?.({
+        type: 'session:connected',
+        session: {
+          partyId: 'party-456',
+          network: 'testnet',
+        },
+      });
+
+      expect(statusHandler).toHaveBeenCalledTimes(1);
+      expect(accountsHandler).toHaveBeenCalledTimes(1);
+      expect(connectedHandler).toHaveBeenCalledTimes(1);
     });
   });
 
