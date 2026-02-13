@@ -8,8 +8,8 @@ export * from './hooks';
 export * from './modal';
 
 // PartyLayerKit — zero-config wrapper
-export { PartyLayerKit } from './kit';
-export type { PartyLayerKitProps } from './kit';
+export { PartyLayerKit, useWalletIcons, resolveWalletIcon } from './kit';
+export type { PartyLayerKitProps, WalletIconMap } from './kit';
 
 // ConnectButton — RainbowKit-style connection button
 export { ConnectButton, truncatePartyId } from './connect-button';

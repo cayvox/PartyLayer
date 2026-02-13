@@ -8,12 +8,48 @@
  *   </PartyLayerKit>
  */
 
-import { useMemo, useEffect, useRef } from 'react';
+import { useMemo, useEffect, useRef, createContext, useContext } from 'react';
 import { createPartyLayer } from '@partylayer/sdk';
 import type { PartyLayerClient, WalletAdapter, AdapterClass, NetworkId } from '@partylayer/sdk';
 import { PartyLayerProvider } from './context';
 import { ThemeProvider } from './theme';
 import type { PartyLayerTheme } from './theme';
+
+// ─── Wallet Icons Context ─────────────────────────────────────────────────────
+
+/** Map of walletId → icon URL for custom wallet logos */
+export type WalletIconMap = Record<string, string>;
+
+const WalletIconsContext = createContext<WalletIconMap>({});
+
+/** Access wallet icon overrides from PartyLayerKit */
+export function useWalletIcons(): WalletIconMap {
+  return useContext(WalletIconsContext);
+}
+
+/**
+ * Resolve icon URL for a wallet. Priority:
+ * 1. walletIcons map (exact match or fuzzy)
+ * 2. wallet.icons.sm from registry
+ * 3. null (caller renders fallback)
+ */
+export function resolveWalletIcon(
+  walletId: string,
+  walletIcons: WalletIconMap,
+  registryIconUrl?: string,
+): string | null {
+  const id = walletId.replace(/^cip0103:/, '');
+  // Exact match
+  if (walletIcons[id]) return walletIcons[id];
+  if (walletIcons[walletId]) return walletIcons[walletId];
+  // Fuzzy match
+  for (const [key, url] of Object.entries(walletIcons)) {
+    if (id.toLowerCase().includes(key.toLowerCase())) return url;
+  }
+  // Registry fallback
+  if (registryIconUrl) return registryIconUrl;
+  return null;
+}
 
 // ─── Types ───────────────────────────────────────────────────────────────────
 
@@ -38,6 +74,8 @@ export interface PartyLayerKitProps {
   adapters?: (WalletAdapter | AdapterClass)[];
   /** Theme preset or custom theme object (default: 'light') */
   theme?: 'light' | 'dark' | 'auto' | PartyLayerTheme;
+  /** Custom wallet icon URLs by walletId */
+  walletIcons?: WalletIconMap;
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
@@ -50,6 +88,7 @@ export function PartyLayerKit({
   channel,
   adapters,
   theme = 'light',
+  walletIcons = {},
 }: PartyLayerKitProps) {
   // Stable reference for adapters array to avoid re-creating client on every render
   const adaptersRef = useRef(adapters);
@@ -80,10 +119,12 @@ export function PartyLayerKit({
   const themeValue = typeof theme === 'string' ? theme : theme;
 
   return (
-    <ThemeProvider theme={themeValue}>
-      <PartyLayerProvider client={client} network={network}>
-        {children}
-      </PartyLayerProvider>
-    </ThemeProvider>
+    <WalletIconsContext.Provider value={walletIcons}>
+      <ThemeProvider theme={themeValue}>
+        <PartyLayerProvider client={client} network={network}>
+          {children}
+        </PartyLayerProvider>
+      </ThemeProvider>
+    </WalletIconsContext.Provider>
   );
 }

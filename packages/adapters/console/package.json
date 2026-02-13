@@ -39,6 +39,7 @@
     "url": "https://github.com/cayvox/PartyLayer/issues"
   },
   "dependencies": {
+    "@console-wallet/dapp-sdk": "^2.0.0",
     "@partylayer/core": "workspace:*"
   },
   "devDependencies": {

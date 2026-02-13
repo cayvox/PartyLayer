@@ -1,8 +1,11 @@
 /**
- * ConnectButton — RainbowKit-style wallet connection button for Canton dApps.
+ * ConnectButton — Premium wallet connection button for Canton dApps.
  *
  * Manages the full lifecycle: disconnect → connect (via WalletModal) → connected state.
  * Uses existing hooks (useSession, useConnect, useDisconnect) under the hood.
+ *
+ * Designed for dApp developers to embed directly — brand-aligned, accessible,
+ * and polished across light/dark themes.
  */
 
 import { useState, useRef, useEffect, useCallback } from 'react';
@@ -35,6 +38,35 @@ export interface ConnectButtonProps {
 export function truncatePartyId(id: string, chars = 6): string {
   if (id.length <= chars * 2 + 3) return id;
   return `${id.slice(0, chars)}...${id.slice(-chars)}`;
+}
+
+// ─── Icons ───────────────────────────────────────────────────────────────────
+
+function WalletIcon({ size = 16, color = 'currentColor' }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M21 12V7H5a2 2 0 0 1 0-4h14v4" />
+      <path d="M3 5v14a2 2 0 0 0 2 2h16v-5" />
+      <path d="M18 12a2 2 0 0 0 0 4h4v-4h-4z" />
+    </svg>
+  );
+}
+
+function PowerIcon({ size = 14, color = 'currentColor' }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+      <path d="M18.36 6.64a9 9 0 1 1-12.73 0" />
+      <line x1="12" y1="2" x2="12" y2="12" />
+    </svg>
+  );
+}
+
+function ChevronIcon({ size = 12, color = 'currentColor' }: { size?: number; color?: string }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke={color} strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+      <polyline points="6 9 12 15 18 9" />
+    </svg>
+  );
 }
 
 // ─── Component ───────────────────────────────────────────────────────────────
@@ -94,19 +126,10 @@ export function ConnectButton({
     }
   };
 
-  // ─── Styles ───────────────────────────────────────────────────────
-
-  const baseButtonStyle: React.CSSProperties = {
-    padding: '10px 20px',
-    border: 'none',
-    borderRadius: theme.borderRadius,
-    cursor: 'pointer',
-    fontSize: '14px',
-    fontWeight: 600,
-    fontFamily: theme.fontFamily,
-    transition: 'background-color 0.15s ease, opacity 0.15s ease',
-    ...style,
-  };
+  const isDark = theme.mode === 'dark';
+  const brandYellow = theme.colors.primary;      // #FFCC00
+  const brandHover = theme.colors.primaryHover;   // #E6B800
+  const textOnBrand = '#0B0F1A';
 
   // ─── Disconnected State ───────────────────────────────────────────
 
@@ -117,17 +140,42 @@ export function ConnectButton({
           onClick={() => setModalOpen(true)}
           className={className}
           style={{
-            ...baseButtonStyle,
-            backgroundColor: theme.colors.primary,
-            color: '#ffffff',
+            display: 'inline-flex',
+            alignItems: 'center',
+            gap: '8px',
+            padding: '10px 20px',
+            border: 'none',
+            borderRadius: theme.borderRadius,
+            cursor: 'pointer',
+            fontSize: '14px',
+            fontWeight: 600,
+            fontFamily: theme.fontFamily,
+            backgroundColor: brandYellow,
+            color: textOnBrand,
+            boxShadow: `0 1px 2px rgba(15, 23, 42, 0.05), 0 0 0 0 ${brandYellow}00`,
+            transition: 'all 150ms cubic-bezier(0.2, 0.8, 0.2, 1)',
+            ...style,
           }}
           onMouseEnter={(e) => {
-            (e.target as HTMLButtonElement).style.backgroundColor = theme.colors.primaryHover;
+            const btn = e.currentTarget as HTMLButtonElement;
+            btn.style.backgroundColor = brandHover;
+            btn.style.boxShadow = `0 2px 8px rgba(15, 23, 42, 0.08), 0 0 0 3px ${brandYellow}33`;
+            btn.style.transform = 'translateY(-1px)';
           }}
           onMouseLeave={(e) => {
-            (e.target as HTMLButtonElement).style.backgroundColor = theme.colors.primary;
+            const btn = e.currentTarget as HTMLButtonElement;
+            btn.style.backgroundColor = brandYellow;
+            btn.style.boxShadow = `0 1px 2px rgba(15, 23, 42, 0.05), 0 0 0 0 ${brandYellow}00`;
+            btn.style.transform = 'translateY(0)';
+          }}
+          onMouseDown={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(0) scale(0.98)';
+          }}
+          onMouseUp={(e) => {
+            (e.currentTarget as HTMLButtonElement).style.transform = 'translateY(-1px) scale(1)';
           }}
         >
+          <WalletIcon size={16} color={textOnBrand} />
           {label}
         </button>
         <WalletModal
@@ -135,6 +183,7 @@ export function ConnectButton({
           onClose={() => setModalOpen(false)}
           onConnect={() => setModalOpen(false)}
         />
+        <style>{`@keyframes partylayer-spin { to { transform: rotate(360deg); } }`}</style>
       </>
     );
   }
@@ -147,11 +196,22 @@ export function ConnectButton({
         disabled
         className={className}
         style={{
-          ...baseButtonStyle,
-          backgroundColor: theme.colors.primary,
-          color: '#ffffff',
-          opacity: 0.7,
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: '8px',
+          padding: '10px 20px',
+          border: 'none',
+          borderRadius: theme.borderRadius,
           cursor: 'wait',
+          fontSize: '14px',
+          fontWeight: 600,
+          fontFamily: theme.fontFamily,
+          backgroundColor: brandYellow,
+          color: textOnBrand,
+          opacity: 0.85,
+          boxShadow: `0 0 0 3px ${brandYellow}22`,
+          animation: 'partylayer-btn-pulse 1.5s ease-in-out infinite',
+          ...style,
         }}
       >
         <span
@@ -159,23 +219,27 @@ export function ConnectButton({
             display: 'inline-block',
             width: '14px',
             height: '14px',
-            border: '2px solid rgba(255,255,255,0.3)',
-            borderTop: '2px solid #ffffff',
+            border: `2px solid ${textOnBrand}33`,
+            borderTop: `2px solid ${textOnBrand}`,
             borderRadius: '50%',
-            animation: 'partylayer-spin 0.8s linear infinite',
-            marginRight: '8px',
-            verticalAlign: 'middle',
+            animation: 'partylayer-spin 0.7s linear infinite',
+            flexShrink: 0,
           }}
         />
         Connecting...
-        <style>{`@keyframes partylayer-spin { to { transform: rotate(360deg); } }`}</style>
+        <style>{`
+          @keyframes partylayer-spin { to { transform: rotate(360deg); } }
+          @keyframes partylayer-btn-pulse {
+            0%, 100% { box-shadow: 0 0 0 3px ${brandYellow}22; }
+            50% { box-shadow: 0 0 0 6px ${brandYellow}15; }
+          }
+        `}</style>
       </button>
     );
   }
 
   // ─── Connected State ──────────────────────────────────────────────
 
-  // session is guaranteed non-null here (guarded by early returns above)
   const connectedPartyId = String(session!.partyId);
   const connectedWalletId = String(session!.walletId);
 
@@ -185,32 +249,56 @@ export function ConnectButton({
         onClick={() => setDropdownOpen(!dropdownOpen)}
         className={className}
         style={{
-          ...baseButtonStyle,
-          backgroundColor: theme.colors.surface,
-          color: theme.colors.text,
-          border: `1px solid ${theme.colors.border}`,
-          display: 'flex',
+          display: 'inline-flex',
           alignItems: 'center',
           gap: '8px',
+          padding: '8px 14px',
+          border: `1px solid ${theme.colors.border}`,
+          borderRadius: theme.borderRadius,
+          cursor: 'pointer',
+          fontSize: '13px',
+          fontWeight: 500,
+          fontFamily: theme.fontFamily,
+          backgroundColor: theme.colors.surface,
+          color: theme.colors.text,
+          boxShadow: '0 1px 2px rgba(15, 23, 42, 0.05)',
+          transition: 'all 150ms cubic-bezier(0.2, 0.8, 0.2, 1)',
+          ...style,
+        }}
+        onMouseEnter={(e) => {
+          const btn = e.currentTarget as HTMLButtonElement;
+          btn.style.borderColor = isDark ? 'rgba(255,255,255,0.15)' : 'rgba(15,23,42,0.18)';
+          btn.style.boxShadow = '0 2px 8px rgba(15, 23, 42, 0.08)';
+        }}
+        onMouseLeave={(e) => {
+          const btn = e.currentTarget as HTMLButtonElement;
+          btn.style.borderColor = theme.colors.border;
+          btn.style.boxShadow = '0 1px 2px rgba(15, 23, 42, 0.05)';
         }}
       >
-        {/* Green dot indicator */}
-        <span
-          style={{
-            width: '8px',
-            height: '8px',
-            borderRadius: '50%',
-            backgroundColor: theme.colors.success,
-            flexShrink: 0,
-          }}
-        />
-        <span style={{ fontFamily: 'monospace', fontSize: '13px' }}>
+        {/* Green status dot */}
+        <span style={{
+          width: '8px',
+          height: '8px',
+          borderRadius: '50%',
+          backgroundColor: theme.colors.success,
+          flexShrink: 0,
+          boxShadow: `0 0 0 2px ${theme.colors.surface}`,
+        }} />
+
+        <span style={{
+          fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+          fontSize: '13px',
+          color: theme.colors.text,
+        }}>
           {getConnectedText()}
         </span>
+
         {showDisconnect && (
-          <span style={{ fontSize: '10px', marginLeft: '4px', opacity: 0.5 }}>
-            ▼
-          </span>
+          <ChevronIcon
+            size={12}
+            color={theme.colors.textSecondary}
+          />
         )}
       </button>
 
@@ -219,35 +307,62 @@ export function ConnectButton({
         <div
           style={{
             position: 'absolute',
-            top: '100%',
+            top: 'calc(100% + 6px)',
             right: 0,
-            marginTop: '4px',
             backgroundColor: theme.colors.background,
             border: `1px solid ${theme.colors.border}`,
             borderRadius: theme.borderRadius,
-            boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-            minWidth: '180px',
+            boxShadow: isDark
+              ? '0 4px 16px rgba(0,0,0,0.3), 0 16px 48px rgba(0,0,0,0.2)'
+              : '0 4px 16px rgba(15,23,42,0.08), 0 16px 48px rgba(15,23,42,0.12)',
+            minWidth: '220px',
             zIndex: 1000,
             overflow: 'hidden',
+            animation: 'partylayer-dropdown 150ms cubic-bezier(0.2, 0.8, 0.2, 1)',
           }}
         >
           {/* Session Info */}
-          <div
-            style={{
-              padding: '12px 16px',
-              borderBottom: `1px solid ${theme.colors.border}`,
-              fontSize: '12px',
-              color: theme.colors.textSecondary,
-            }}
-          >
-            <div style={{ fontWeight: 600, color: theme.colors.text, marginBottom: '4px' }}>
-              Connected
+          <div style={{
+            padding: '14px 16px',
+            borderBottom: `1px solid ${theme.colors.border}`,
+          }}>
+            <div style={{
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px',
+              marginBottom: '8px',
+            }}>
+              <span style={{
+                width: '6px',
+                height: '6px',
+                borderRadius: '50%',
+                backgroundColor: theme.colors.success,
+              }} />
+              <span style={{
+                fontSize: '12px',
+                fontWeight: 600,
+                color: theme.colors.success,
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px',
+              }}>
+                Connected
+              </span>
             </div>
-            <div style={{ fontFamily: 'monospace', fontSize: '11px', wordBreak: 'break-all' }}>
+            <div style={{
+              fontFamily: 'ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace',
+              fontSize: '12px',
+              color: theme.colors.text,
+              wordBreak: 'break-all',
+              lineHeight: 1.4,
+            }}>
               {truncatePartyId(connectedPartyId, 10)}
             </div>
-            <div style={{ marginTop: '4px', fontSize: '11px' }}>
-              Wallet: {connectedWalletId}
+            <div style={{
+              marginTop: '6px',
+              fontSize: '12px',
+              color: theme.colors.textSecondary,
+            }}>
+              {connectedWalletId}
             </div>
           </div>
 
@@ -255,28 +370,40 @@ export function ConnectButton({
           <button
             onClick={handleDisconnect}
             style={{
-              display: 'block',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px',
               width: '100%',
-              padding: '10px 16px',
+              padding: '12px 16px',
               border: 'none',
               backgroundColor: 'transparent',
               color: theme.colors.error,
               cursor: 'pointer',
               textAlign: 'left',
               fontSize: '13px',
+              fontWeight: 500,
               fontFamily: theme.fontFamily,
+              transition: 'background-color 150ms',
             }}
             onMouseEnter={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = theme.colors.errorBg;
+              (e.currentTarget as HTMLButtonElement).style.backgroundColor = theme.colors.errorBg;
             }}
             onMouseLeave={(e) => {
-              (e.target as HTMLButtonElement).style.backgroundColor = 'transparent';
+              (e.currentTarget as HTMLButtonElement).style.backgroundColor = 'transparent';
             }}
           >
+            <PowerIcon size={14} color={theme.colors.error} />
             Disconnect
           </button>
         </div>
       )}
+
+      <style>{`
+        @keyframes partylayer-dropdown {
+          from { opacity: 0; transform: translateY(-4px); }
+          to { opacity: 1; transform: translateY(0); }
+        }
+      `}</style>
     </div>
   );
 }

@@ -110,6 +110,41 @@ export function PartyLayerProvider({
 
     load();
 
+    // Delayed re-discovery for late-injecting extensions (e.g. Console Wallet
+    // can take up to 3s to inject into window). Re-scan at 2.5s and merge any
+    // newly found native CIP-0103 providers into the wallet list.
+    const rediscoverTimeout = setTimeout(async () => {
+      if (!mounted) return;
+      try {
+        const newDiscovered = await Promise.resolve(discoverInjectedProviders());
+        const enriched = await Promise.all(
+          newDiscovered.map((d) => enrichProviderInfo(d)),
+        );
+
+        if (!mounted) return;
+
+        setWallets((prev) => {
+          const existingIds = new Set(prev.map((w) => String(w.walletId)));
+          const newNativeWallets: WalletInfo[] = [];
+
+          for (const dp of enriched) {
+            const adapterId = `cip0103:${dp.id}`;
+            if (existingIds.has(adapterId)) continue;
+
+            const adapter = createNativeAdapter(dp);
+            client.registerAdapter(adapter);
+            newNativeWallets.push(createSyntheticWalletInfo(dp, network));
+          }
+
+          if (newNativeWallets.length === 0) return prev;
+          // Prepend newly found native wallets (before registry ones)
+          return [...newNativeWallets, ...prev];
+        });
+      } catch {
+        /* ignore re-discovery failures */
+      }
+    }, 2500);
+
     // Subscribe to events
     const unsubscribeConnect = client.on('session:connected', (event) => {
       if (!mounted) return;
@@ -137,6 +172,7 @@ export function PartyLayerProvider({
 
     return () => {
       mounted = false;
+      clearTimeout(rediscoverTimeout);
       unsubscribeConnect();
       unsubscribeDisconnect();
       unsubscribeExpired();

@@ -2,7 +2,7 @@
  * React hooks for PartyLayer
  */
 
-import { useState, useCallback, useEffect } from 'react';
+import { useState, useCallback, useEffect, useRef } from 'react';
 import type {
   Session,
   SignedMessage,
@@ -94,27 +94,44 @@ export function useConnect() {
   const client = usePartyLayer();
   const [isConnecting, setIsConnecting] = useState(false);
   const [error, setError] = useState<Error | null>(null);
+  const connectIdRef = useRef(0);
 
   const connect = useCallback(
     async (options?: ConnectOptions): Promise<Session | null> => {
+      const id = ++connectIdRef.current;
       setIsConnecting(true);
       setError(null);
 
       try {
         const session = await client.connect(options);
-        return session;
+        // Only update state if this is still the active connect call
+        if (id === connectIdRef.current) {
+          return session;
+        }
+        return null;
       } catch (err) {
-        const error = err instanceof Error ? err : new Error('Connection failed');
-        setError(error);
+        if (id === connectIdRef.current) {
+          const error = err instanceof Error ? err : new Error('Connection failed');
+          setError(error);
+        }
         return null;
       } finally {
-        setIsConnecting(false);
+        if (id === connectIdRef.current) {
+          setIsConnecting(false);
+        }
       }
     },
     [client]
   );
 
-  return { connect, isConnecting, error };
+  /** Reset connecting state (e.g. when modal is closed mid-connect) */
+  const reset = useCallback(() => {
+    connectIdRef.current++;
+    setIsConnecting(false);
+    setError(null);
+  }, []);
+
+  return { connect, isConnecting, error, reset };
 }
 
 /**

@@ -13,5 +13,5 @@ export default defineConfig({
   sourcemap: true,
   splitting: false,
   treeshake: true,
-  external: ['@partylayer/core'],
+  external: ['@partylayer/core', '@fivenorth/loop-sdk'],
 });

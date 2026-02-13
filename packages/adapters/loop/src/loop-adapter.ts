@@ -1,11 +1,11 @@
 /**
  * 5N Loop Wallet adapter implementation
- * 
- * This adapter integrates with Loop SDK.
+ *
+ * Uses the official @fivenorth/loop-sdk NPM package which communicates
+ * with Loop wallet via QR code / popup flow over WebSocket.
+ *
  * Reference: https://github.com/fivenorth-io/loop-sdk
- * 
  * Wallet Integration Guide: https://docs.digitalasset.com/integrate/devnet/index.html
- * Signing transactions from dApps: https://docs.digitalasset.com/integrate/devnet/signing-transactions-from-dapps/index.html
  */
 
 import type {
@@ -33,172 +33,18 @@ import {
   CapabilityNotSupportedError,
   mapUnknownErrorToPartyLayerError,
 } from '@partylayer/core';
-
-/**
- * Loop SDK CDN URLs to try
- * We try multiple CDNs in case one is down
- */
-const LOOP_SDK_CDN_URLS = [
-  'https://cdn.jsdelivr.net/npm/@fivenorth/loop-sdk@0.8.0/dist/index.js',
-  'https://unpkg.com/@fivenorth/loop-sdk@0.8.0/dist/index.js',
-];
-
-/**
- * Track if Loop SDK is being loaded
- */
-let loopSDKLoadPromise: Promise<void> | null = null;
-let loopSDKLoaded = false;
-
-/**
- * Dynamically load Loop SDK from CDN
- * This allows dApps to use Loop without installing the SDK themselves
- * 
- * The Loop SDK is an ESM module that exports to window.loop when loaded
- */
-async function loadLoopSDK(): Promise<void> {
-  if (typeof window === 'undefined') {
-    throw new Error('Loop SDK requires browser environment');
-  }
-
-  // Check if already loaded
-  if (loopSDKLoaded || (window as unknown as { loop?: LoopSDK }).loop) {
-    loopSDKLoaded = true;
-    return;
-  }
-
-  // If already loading, wait for it
-  if (loopSDKLoadPromise) {
-    return loopSDKLoadPromise;
-  }
-
-  // Try loading from CDN with module script
-  loopSDKLoadPromise = (async () => {
-    let lastError: Error | null = null;
-    
-    for (const cdnUrl of LOOP_SDK_CDN_URLS) {
-      try {
-        // Try dynamic import first (for ESM modules)
-        const module = await import(/* @vite-ignore */ cdnUrl);
-        
-        // Check if module exports loop
-        if (module.loop || module.default?.loop) {
-          const loopObj = module.loop || module.default?.loop || module.default;
-          (window as unknown as { loop: LoopSDK }).loop = loopObj;
-          loopSDKLoaded = true;
-          console.log('[LoopAdapter] Successfully loaded Loop SDK from:', cdnUrl);
-          return;
-        }
-        
-        // Check if it was set on window
-        if ((window as unknown as { loop?: LoopSDK }).loop) {
-          loopSDKLoaded = true;
-          console.log('[LoopAdapter] Loop SDK loaded to window.loop from:', cdnUrl);
-          return;
-        }
-      } catch (err) {
-        console.warn('[LoopAdapter] Failed to load from', cdnUrl, err);
-        lastError = err instanceof Error ? err : new Error(String(err));
-      }
-    }
-    
-    // If dynamic import failed, try script tag approach
-    try {
-      await loadLoopSDKViaScript(LOOP_SDK_CDN_URLS[0]);
-      if ((window as unknown as { loop?: LoopSDK }).loop) {
-        loopSDKLoaded = true;
-        return;
-      }
-    } catch (err) {
-      lastError = err instanceof Error ? err : new Error(String(err));
-    }
-    
-    loopSDKLoadPromise = null;
-    throw lastError || new Error('Failed to load Loop SDK from all CDN sources');
-  })();
-
-  return loopSDKLoadPromise;
-}
-
-/**
- * Load Loop SDK via script tag (fallback method)
- */
-function loadLoopSDKViaScript(url: string): Promise<void> {
-  return new Promise((resolve, reject) => {
-    const script = document.createElement('script');
-    script.src = url;
-    script.type = 'module';
-    script.async = true;
-    script.onload = () => {
-      // Give the module time to execute
-      setTimeout(() => {
-        if ((window as unknown as { loop?: LoopSDK }).loop) {
-          resolve();
-        } else {
-          reject(new Error('Loop SDK script loaded but window.loop not found'));
-        }
-      }, 100);
-    };
-    script.onerror = () => {
-      reject(new Error('Failed to load Loop SDK script'));
-    };
-    document.head.appendChild(script);
-  });
-}
-
-/**
- * Loop SDK types
- * Based on @fivenorth/loop-sdk API
- */
-interface LoopSDK {
-  init: (config: {
-    appName: string;
-    network: 'local' | 'devnet' | 'mainnet';
-    onTransactionUpdate?: (payload: unknown) => void;
-    options?: {
-      openMode?: 'popup' | 'tab';
-      requestSigningMode?: 'popup' | 'tab';
-      redirectUrl?: string;
-    };
-    onAccept: (provider: LoopProvider) => void;
-    onReject: () => void;
-  }) => void;
-  connect: () => void;
-  wallet?: {
-    transfer?: unknown;
-    extension?: {
-      usdcBridge?: unknown;
-    };
-  };
-}
-
-interface LoopProvider {
-  party_id: string;
-  signMessage: (message: string) => Promise<string>;
-  submitTransaction: (command: unknown, options?: {
-    message?: string;
-    estimateTraffic?: boolean;
-  }) => Promise<{
-    command_id: string;
-    submission_id: string;
-  }>;
-  submitAndWaitForTransaction?: (command: unknown, options?: {
-    message?: string;
-  }) => Promise<unknown>;
-  getHolding?: () => Promise<unknown>;
-  getActiveContracts?: (params: {
-    templateId?: string;
-    interfaceId?: string;
-  }) => Promise<unknown>;
-}
+import { loop } from '@fivenorth/loop-sdk';
+import type { LoopProvider } from '@fivenorth/loop-sdk';
 
 /**
  * Loop Wallet adapter
- * 
- * Implements WalletAdapter interface for 5N Loop Wallet.
- * Supports connect, disconnect, signMessage, submitTransaction.
- * 
- * Note: Loop SDK uses QR code/popup flow for connection.
- * Sessions are ephemeral and cannot be restored.
+ *
+ * Implements WalletAdapter interface for 5N Loop Wallet using the official
+ * Loop SDK. The SDK handles QR code display, WebSocket communication, and
+ * popup/tab-based signing flows.
+ *
+ * Note: Loop sessions use WebSocket + localStorage for persistence.
+ * The SDK's autoConnect() can restore sessions if the auth token is still valid.
  */
 export class LoopAdapter implements WalletAdapter {
   readonly walletId = toWalletId('loop');
@@ -206,34 +52,6 @@ export class LoopAdapter implements WalletAdapter {
 
   private currentProvider: LoopProvider | null = null;
 
-  /**
-   * Get Loop SDK instance
-   * Loads from window.loop or global loop if available
-   */
-  private getLoopSDK(): LoopSDK | null {
-    if (typeof window === 'undefined') {
-      return null;
-    }
-
-    // Check for Loop SDK on window (if loaded via script tag)
-    const windowLoop = (window as unknown as { loop?: LoopSDK }).loop;
-    if (windowLoop) {
-      return windowLoop;
-    }
-
-    // Check for global loop (if imported as module)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const globalLoop = (globalThis as any).loop;
-    if (globalLoop) {
-      return globalLoop;
-    }
-
-    return null;
-  }
-
-  /**
-   * Get supported capabilities
-   */
   getCapabilities(): CapabilityKey[] {
     return [
       'connect',
@@ -246,11 +64,11 @@ export class LoopAdapter implements WalletAdapter {
   }
 
   /**
-   * Detect if Loop SDK is available
-   * 
-   * Loop SDK is automatically loaded from CDN when needed.
-   * Since Loop uses QR/popup flow, "installed" always returns true in browser.
-   * The actual wallet connection happens via QR code scan or popup.
+   * Detect if Loop SDK is available.
+   *
+   * Loop uses QR code / popup flow — no browser extension needed.
+   * Always returns true in browser environments since the SDK is
+   * bundled as a dependency.
    */
   async detectInstalled(): Promise<AdapterDetectResult> {
     if (typeof window === 'undefined') {
@@ -260,8 +78,6 @@ export class LoopAdapter implements WalletAdapter {
       };
     }
 
-    // Loop SDK will be lazy-loaded when connect() is called
-    // So we always return true in browser environment
     return {
       installed: true,
       reason: 'Loop Wallet available via QR code scan or popup.',
@@ -269,13 +85,13 @@ export class LoopAdapter implements WalletAdapter {
   }
 
   /**
-   * Connect to Loop Wallet
-   * 
-   * Loop SDK uses a QR code/popup flow:
-   * 1. Lazy-load Loop SDK from CDN (if not already loaded)
-   * 2. Initialize SDK with app name and network
-   * 3. Call connect() which opens QR code modal
-   * 4. User scans QR code with Loop mobile app or approves in popup
+   * Connect to Loop Wallet.
+   *
+   * Flow:
+   * 1. Initialize Loop SDK with app name and network
+   * 2. Call connect() which first tries autoConnect (session restore)
+   * 3. If no cached session, opens QR code overlay for user to scan
+   * 4. User scans QR with Loop mobile app or approves in popup
    * 5. onAccept callback receives provider with party_id
    */
   async connect(
@@ -283,32 +99,14 @@ export class LoopAdapter implements WalletAdapter {
     opts?: {
       timeoutMs?: number;
       partyId?: PartyId;
-    }
+    },
   ): Promise<AdapterConnectResult> {
     try {
       if (typeof window === 'undefined') {
-        throw new WalletNotInstalledError(this.walletId, 'Browser environment required');
-      }
-
-      ctx.logger.debug('Loading Loop SDK...', {
-        appName: ctx.appName,
-        origin: ctx.origin,
-        network: ctx.network,
-      });
-
-      // Lazy-load Loop SDK from CDN
-      try {
-        await loadLoopSDK();
-      } catch (err) {
         throw new WalletNotInstalledError(
-          this.walletId, 
-          `Failed to load Loop SDK: ${err instanceof Error ? err.message : 'Unknown error'}`
+          this.walletId,
+          'Browser environment required',
         );
-      }
-
-      const loopSDK = this.getLoopSDK();
-      if (!loopSDK) {
-        throw new WalletNotInstalledError(this.walletId, 'Loop SDK not available after loading');
       }
 
       ctx.logger.debug('Connecting to Loop Wallet', {
@@ -317,26 +115,29 @@ export class LoopAdapter implements WalletAdapter {
         network: ctx.network,
       });
 
-      // Map network (Loop uses 'local' | 'devnet' | 'mainnet')
+      // Map network to Loop format
       const loopNetwork = this.mapNetworkToLoop(ctx.network);
 
       return new Promise<AdapterConnectResult>((resolve, reject) => {
         let resolved = false;
-        const timeout = opts?.timeoutMs || 300000; // 5 minutes default for QR scan
+        const timeout = opts?.timeoutMs || 300000; // 5 min default for QR scan
 
         const timeoutId = setTimeout(() => {
           if (!resolved) {
             resolved = true;
-            reject(new Error('Connection timeout - user did not complete QR scan'));
+            reject(
+              new Error(
+                'Connection timeout — user did not complete QR scan',
+              ),
+            );
           }
         }, timeout);
 
-        // Initialize Loop SDK
-        loopSDK.init({
+        // Initialize and connect via the official SDK
+        loop.init({
           appName: ctx.appName,
           network: loopNetwork,
           onTransactionUpdate: (payload) => {
-            // Forward transaction updates if adapter.on() is called
             ctx.logger.debug('Loop transaction update', payload);
           },
           options: {
@@ -361,7 +162,6 @@ export class LoopAdapter implements WalletAdapter {
                 walletId: this.walletId,
                 network: ctx.network,
                 createdAt: Date.now(),
-                // Loop sessions are ephemeral
               },
               capabilities: this.getCapabilities(),
             });
@@ -374,8 +174,13 @@ export class LoopAdapter implements WalletAdapter {
           },
         });
 
-        // Initiate connection (opens QR code modal)
-        loopSDK.connect();
+        // Initiate connection (opens QR code overlay or auto-connects)
+        loop.connect().catch((err) => {
+          if (resolved) return;
+          resolved = true;
+          clearTimeout(timeoutId);
+          reject(err);
+        });
       });
     } catch (err) {
       throw mapUnknownErrorToPartyLayerError(err, {
@@ -391,47 +196,86 @@ export class LoopAdapter implements WalletAdapter {
   }
 
   /**
-   * Disconnect from Loop Wallet
+   * Disconnect from Loop Wallet.
+   *
+   * Calls the SDK's logout() which clears the session, closes
+   * the WebSocket, and removes the QR overlay if visible.
    */
   async disconnect(_ctx: AdapterContext, _session: Session): Promise<void> {
-    // Loop SDK doesn't have explicit disconnect
-    // Just clear the provider
+    try {
+      loop.logout();
+    } catch {
+      // Ignore logout errors
+    }
     this.currentProvider = null;
   }
 
   /**
-   * Restore session
-   * 
-   * Loop sessions are ephemeral and require QR code scan for each connection.
-   * However, if the Loop SDK provider is still active (user hasn't disconnected),
-   * we can attempt to restore using the existing provider.
+   * Restore session.
+   *
+   * Loop SDK persists sessions in localStorage. We can attempt
+   * autoConnect() to restore a valid session without showing the QR code.
    */
   async restore(
     ctx: AdapterContext,
-    persisted: PersistedSession
+    persisted: PersistedSession,
   ): Promise<Session | null> {
     try {
-      // Check if Loop SDK is available
-      const detect = await this.detectInstalled();
-      if (!detect.installed) {
-        return null;
-      }
+      if (typeof window === 'undefined') return null;
 
-      // Check if session is expired
       if (persisted.expiresAt && Date.now() >= persisted.expiresAt) {
         return null;
       }
 
-      // Check if we still have an active provider
-      // (This would require Loop SDK to expose a way to check active connection)
-      // For now, Loop doesn't support restoration - user must reconnect
-      // This is documented limitation
-      
-      ctx.logger.debug('Loop Wallet does not support session restoration', {
-        sessionId: persisted.sessionId,
-      });
+      // Try auto-connect — the SDK checks localStorage for a valid auth token
+      const loopNetwork = this.mapNetworkToLoop(persisted.network || ctx.network);
 
-      return null; // Loop requires reconnection via QR code
+      return new Promise<Session | null>((resolve) => {
+        let resolved = false;
+
+        // 5 second timeout for auto-connect
+        const timeoutId = setTimeout(() => {
+          if (!resolved) {
+            resolved = true;
+            ctx.logger.debug(
+              'Loop Wallet auto-connect timed out, session not restorable',
+            );
+            resolve(null);
+          }
+        }, 5000);
+
+        loop.init({
+          appName: ctx.appName,
+          network: loopNetwork,
+          onAccept: (provider: LoopProvider) => {
+            if (resolved) return;
+            resolved = true;
+            clearTimeout(timeoutId);
+
+            this.currentProvider = provider;
+            ctx.logger.debug('Restored Loop Wallet session via auto-connect', {
+              partyId: provider.party_id,
+            });
+
+            resolve({ ...persisted, walletId: this.walletId });
+          },
+          onReject: () => {
+            if (resolved) return;
+            resolved = true;
+            clearTimeout(timeoutId);
+            resolve(null);
+          },
+        });
+
+        // autoConnect checks localStorage and reconnects if valid
+        loop.autoConnect().catch(() => {
+          if (!resolved) {
+            resolved = true;
+            clearTimeout(timeoutId);
+            resolve(null);
+          }
+        });
+      });
     } catch (err) {
       ctx.logger.warn('Failed to restore Loop Wallet session', err);
       return null;
@@ -439,12 +283,12 @@ export class LoopAdapter implements WalletAdapter {
   }
 
   /**
-   * Sign a message
+   * Sign a message.
    */
   async signMessage(
     ctx: AdapterContext,
     session: Session,
-    params: SignMessageParams
+    params: SignMessageParams,
   ): Promise<SignedMessage> {
     try {
       if (!this.currentProvider) {
@@ -478,33 +322,32 @@ export class LoopAdapter implements WalletAdapter {
   }
 
   /**
-   * Sign a transaction
-   * 
-   * Note: Loop SDK's submitTransaction signs and submits in one call.
-   * For signing only, we'd need to use Loop's internal APIs which may not be exposed.
-   * For now, we throw CapabilityNotSupportedError.
+   * Sign a transaction.
+   *
+   * Loop SDK combines signing and submission. For sign-only,
+   * throw CapabilityNotSupportedError.
    */
   async signTransaction(
     _ctx: AdapterContext,
     _session: Session,
-    _params: SignTransactionParams
+    _params: SignTransactionParams,
   ): Promise<SignedTransaction> {
     throw new CapabilityNotSupportedError(
       this.walletId,
-      'signTransaction - Loop SDK combines signing and submission. Use submitTransaction instead.'
+      'signTransaction — Loop SDK combines signing and submission. Use submitTransaction instead.',
     );
   }
 
   /**
-   * Submit a transaction
-   * 
-   * Loop SDK's submitTransaction signs and submits the transaction.
-   * It returns command_id and submission_id.
+   * Submit a transaction.
+   *
+   * Loop SDK's submitTransaction signs and submits the DAML command.
+   * Returns command_id and submission_id.
    */
   async submitTransaction(
     ctx: AdapterContext,
     session: Session,
-    params: SubmitTransactionParams
+    params: SubmitTransactionParams,
   ): Promise<TxReceipt> {
     try {
       if (!this.currentProvider) {
@@ -515,17 +358,15 @@ export class LoopAdapter implements WalletAdapter {
         sessionId: session.sessionId,
       });
 
-      // Loop SDK's submitTransaction takes a DAML command and signs/submits it
-      // params.signedTx should be the DAML command structure
-      const result = await this.currentProvider.submitTransaction(params.signedTx, {
-        message: 'Submit transaction via PartyLayer',
-      });
-
-      // Use command_id as transaction hash
-      const transactionHash = toTransactionHash(result.command_id);
+      const result = await this.currentProvider.submitTransaction(
+        params.signedTx,
+        {
+          message: 'Submit transaction via PartyLayer',
+        },
+      );
 
       return {
-        transactionHash,
+        transactionHash: toTransactionHash(result.command_id),
         submittedAt: Date.now(),
         commandId: result.command_id,
         updateId: result.submission_id,
@@ -543,7 +384,7 @@ export class LoopAdapter implements WalletAdapter {
   }
 
   /**
-   * Map network ID to Loop SDK network format
+   * Map network ID to Loop SDK network format.
    */
   private mapNetworkToLoop(network: string): 'local' | 'devnet' | 'mainnet' {
     if (network === 'local') return 'local';
