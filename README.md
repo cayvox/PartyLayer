@@ -35,7 +35,7 @@ PartyLayer is a production-grade SDK that enables decentralized applications (dA
 
 | Wallet | Type | Transport | Auto-registered | Status |
 |--------|------|-----------|-----------------|--------|
-| **Console Wallet** | Browser Extension | PostMessage | ✅ Yes | Ready |
+| **Console Wallet** | Browser Extension | Injected | ✅ Yes | Ready |
 | **5N Loop** | Mobile / Web | QR Code / Popup | ✅ Yes | Ready |
 | **Cantor8 (C8)** | Browser Extension | Deep Link | ✅ Yes | Ready |
 | **Nightly** | Multichain Wallet | Injected | ✅ Yes | Ready |

@@ -2,14 +2,14 @@
   "name": "partylayer",
   "version": "0.1.0",
   "private": true,
-  "description": "PartyLayer - WalletConnect-like SDK for Canton Network wallets",
+  "description": "PartyLayer - CIP-0103 compliant wallet SDK for Canton Network",
   "repository": {
     "type": "git",
-    "url": "https://github.com/cayvox/PartyLayer.git"
+    "url": "https://github.com/anilkaracay/partylayer.git"
   },
-  "homepage": "https://github.com/cayvox/PartyLayer#readme",
+  "homepage": "https://github.com/anilkaracay/partylayer#readme",
   "bugs": {
-    "url": "https://github.com/cayvox/PartyLayer/issues"
+    "url": "https://github.com/anilkaracay/partylayer/issues"
   },
   "author": "PartyLayer Contributors",
   "scripts": {
