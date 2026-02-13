@@ -10,9 +10,6 @@ import {
   usePartyLayer,
 } from '@partylayer/react';
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic';
-
 // ─── Design Tokens (light + dark, matching marketing/landing page) ──────────
 
 const lightTokens = {
@@ -709,8 +706,11 @@ function CodeBlock() {
 // ─── Page ───────────────────────────────────────────────────────────────────
 
 export default function KitDemoPage() {
+  const [mounted, setMounted] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark' | 'auto'>('light');
   const [systemDark, setSystemDark] = useState(false);
+
+  useEffect(() => { setMounted(true); }, []);
 
   useEffect(() => {
     if (theme !== 'auto') return;
@@ -724,6 +724,8 @@ export default function KitDemoPage() {
 
   const isDark = theme === 'dark' || (theme === 'auto' && systemDark);
   const c = isDark ? darkTokens : lightTokens;
+
+  if (!mounted) return null;
 
   return (
     <TokensContext.Provider value={c}>

@@ -38,9 +38,12 @@ PartyLayer is a production-grade SDK that enables decentralized applications (dA
 | **Console Wallet** | Browser Extension | PostMessage | ✅ Yes | Ready |
 | **5N Loop** | Mobile / Web | QR Code / Popup | ✅ Yes | Ready |
 | **Cantor8 (C8)** | Browser Extension | Deep Link | ✅ Yes | Ready |
+| **Nightly** | Multichain Wallet | Injected | ✅ Yes | Ready |
 | **Bron** | Enterprise | OAuth2 / API | ⚙️ Requires config | Ready |
 
 > **Note**: Bron is an enterprise wallet that requires OAuth configuration. See [Using Bron](#using-bron-enterprise-wallet) for setup instructions.
+>
+> **Native CIP-0103 wallets** are also auto-discovered at runtime via `window.canton.*` — no configuration needed.
 
 ---
 
@@ -54,7 +57,28 @@ Get started in under 3 minutes:
 npm install @partylayer/sdk @partylayer/react
 ```
 
-### 2. Create Client
+### 2. Add to Your App (Zero Config)
+
+```tsx
+import { PartyLayerKit, ConnectButton } from '@partylayer/react';
+
+function App() {
+  return (
+    <PartyLayerKit network="devnet" appName="My dApp">
+      <ConnectButton />
+      <YourApp />
+    </PartyLayerKit>
+  );
+}
+```
+
+That's it! `PartyLayerKit` automatically:
+- Creates and manages the SDK client
+- Registers all built-in wallet adapters (Console, Loop, Cantor8, Nightly)
+- Discovers native CIP-0103 wallets (`window.canton.*`)
+- Provides light/dark/auto theme support
+
+### 3. Connect & Sign (Vanilla JS)
 
 ```typescript
 import { createPartyLayer } from '@partylayer/sdk';
@@ -63,15 +87,7 @@ const client = createPartyLayer({
   network: 'devnet',
   app: { name: 'My dApp' },
 });
-```
 
-That's it! The SDK automatically:
-- Uses the default registry URL
-- Registers all built-in wallet adapters (Console, Loop, Cantor8)
-
-### 3. Connect & Sign
-
-```typescript
 // List available wallets
 const wallets = await client.listWallets();
 
@@ -81,36 +97,6 @@ console.log('Connected:', session.partyId);
 
 // Sign a message
 const signed = await client.signMessage({ message: 'Hello, Canton!' });
-```
-
-### 4. React Integration
-
-```tsx
-import { PartyLayerProvider, WalletModal, useSession } from '@partylayer/react';
-
-function App() {
-  return (
-    <PartyLayerProvider client={client}>
-      <MyDApp />
-    </PartyLayerProvider>
-  );
-}
-
-function ConnectButton() {
-  const session = useSession();
-  const [isOpen, setIsOpen] = useState(false);
-
-  if (session) {
-    return <div>Connected: {session.partyId}</div>;
-  }
-
-  return (
-    <>
-      <button onClick={() => setIsOpen(true)}>Connect Wallet</button>
-      <WalletModal isOpen={isOpen} onClose={() => setIsOpen(false)} />
-    </>
-  );
-}
 ```
 
 ---
@@ -192,12 +178,36 @@ client.on('session:disconnected', () => {
 await client.disconnect();
 ```
 
+### React — PartyLayerKit (Recommended)
+
+The simplest way to add wallet connectivity to a React app:
+
+```tsx
+import { PartyLayerKit, ConnectButton } from '@partylayer/react';
+
+function App() {
+  return (
+    <PartyLayerKit
+      network="devnet"
+      appName="My dApp"
+      theme="auto"  // 'light' | 'dark' | 'auto' | custom theme object
+    >
+      <ConnectButton />
+      <MyDApp />
+    </PartyLayerKit>
+  );
+}
+```
+
+`ConnectButton` renders a RainbowKit-style button that handles the entire connect flow: wallet selection modal, connection, success/error states, and a connected dropdown with disconnect.
+
 ### React Hooks
+
+For custom UIs, use the hooks directly:
 
 ```tsx
 import {
-  PartyLayerProvider,
-  usePartyLayer,
+  PartyLayerKit,
   useSession,
   useWallets,
   useConnect,
@@ -206,22 +216,14 @@ import {
   WalletModal,
 } from '@partylayer/react';
 
-// Provider setup
 function App() {
-  const client = useMemo(() => createPartyLayer({
-    registryUrl: 'https://registry.partylayer.xyz',
-    network: 'devnet',
-    app: { name: 'My dApp' },
-  }), []);
-
   return (
-    <PartyLayerProvider client={client}>
+    <PartyLayerKit network="devnet" appName="My dApp">
       <MyDApp />
-    </PartyLayerProvider>
+    </PartyLayerKit>
   );
 }
 
-// Using hooks
 function WalletStatus() {
   const session = useSession();
   const { wallets, isLoading } = useWallets();
@@ -245,8 +247,8 @@ function WalletStatus() {
     <div>
       {wallets.map((wallet) => (
         <button
-          key={wallet.id}
-          onClick={() => connect({ walletId: wallet.id })}
+          key={String(wallet.walletId)}
+          onClick={() => connect({ walletId: wallet.walletId })}
           disabled={isConnecting}
         >
           Connect {wallet.name}
@@ -263,38 +265,23 @@ function WalletStatus() {
 // app/providers.tsx
 'use client';
 
-import { PartyLayerProvider } from '@partylayer/react';
-import { createPartyLayer } from '@partylayer/sdk';
-import { ConsoleAdapter } from '@partylayer/adapter-console';
-import { LoopAdapter } from '@partylayer/adapter-loop';
+import { PartyLayerKit, ConnectButton } from '@partylayer/react';
 
 export function Providers({ children }: { children: React.ReactNode }) {
-  const [client, setClient] = useState<PartyLayerClient | null>(null);
-
-  useEffect(() => {
-    const cantonClient = createPartyLayer({
-      registryUrl: process.env.NEXT_PUBLIC_REGISTRY_URL!,
-      network: 'devnet',
-      app: { name: 'My Next.js App' },
-    });
-
-    // Register adapters
-    cantonClient.registerAdapter(new ConsoleAdapter());
-    cantonClient.registerAdapter(new LoopAdapter());
-
-    setClient(cantonClient);
-    return () => cantonClient.destroy();
-  }, []);
-
-  if (!client) return <div>Loading...</div>;
-
   return (
-    <PartyLayerProvider client={client}>
+    <PartyLayerKit
+      network="devnet"
+      appName="My Next.js App"
+      registryUrl={process.env.NEXT_PUBLIC_REGISTRY_URL}
+      theme="auto"
+    >
       {children}
-    </PartyLayerProvider>
+    </PartyLayerKit>
   );
 }
 ```
+
+> **Monorepo note**: If using workspace packages, add `@partylayer/*` packages to `transpilePackages` and webpack `resolve.alias` in `next.config.js`. See the demo app for a complete example.
 
 ### Using Bron (Enterprise Wallet)
 
@@ -307,7 +294,7 @@ const client = createPartyLayer({
   network: 'devnet',
   app: { name: 'My dApp' },
   adapters: [
-    ...getBuiltinAdapters(), // Console, Loop, Cantor8
+    ...getBuiltinAdapters(), // Console, Loop, Cantor8, Nightly
     new BronAdapter({
       auth: {
         clientId: 'your-client-id',
@@ -377,6 +364,7 @@ graph TD
         H[Loop]
         I[Cantor8]
         J[Bron]
+        O[Nightly]
     end
 
     subgraph Wallets[Canton Wallets]
@@ -384,6 +372,11 @@ graph TD
         L[5N Loop]
         M[Cantor8 Wallet]
         N[Bron Wallet]
+        P[Nightly Wallet]
+    end
+
+    subgraph Native[CIP-0103 Native]
+        Q[window.canton.*]
     end
 
     A --> B
@@ -395,10 +388,13 @@ graph TD
     C --> H
     C --> I
     C --> J
+    C --> O
     G --> K
     H --> L
     I --> M
     J --> N
+    O --> P
+    B -.->|auto-discovery| Q
 ```
 
 ### Package Structure
@@ -415,6 +411,7 @@ graph TD
 | `@partylayer/adapter-loop` | 5N Loop adapter |
 | `@partylayer/adapter-cantor8` | Cantor8 adapter |
 | `@partylayer/adapter-bron` | Bron adapter |
+| `@partylayer/adapter-nightly` | Nightly multichain wallet adapter |
 
 ---
 
@@ -444,13 +441,15 @@ const client = createPartyLayer(config: PartyLayerConfig);
 
 | Method | Description |
 |--------|-------------|
-| `listWallets(filter?)` | List available wallets from registry |
+| `listWallets(filter?)` | List available wallets (registry + registered adapters) |
 | `connect(options?)` | Connect to a wallet |
 | `disconnect()` | Disconnect from current wallet |
 | `getActiveSession()` | Get the current active session |
 | `signMessage(params)` | Sign an arbitrary message |
 | `signTransaction(params)` | Sign a transaction |
 | `submitTransaction(params)` | Submit a signed transaction |
+| `registerAdapter(adapter)` | Register a custom wallet adapter at runtime |
+| `asProvider()` | Get a CIP-0103 compliant Provider bridge |
 | `on(event, handler)` | Subscribe to events |
 | `off(event, handler)` | Unsubscribe from events |
 | `destroy()` | Clean up client resources |
@@ -461,11 +460,15 @@ const client = createPartyLayer(config: PartyLayerConfig);
 |------|-------------|
 | `usePartyLayer()` | Access the SDK client instance |
 | `useSession()` | Get the current session |
-| `useWallets()` | Get available wallets |
+| `useWallets()` | Get available wallets (registry + native CIP-0103) |
 | `useConnect()` | Connect hook with loading state |
 | `useDisconnect()` | Disconnect hook with loading state |
 | `useSignMessage()` | Sign message hook |
+| `useSignTransaction()` | Sign transaction hook |
+| `useSubmitTransaction()` | Submit transaction hook |
 | `useRegistryStatus()` | Get registry status |
+| `useWalletIcons()` | Access wallet icon overrides from PartyLayerKit |
+| `useTheme()` | Access current theme (light/dark/auto) |
 
 ### Events
 
@@ -719,7 +722,8 @@ wallet-sdk/
 │       ├── console/
 │       ├── loop/
 │       ├── cantor8/
-│       └── bron/
+│       ├── bron/
+│       └── nightly/
 ├── apps/
 │   ├── demo/              # Next.js demo application
 │   └── registry-server/   # Registry server
@@ -753,11 +757,14 @@ Want to add support for a new wallet? See the [Wallet Provider Guide](./docs/wal
 
 - [ ] Multi-party support (multiple parties per session)
 - [ ] Transaction batching
-- [ ] Mobile wallet deep links
 - [ ] Offline transaction preparation
 - [x] CIP-0103 (Canton dApp Standard) compliance
-- [x] Wallet discovery via browser extensions
-- [ ] Enhanced telemetry (opt-in)
+- [x] Native CIP-0103 wallet discovery (`window.canton.*`)
+- [x] Enhanced telemetry (opt-in, privacy-safe)
+- [x] PartyLayerKit zero-config React wrapper
+- [x] ConnectButton with wallet modal
+- [x] Light/dark/auto theme support
+- [x] Nightly multichain wallet support
 
 ---
 
@@ -766,31 +773,37 @@ Want to add support for a new wallet? See the [Wallet Provider Guide](./docs/wal
 <details>
 <summary><strong>Which wallets are supported?</strong></summary>
 
-Currently supported: Console Wallet, 5N Loop, Cantor8, and Bron. All adapters are included in the SDK.
+5 wallets built-in: Console Wallet, 5N Loop, Cantor8, Nightly, and Bron. Console, Loop, Cantor8, and Nightly are auto-registered. Bron requires OAuth configuration. Additionally, any CIP-0103 compliant wallet injected at `window.canton.*` is auto-discovered at runtime.
+</details>
+
+<details>
+<summary><strong>What is PartyLayerKit vs PartyLayerProvider?</strong></summary>
+
+`PartyLayerKit` is a zero-config wrapper that creates the SDK client, registers adapters, discovers native wallets, and sets up theming — all automatically. `PartyLayerProvider` is the lower-level context provider for advanced use cases where you need full control over client configuration. For most apps, use `PartyLayerKit`.
 </details>
 
 <details>
 <summary><strong>Do I need to install wallet adapters separately?</strong></summary>
 
-No! All wallet adapters are bundled with `@partylayer/sdk`. Just install the SDK and you're ready to go.
+No! All wallet adapters (except Bron) are bundled with `@partylayer/sdk`. Just install the SDK and you're ready to go.
 </details>
 
 <details>
 <summary><strong>How does session persistence work?</strong></summary>
 
-Sessions are encrypted and stored in localStorage. On page reload, the SDK attempts to restore existing sessions. Wallets that support session restoration (like Console) will automatically reconnect.
+Sessions are encrypted and stored in localStorage. On page reload, the SDK attempts to restore existing sessions. Wallets that support session restoration (like Console and Nightly) will automatically reconnect.
 </details>
 
 <details>
 <summary><strong>Is the SDK compatible with Next.js?</strong></summary>
 
-Yes! PartyLayer works with Next.js. Use the `'use client'` directive and initialize the client in a `useEffect` hook to ensure it runs only on the client side.
+Yes! Use `PartyLayerKit` with the `'use client'` directive. For monorepo setups, add `@partylayer/*` packages to `transpilePackages` in `next.config.js`.
 </details>
 
 <details>
 <summary><strong>How do I handle connection errors?</strong></summary>
 
-PartyLayer exports typed error classes. Use `try-catch` with `instanceof` checks to handle specific error types like `WalletNotInstalledError` or `UserRejectedError`.
+PartyLayer exports typed error classes. Use `try-catch` with `instanceof` checks to handle specific error types like `WalletNotInstalledError` or `UserRejectedError`. The `WalletModal` component handles these automatically with dedicated error views.
 </details>
 
 ---

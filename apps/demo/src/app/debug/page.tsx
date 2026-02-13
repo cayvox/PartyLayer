@@ -12,9 +12,6 @@ import {
   type DiscoveredProvider,
 } from '@partylayer/provider';
 
-// Force dynamic rendering
-export const dynamic = 'force-dynamic';
-
 // ─── CIP-0103 Discovery Panel ─────────────────────────────────────────────
 
 interface ProviderProbeResult {

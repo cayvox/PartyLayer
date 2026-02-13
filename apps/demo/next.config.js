@@ -20,7 +20,12 @@ const nextConfig = {
     esmExternals: 'loose',
   },
   // Webpack configuration to resolve workspace packages
-  webpack: (config, { isServer }) => {
+  webpack: (config, { isServer, dev }) => {
+    // Use memory cache in dev to prevent stale chunk errors after file edits
+    if (dev) {
+      config.cache = { type: 'memory' };
+    }
+
     // Resolve workspace packages
     config.resolve.alias = {
       ...config.resolve.alias,

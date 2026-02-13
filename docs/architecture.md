@@ -44,8 +44,8 @@ PartyLayer supports two integration paths. dApps can use either or both:
            │                                          │
            ▼                                          ▼
 ┌──────────────────────────┐           ┌──────────────────────────────┐
-│  Native CIP-0103 Wallets │           │  Wallet Adapters             │
-│  (window.canton.*)       │           │  Console, Loop, Cantor8, Bron│
+│  Native CIP-0103 Wallets │           │  Wallet Adapters                    │
+│  (window.canton.*)       │           │  Console, Loop, Cantor8, Nightly, Bron│
 └──────────────────────────┘           └──────────────────────────────┘
                                                       │
                     ┌────────────────┐                 │
@@ -131,19 +131,44 @@ Each adapter implements the `WalletAdapter` interface:
 - `submitTransaction()`: Submit signed transactions
 - `restoreSession()`: Restore existing session (if supported)
 
+**Built-in adapters (auto-registered):**
+- `ConsoleAdapter`: Browser extension, PostMessage transport
+- `LoopAdapter`: Mobile/Web, QR code/popup transport
+- `Cantor8Adapter`: Browser extension, deep link transport
+- `NightlyAdapter`: Multichain wallet, injected transport (`window.nightly.canton`). Uses callback-based signing wrapped in Promises. Combined sign+submit via `submitTransactionCommand()`
+
+**Enterprise adapter (requires config):**
+- `BronAdapter`: OAuth2/API transport, requires explicit authentication configuration
+
 ### `@partylayer/react`
 
-React hooks and components for easy integration.
+React hooks, components, and theming for easy integration.
 
-**Exports:**
-- `PartyLayerProvider`: Context provider
-- `usePartyLayer()`: Access SDK instance
-- `useWallets()`: Get available wallets
-- `useSessions()`: Get active sessions
-- `useConnect()`: Connect hook
+**Components:**
+- `PartyLayerKit`: Zero-config wrapper (creates client, registers adapters, discovers wallets, provides theme)
+- `ConnectButton`: RainbowKit-style connect button with wallet modal and connected dropdown
+- `WalletModal`: Multi-state wallet selection modal (list, connecting, success, error, not-installed views)
+- `PartyLayerProvider`: Lower-level context provider for advanced use cases
+- `ThemeProvider`: Theme context provider (light/dark/auto)
+
+**Hooks:**
+- `usePartyLayer()`: Access SDK client instance
+- `useSession()`: Get active session
+- `useWallets()`: Get available wallets (registry + native CIP-0103)
+- `useConnect()`: Connect hook with loading/error state
 - `useDisconnect()`: Disconnect hook
 - `useSignMessage()`: Sign message hook
-- `WalletModal`: Wallet selection modal component
+- `useSignTransaction()`: Sign transaction hook
+- `useSubmitTransaction()`: Submit transaction hook
+- `useRegistryStatus()`: Registry health status
+- `useWalletIcons()`: Access wallet icon overrides from PartyLayerKit
+- `useTheme()`: Access current theme
+
+**Native CIP-0103 Adapter:**
+- `NativeCIP0103Adapter`: Wraps discovered CIP-0103 providers as `WalletAdapter`
+- `createNativeAdapter()`: Factory for native adapters
+- `createSyntheticWalletInfo()`: Creates `WalletInfo` from discovered provider
+- `enrichProviderInfo()`: Fetches provider name/status info
 
 ## Sequence Diagrams
 
@@ -325,10 +350,18 @@ All SDK error classes are bidirectionally mapped to `ProviderRpcError` codes via
 - `txChanged`: Transaction lifecycle update (pending → signed → executed / failed)
 - `connected`: Wallet connected (used in async connect flows)
 
+## Recent Additions
+
+- **Native CIP-0103 wallet discovery** via `window.canton.*` with delayed re-discovery for late-injecting extensions
+- **PartyLayerKit** zero-config React wrapper with theme support
+- **ConnectButton** and enhanced **WalletModal** with multi-state flow
+- **Nightly wallet adapter** with callback-based signing
+- **Registry resilience** — `listWallets()` falls back to adapter-generated WalletInfo
+- **Opt-in telemetry** with privacy-safe metrics (SHA-256 hashed identifiers, PII validation)
+- **Theme system** with light/dark/auto presets and full token customization
+
 ## Future Enhancements
 
 - Multi-party support (multiple parties per session)
 - Transaction batching
 - Offline transaction preparation
-- Enhanced telemetry (opt-in)
-- Mobile wallet support via deep links
