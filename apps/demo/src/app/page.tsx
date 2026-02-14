@@ -36,7 +36,7 @@ const t = {
   ease: 'cubic-bezier(0.2, 0.8, 0.2, 1)',
 };
 
-const GITHUB_URL = 'https://github.com/cayvox/PartyLayer';
+const GITHUB_URL = 'https://github.com/PartyLayer/PartyLayer';
 const NPM_URL = 'https://www.npmjs.com/package/@partylayer/sdk';
 
 /* ─── Wallet Data ──────────────────────────────────────────────────────── */

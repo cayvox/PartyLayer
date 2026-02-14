@@ -1,6 +1,7 @@
 import { chromium } from 'playwright';
 
-const extensionPath = '/Users/anilkaracay/Library/Application Support/Google/Chrome/Default/Extensions/lpnfhpbpmlobjlgkdmnjieeihjmihhjd/1.5.3_0';
+// Set this to your local Chrome extension path for the wallet you want to scan
+const extensionPath = process.env.WALLET_EXTENSION_PATH || '';
 
 const context = await chromium.launchPersistentContext('', {
   headless: false,

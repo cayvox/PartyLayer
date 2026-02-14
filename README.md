@@ -675,8 +675,8 @@ console.log(formatCIP0103Report(report));
 
 ```bash
 # Clone the repository
-git clone https://github.com/anilkaracay/partylayer.git
-cd partylayer
+git clone https://github.com/PartyLayer/PartyLayer.git
+cd PartyLayer
 
 # Install dependencies
 pnpm install
@@ -824,8 +824,8 @@ PartyLayer exports typed error classes. Use `try-catch` with `instanceof` checks
 
 ## Support
 
-- [GitHub Issues](https://github.com/anilkaracay/partylayer/issues) - Bug reports and feature requests
-- [Discussions](https://github.com/anilkaracay/partylayer/discussions) - Questions and community
+- [GitHub Issues](https://github.com/PartyLayer/PartyLayer/issues) - Bug reports and feature requests
+- [Discussions](https://github.com/PartyLayer/PartyLayer/discussions) - Questions and community
 
 ---
 
@@ -847,6 +847,6 @@ MIT License - see [LICENSE](./LICENSE) for details.
 
 **Built with ❤️ for the Canton Network ecosystem**
 
-[Website](https://partylayer.xyz) | [Documentation](./docs/) | [GitHub](https://github.com/anilkaracay/partylayer)
+[Website](https://partylayer.xyz) | [Documentation](./docs/) | [GitHub](https://github.com/PartyLayer/PartyLayer)
 
 </div>

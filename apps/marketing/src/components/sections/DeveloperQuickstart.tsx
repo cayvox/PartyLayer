@@ -116,7 +116,7 @@ export function DeveloperQuickstart() {
         {/* Quick Links */}
         <div className="mt-8 flex flex-wrap justify-center gap-4">
           <a
-            href="https://github.com/cayvox/PartyLayer#readme"
+            href="https://github.com/PartyLayer/PartyLayer#readme"
             target="_blank"
             rel="noopener noreferrer"
             className={cn(
@@ -132,7 +132,7 @@ export function DeveloperQuickstart() {
             Full Documentation
           </a>
           <a
-            href="https://github.com/cayvox/PartyLayer/tree/main/examples"
+            href="https://github.com/PartyLayer/PartyLayer/tree/main/examples"
             target="_blank"
             rel="noopener noreferrer"
             className={cn(

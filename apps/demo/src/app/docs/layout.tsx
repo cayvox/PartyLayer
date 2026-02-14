@@ -506,7 +506,7 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
             </button>
 
             <div style={{ display: 'flex', alignItems: 'center', gap: 16 }}>
-              <a href="https://github.com/cayvox/PartyLayer" target="_blank" rel="noopener noreferrer"
+              <a href="https://github.com/PartyLayer/PartyLayer" target="_blank" rel="noopener noreferrer"
                 style={{ color: t.slate500, display: 'flex', alignItems: 'center' }}
               >
                 <svg width={20} height={20} viewBox="0 0 24 24" fill="currentColor">

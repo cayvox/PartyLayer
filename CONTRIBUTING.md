@@ -48,7 +48,7 @@ cd wallet-sdk
 3. Add the upstream remote:
 
 ```bash
-git remote add upstream https://github.com/cayvox/PartyLayer.git
+git remote add upstream https://github.com/PartyLayer/PartyLayer.git
 ```
 
 ---
@@ -408,8 +408,8 @@ export function createPartyLayer(config: PartyLayerConfig): PartyLayerClient {
 
 ## Questions?
 
-- Open a [Discussion](https://github.com/cayvox/PartyLayer/discussions) for questions
-- Check existing [Issues](https://github.com/cayvox/PartyLayer/issues) before opening new ones
+- Open a [Discussion](https://github.com/PartyLayer/PartyLayer/discussions) for questions
+- Check existing [Issues](https://github.com/PartyLayer/PartyLayer/issues) before opening new ones
 - Join our community channels for real-time help
 
 ---

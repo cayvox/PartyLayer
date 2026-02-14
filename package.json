@@ -5,11 +5,11 @@
   "description": "PartyLayer - CIP-0103 compliant wallet SDK for Canton Network",
   "repository": {
     "type": "git",
-    "url": "https://github.com/anilkaracay/partylayer.git"
+    "url": "https://github.com/PartyLayer/PartyLayer.git"
   },
-  "homepage": "https://github.com/anilkaracay/partylayer#readme",
+  "homepage": "https://github.com/PartyLayer/PartyLayer#readme",
   "bugs": {
-    "url": "https://github.com/anilkaracay/partylayer/issues"
+    "url": "https://github.com/PartyLayer/PartyLayer/issues"
   },
   "author": "PartyLayer Contributors",
   "scripts": {

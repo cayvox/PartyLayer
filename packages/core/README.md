@@ -244,9 +244,9 @@ try {
 
 ## Links
 
-- [GitHub Repository](https://github.com/cayvox/PartyLayer)
-- [Wallet Provider Guide](https://github.com/cayvox/PartyLayer/blob/main/docs/wallet-provider-guide.md)
-- [Report Issues](https://github.com/cayvox/PartyLayer/issues)
+- [GitHub Repository](https://github.com/PartyLayer/PartyLayer)
+- [Wallet Provider Guide](https://github.com/PartyLayer/PartyLayer/blob/main/docs/wallet-provider-guide.md)
+- [Report Issues](https://github.com/PartyLayer/PartyLayer/issues)
 
 ---
 

@@ -114,7 +114,7 @@ export function FAQ() {
           <p className="text-body text-slate-500">
             Still have questions?{' '}
             <a
-              href="https://github.com/cayvox/PartyLayer/discussions"
+              href="https://github.com/PartyLayer/PartyLayer/discussions"
               target="_blank"
               rel="noopener noreferrer"
               className="text-brand-600 hover:text-brand-500 underline underline-offset-2"

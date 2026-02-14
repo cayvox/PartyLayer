@@ -391,9 +391,9 @@ export default function App() {
 
 ## Links
 
-- [GitHub Repository](https://github.com/cayvox/PartyLayer)
-- [Documentation](https://github.com/cayvox/PartyLayer#readme)
-- [Report Issues](https://github.com/cayvox/PartyLayer/issues)
+- [GitHub Repository](https://github.com/PartyLayer/PartyLayer)
+- [Documentation](https://github.com/PartyLayer/PartyLayer#readme)
+- [Report Issues](https://github.com/PartyLayer/PartyLayer/issues)
 - [Canton Network](https://www.canton.network/)
 
 ---
