@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect, useRef, createContext, useContext, type ReactNode, type CSSProperties } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
+import { useBreakpoint, responsive } from '../hooks/useBreakpoint';
 
 /* ─── Design Tokens ──────────────────────────────────────────────────────── */
 
@@ -246,6 +247,7 @@ export function useDocs(): DocComponents {
 /* ─── Layout Component ───────────────────────────────────────────────────── */
 
 export default function DocsLayout({ children }: { children: ReactNode }) {
+  const bp = useBreakpoint();
   const pathname = usePathname();
   const router = useRouter();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -269,20 +271,20 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
 
   /* ── Shared doc components ── */
   const H1 = useCallback(({ children: c }: { children: ReactNode }) => (
-    <h1 style={{ fontSize: 32, fontWeight: 700, letterSpacing: '-0.02em', color: t.fg, marginBottom: 8, lineHeight: 1.2, fontFamily: t.font }}>{c}</h1>
-  ), []);
+    <h1 style={{ fontSize: responsive(bp, 26, 28, 32), fontWeight: 700, letterSpacing: '-0.02em', color: t.fg, marginBottom: 8, lineHeight: 1.2, fontFamily: t.font }}>{c}</h1>
+  ), [bp]);
 
   const H2 = useCallback(({ children: c, id }: { children: ReactNode; id?: string }) => (
-    <h2 id={id} style={{ fontSize: 24, fontWeight: 600, color: t.fg, marginTop: 48, marginBottom: 16, paddingTop: 24, borderTop: `1px solid ${t.border}`, lineHeight: 1.3, fontFamily: t.font }}>{c}</h2>
-  ), []);
+    <h2 id={id} style={{ fontSize: responsive(bp, 20, 22, 24), fontWeight: 600, color: t.fg, marginTop: responsive(bp, 32, 40, 48), marginBottom: 16, paddingTop: responsive(bp, 16, 20, 24), borderTop: `1px solid ${t.border}`, lineHeight: 1.3, fontFamily: t.font }}>{c}</h2>
+  ), [bp]);
 
   const H3 = useCallback(({ children: c, id }: { children: ReactNode; id?: string }) => (
-    <h3 id={id} style={{ fontSize: 18, fontWeight: 600, color: t.fg, marginTop: 32, marginBottom: 12, lineHeight: 1.4, fontFamily: t.font }}>{c}</h3>
-  ), []);
+    <h3 id={id} style={{ fontSize: responsive(bp, 16, 17, 18), fontWeight: 600, color: t.fg, marginTop: responsive(bp, 24, 28, 32), marginBottom: 12, lineHeight: 1.4, fontFamily: t.font }}>{c}</h3>
+  ), [bp]);
 
   const P = useCallback(({ children: c }: { children: ReactNode }) => (
-    <p style={{ fontSize: 15, lineHeight: 1.7, color: t.slate600, marginBottom: 16, fontFamily: t.font }}>{c}</p>
-  ), []);
+    <p style={{ fontSize: responsive(bp, 14, 15, 15), lineHeight: 1.7, color: t.slate600, marginBottom: 16, fontFamily: t.font }}>{c}</p>
+  ), [bp]);
 
   const Code = useCallback(({ children: c }: { children: string }) => (
     <code style={{
@@ -296,32 +298,59 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
     <CodeBlockComponent language={language} title={title}>{c}</CodeBlockComponent>
   ), []);
 
-  const PropsTable = useCallback(({ data }: { data: { prop: string; type: string; default?: string; description: string }[] }) => (
-    <div style={{ overflowX: 'auto', marginBottom: 24 }}>
-      <table style={{
-        width: '100%', borderCollapse: 'collapse', fontSize: 14, fontFamily: t.font,
-        border: `1px solid ${t.border}`, borderRadius: t.radius.sm, overflow: 'hidden',
-      }}>
-        <thead>
-          <tr style={{ background: t.muted }}>
-            {['Prop', 'Type', 'Default', 'Description'].map(h => (
-              <th key={h} style={{ textAlign: 'left', padding: '10px 14px', fontWeight: 600, color: t.fg, borderBottom: `1px solid ${t.border}`, fontSize: 13 }}>{h}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
+  const PropsTable = useCallback(({ data }: { data: { prop: string; type: string; default?: string; description: string }[] }) => {
+    if (bp === 'mobile') {
+      return (
+        <div style={{ marginBottom: 24, display: 'flex', flexDirection: 'column', gap: 12 }}>
           {data.map(row => (
-            <tr key={row.prop} style={{ borderBottom: `1px solid ${t.border}` }}>
-              <td style={{ padding: '10px 14px', fontFamily: t.mono, fontSize: 13, color: t.brand600, fontWeight: 500 }}>{row.prop}</td>
-              <td style={{ padding: '10px 14px', fontFamily: t.mono, fontSize: 12.5, color: t.slate600 }}>{row.type}</td>
-              <td style={{ padding: '10px 14px', fontFamily: t.mono, fontSize: 12.5, color: t.slate500 }}>{row.default || '—'}</td>
-              <td style={{ padding: '10px 14px', color: t.slate600, fontSize: 13.5 }}>{row.description}</td>
-            </tr>
+            <div key={row.prop} style={{
+              border: `1px solid ${t.border}`, borderRadius: t.radius.sm,
+              padding: '12px 14px', background: t.bg,
+            }}>
+              <div style={{ fontFamily: t.mono, fontSize: 13, color: t.brand600, fontWeight: 600, marginBottom: 8 }}>{row.prop}</div>
+              <div style={{ fontSize: 12, color: t.slate500, marginBottom: 4 }}>
+                <span style={{ fontWeight: 600, color: t.slate600 }}>Type: </span>
+                <code style={{ fontFamily: t.mono, fontSize: 12 }}>{row.type}</code>
+              </div>
+              {row.default && (
+                <div style={{ fontSize: 12, color: t.slate500, marginBottom: 4 }}>
+                  <span style={{ fontWeight: 600, color: t.slate600 }}>Default: </span>
+                  <code style={{ fontFamily: t.mono, fontSize: 12 }}>{row.default}</code>
+                </div>
+              )}
+              <div style={{ fontSize: 13, color: t.slate600, marginTop: 6, lineHeight: 1.5 }}>{row.description}</div>
+            </div>
           ))}
-        </tbody>
-      </table>
-    </div>
-  ), []);
+        </div>
+      );
+    }
+    return (
+      <div style={{ overflowX: 'auto', marginBottom: 24 }}>
+        <table style={{
+          width: '100%', borderCollapse: 'collapse', fontSize: 14, fontFamily: t.font,
+          border: `1px solid ${t.border}`, borderRadius: t.radius.sm, overflow: 'hidden',
+        }}>
+          <thead>
+            <tr style={{ background: t.muted }}>
+              {['Prop', 'Type', 'Default', 'Description'].map(h => (
+                <th key={h} style={{ textAlign: 'left', padding: '10px 14px', fontWeight: 600, color: t.fg, borderBottom: `1px solid ${t.border}`, fontSize: 13 }}>{h}</th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {data.map(row => (
+              <tr key={row.prop} style={{ borderBottom: `1px solid ${t.border}` }}>
+                <td style={{ padding: '10px 14px', fontFamily: t.mono, fontSize: 13, color: t.brand600, fontWeight: 500 }}>{row.prop}</td>
+                <td style={{ padding: '10px 14px', fontFamily: t.mono, fontSize: 12.5, color: t.slate600 }}>{row.type}</td>
+                <td style={{ padding: '10px 14px', fontFamily: t.mono, fontSize: 12.5, color: t.slate500 }}>{row.default || '—'}</td>
+                <td style={{ padding: '10px 14px', color: t.slate600, fontSize: 13.5 }}>{row.description}</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+    );
+  }, [bp]);
 
   const Callout = useCallback(({ type = 'tip', title, children: c }: { type?: 'tip' | 'warning' | 'note'; title?: string; children: ReactNode }) => {
     const styles = {
@@ -331,9 +360,9 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
     }[type];
     return (
       <div style={{
-        padding: '14px 16px', marginBottom: 24, borderRadius: t.radius.sm,
+        padding: responsive(bp, '12px 14px', '14px 16px', '14px 16px'), marginBottom: 24, borderRadius: t.radius.sm,
         background: styles.bg, borderLeft: `3px solid ${styles.border}`,
-        fontSize: 14, lineHeight: 1.6, color: t.slate700, fontFamily: t.font,
+        fontSize: responsive(bp, 13, 14, 14), lineHeight: 1.6, color: t.slate700, fontFamily: t.font,
       }}>
         <div style={{ fontWeight: 600, marginBottom: 4, color: styles.fg }}>
           {styles.icon} {title || styles.defaultTitle}
@@ -341,7 +370,7 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
         {c}
       </div>
     );
-  }, []);
+  }, [bp]);
 
   const TabGroup = useCallback(({ tabs }: { tabs: { label: string; content: string; language?: string }[] }) => (
     <TabGroupComponent tabs={tabs} />
@@ -349,14 +378,16 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
 
   const PrevNext = useCallback(() => (
     <div style={{
-      display: 'flex', justifyContent: 'space-between', marginTop: 64,
+      display: 'flex', flexDirection: bp === 'mobile' ? 'column' : 'row',
+      justifyContent: 'space-between', marginTop: responsive(bp, 40, 52, 64),
       paddingTop: 24, borderTop: `1px solid ${t.border}`,
+      gap: bp === 'mobile' ? 12 : undefined,
     }}>
       {prev ? (
         <Link href={prev.href} style={{
           display: 'flex', flexDirection: 'column', gap: 4, textDecoration: 'none',
           padding: '12px 16px', borderRadius: t.radius.sm, border: `1px solid ${t.border}`,
-          transition: `all 150ms ${t.ease}`, maxWidth: '45%',
+          transition: `all 150ms ${t.ease}`, maxWidth: bp === 'mobile' ? '100%' : '45%',
         }}
           onMouseOver={e => { e.currentTarget.style.borderColor = t.brand500; e.currentTarget.style.background = t.brand50; }}
           onMouseOut={e => { e.currentTarget.style.borderColor = t.border; e.currentTarget.style.background = 'transparent'; }}
@@ -369,7 +400,8 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
         <Link href={next.href} style={{
           display: 'flex', flexDirection: 'column', gap: 4, textDecoration: 'none',
           padding: '12px 16px', borderRadius: t.radius.sm, border: `1px solid ${t.border}`,
-          transition: `all 150ms ${t.ease}`, textAlign: 'right', maxWidth: '45%',
+          transition: `all 150ms ${t.ease}`, textAlign: bp === 'mobile' ? 'left' : 'right',
+          maxWidth: bp === 'mobile' ? '100%' : '45%',
         }}
           onMouseOver={e => { e.currentTarget.style.borderColor = t.brand500; e.currentTarget.style.background = t.brand50; }}
           onMouseOut={e => { e.currentTarget.style.borderColor = t.border; e.currentTarget.style.background = 'transparent'; }}
@@ -379,15 +411,15 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
         </Link>
       ) : <div />}
     </div>
-  ), [prev, next]);
+  ), [prev, next, bp]);
 
   const UL = useCallback(({ children: c }: { children: ReactNode }) => (
-    <ul style={{ paddingLeft: 24, marginBottom: 16, fontSize: 15, lineHeight: 1.7, color: t.slate600, fontFamily: t.font }}>{c}</ul>
-  ), []);
+    <ul style={{ paddingLeft: 24, marginBottom: 16, fontSize: responsive(bp, 14, 15, 15), lineHeight: 1.7, color: t.slate600, fontFamily: t.font }}>{c}</ul>
+  ), [bp]);
 
   const OL = useCallback(({ children: c }: { children: ReactNode }) => (
-    <ol style={{ paddingLeft: 24, marginBottom: 16, fontSize: 15, lineHeight: 1.7, color: t.slate600, fontFamily: t.font }}>{c}</ol>
-  ), []);
+    <ol style={{ paddingLeft: 24, marginBottom: 16, fontSize: responsive(bp, 14, 15, 15), lineHeight: 1.7, color: t.slate600, fontFamily: t.font }}>{c}</ol>
+  ), [bp]);
 
   const LI = useCallback(({ children: c }: { children: ReactNode }) => (
     <li style={{ marginBottom: 6 }}>{c}</li>
@@ -439,7 +471,7 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
               {/* Logo */}
               <Link href="/" style={{ display: 'inline-flex', alignItems: 'center', textDecoration: 'none' }}>
                 <img src="/partylayer.xyz.svg" alt="PartyLayer" draggable={false}
-                  style={{ height: 96, marginTop: -35, marginBottom: -35, marginLeft: -9 }} />
+                  style={{ height: bp === 'mobile' ? 72 : 96, marginTop: bp === 'mobile' ? -25 : -35, marginBottom: bp === 'mobile' ? -25 : -35, marginLeft: bp === 'mobile' ? -7 : -9 }} />
               </Link>
               <span style={{ fontSize: 13, fontWeight: 500, color: t.slate400, padding: '3px 8px', background: t.muted, borderRadius: 6 }}>Docs</span>
             </div>
@@ -486,6 +518,7 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
                   fontSize: 13, fontWeight: 600, color: t.fg, textDecoration: 'none',
                   padding: '6px 14px', borderRadius: t.radius.sm,
                   background: t.brand500, transition: `all 150ms ${t.ease}`,
+                  display: bp === 'mobile' ? 'none' : undefined,
                 }}
                 onMouseOver={e => { e.currentTarget.style.background = t.brand600; }}
                 onMouseOut={e => { e.currentTarget.style.background = t.brand500; }}
@@ -499,7 +532,7 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
         <div style={{ display: 'flex', flex: 1, maxWidth: 1200, margin: '0 auto', width: '100%' }}>
           {/* Sidebar */}
           <aside
-            className={mobileOpen ? 'docs-sidebar-open' : ''}
+            className={`docs-sidebar${mobileOpen ? ' docs-sidebar-open' : ''}`}
             style={{
               width: d.sidebarWidth, flexShrink: 0,
               borderRight: `1px solid ${t.border}`,
@@ -555,7 +588,8 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
           {/* Main content */}
           <main style={{
             flex: 1, maxWidth: d.contentMaxWidth,
-            padding: '40px 48px 80px', minHeight: 'calc(100vh - 56px)',
+            padding: responsive(bp, '24px 16px 48px', '32px 32px 64px', '40px 48px 80px'),
+            minHeight: 'calc(100vh - 56px)',
           }}>
             {children}
           </main>
@@ -570,6 +604,17 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
         />
       )}
 
+      {/* Mobile sidebar overlay backdrop */}
+      {mobileOpen && bp !== 'desktop' && (
+        <div
+          onClick={() => setMobileOpen(false)}
+          style={{
+            position: 'fixed', inset: 0, top: 56, zIndex: 29,
+            background: 'rgba(0,0,0,0.3)', backdropFilter: 'blur(2px)',
+          }}
+        />
+      )}
+
       {/* Mobile sidebar styles + responsive tweaks */}
       <style>{`
         .docs-mobile-toggle { display: none !important; }
@@ -577,6 +622,20 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
           .docs-mobile-toggle { display: block !important; }
           .docs-search-btn { flex: 0 1 40px !important; overflow: hidden !important; }
           .docs-search-btn span, .docs-search-btn kbd { display: none !important; }
+          .docs-sidebar { display: none !important; }
+          .docs-sidebar.docs-sidebar-open {
+            display: block !important;
+            position: fixed !important;
+            top: 56px !important;
+            left: 0 !important;
+            width: 280px !important;
+            height: calc(100vh - 56px) !important;
+            z-index: 30 !important;
+            background: #fff !important;
+            border-right: 1px solid rgba(15,23,42,0.10) !important;
+            box-shadow: 4px 0 24px rgba(0,0,0,0.08) !important;
+            overflow-y: auto !important;
+          }
         }
       `}</style>
     </DocContext.Provider>
@@ -587,6 +646,7 @@ export default function DocsLayout({ children }: { children: ReactNode }) {
 
 function CodeBlockComponent({ language, title, children }: { language?: string; title?: string; children: string }) {
   const [copied, setCopied] = useState(false);
+  const cbBp = useBreakpoint();
 
   const handleCopy = useCallback(() => {
     navigator.clipboard.writeText(children).then(() => {
@@ -600,7 +660,7 @@ function CodeBlockComponent({ language, title, children }: { language?: string; 
       {(title || language) && (
         <div style={{
           display: 'flex', justifyContent: 'space-between', alignItems: 'center',
-          padding: '8px 16px', background: '#0F172A', borderBottom: '1px solid rgba(148,163,184,0.15)',
+          padding: responsive(cbBp, '8px 12px', '8px 16px', '8px 16px'), background: '#0F172A', borderBottom: '1px solid rgba(148,163,184,0.15)',
         }}>
           <span style={{ fontSize: 12, fontWeight: 500, color: t.slate400, fontFamily: t.font }}>
             {title || language}
@@ -626,8 +686,8 @@ function CodeBlockComponent({ language, title, children }: { language?: string; 
         </div>
       )}
       <pre style={{
-        margin: 0, padding: 16, background: d.codeBg,
-        overflowX: 'auto', fontSize: 13.5, lineHeight: 1.6,
+        margin: 0, padding: responsive(cbBp, '12px 14px', '14px 16px', '14px 16px'), background: d.codeBg,
+        overflowX: 'auto', fontSize: responsive(cbBp, 12, 13, 13.5), lineHeight: 1.6,
         fontFamily: t.mono, color: d.codeFg,
       }}>
         <code>{children}</code>
@@ -643,6 +703,7 @@ function SearchModal({ onClose, onNavigate }: { onClose: () => void; onNavigate:
   const [activeIdx, setActiveIdx] = useState(0);
   const inputRef = useRef<HTMLInputElement>(null);
   const listRef = useRef<HTMLDivElement>(null);
+  const smBp = useBreakpoint();
   const results = searchDocs(query);
 
   useEffect(() => {
@@ -686,7 +747,7 @@ function SearchModal({ onClose, onNavigate }: { onClose: () => void; onNavigate:
       <div
         onClick={e => e.stopPropagation()}
         style={{
-          width: '100%', maxWidth: 560, borderRadius: 14,
+          width: '100%', maxWidth: smBp === 'mobile' ? 'calc(100% - 32px)' : 560, borderRadius: 14,
           background: t.bg, boxShadow: '0 16px 70px rgba(0,0,0,0.15), 0 0 0 1px rgba(15,23,42,0.08)',
           overflow: 'hidden', display: 'flex', flexDirection: 'column',
           maxHeight: 'min(70vh, 480px)',
