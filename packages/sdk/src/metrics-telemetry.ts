@@ -1,8 +1,8 @@
 /**
  * Metrics Telemetry Adapter
  * 
- * A privacy-safe telemetry adapter that collects metrics for App Rewards
- * and ecosystem health monitoring.
+ * A privacy-safe telemetry adapter that collects metrics for
+ * ecosystem health monitoring and usage reporting.
  * 
  * Features:
  * - Opt-in by default (disabled unless explicitly enabled)

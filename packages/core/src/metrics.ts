@@ -2,7 +2,7 @@
  * Canonical Metrics Constants
  * 
  * These metric names are the official set for PartyLayer telemetry.
- * Changing these names would break metrics aggregation and App Rewards reporting.
+ * Changing these names would break metrics aggregation and downstream reporting.
  * 
  * @since 0.3.0
  */

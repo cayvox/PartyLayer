@@ -1,6 +1,6 @@
 # PartyLayer Metrics & Telemetry
 
-This document describes the metrics collection system in PartyLayer SDK, designed to support App Rewards reporting and ecosystem health monitoring.
+This document describes the metrics collection system in PartyLayer SDK, designed to support ecosystem health monitoring and usage reporting.
 
 ## Overview
 
@@ -81,7 +81,7 @@ interface TelemetryConfig {
 
 ## Canonical Metrics
 
-These metric names are stable and should not be changed. Changing them breaks App Rewards reporting.
+These metric names are stable and should not be changed. Changing them breaks downstream reporting.
 
 ### Enablement Metrics
 
@@ -207,9 +207,9 @@ See `partylayer-metrics-backend` repository for a Cloudflare Workers + D1 refere
 
 ---
 
-## App Rewards Alignment
+## Ecosystem Reporting Alignment
 
-These metrics support Canton Network App Rewards reporting:
+These metrics support Canton Network ecosystem reporting:
 
 ### Category: Infrastructure / Enablement
 

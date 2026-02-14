@@ -8,7 +8,7 @@ PartyLayer adopted CIP-0103 as its canonical Provider interface for three reason
 
 1. **Interoperability**: dApps using PartyLayer can work with any CIP-0103-compliant wallet without adaptation layers.
 2. **Ecosystem alignment**: CIP-0103 is the Canton Foundation's chosen standard for dApp-wallet communication. Aligning with it positions PartyLayer as a spec-compliant participant in the ecosystem rather than a proprietary alternative.
-3. **App reward readiness**: Standardized method calls and events provide the observable primitives needed for measuring network usage without injecting proprietary telemetry.
+3. **Ecosystem observability**: Standardized method calls and events provide the observable primitives needed for measuring network usage without injecting proprietary telemetry.
 
 This document describes PartyLayer's alignment with CIP-0103. It is not a restatement of the CIP itself. Readers should consult the [CIP-0103 specification](https://github.com/canton-foundation/cips/blob/main/cip-0103/cip-0103.md) for the authoritative standard.
 
@@ -238,9 +238,9 @@ PartyLayer's Provider implementation contains no wallet-specific logic.
 
 ---
 
-## 8. App Reward Readiness
+## 8. Ecosystem Observability
 
-Canton's app reward model measures network usage to compensate application developers. CIP-0103 alignment supports this by providing standardized, observable primitives.
+CIP-0103 alignment supports ecosystem-level observability by providing standardized, observable primitives for measuring network usage.
 
 **Method calls as usage signals**: Every dApp-wallet interaction flows through `provider.request({ method, params })`. The 10 mandatory methods provide a well-defined vocabulary of actions (connect, sign, execute, query) that can be observed at the Provider boundary without inspecting payload internals.
 
@@ -280,4 +280,4 @@ PartyLayer's CIP-0103 implementation is intentionally scoped. The following are 
 
 - **Event correctness**: All four CIP-0103 events (`statusChanged`, `accountsChanged`, `txChanged`, `connected`) are implemented with spec-compliant payload shapes. The `txChanged` discriminated union is fully typed with per-status payloads.
 
-- **Ecosystem readiness**: Standardized method calls and events provide the observable primitives for app reward measurement. No custom telemetry is injected into the Provider interface.
+- **Ecosystem readiness**: Standardized method calls and events provide the observable primitives for ecosystem-level usage measurement. No custom telemetry is injected into the Provider interface.
