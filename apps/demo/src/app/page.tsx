@@ -1684,8 +1684,8 @@ function Footer() {
                 onMouseOver={e => { (e.currentTarget).style.color = t.fg; }}
                 onMouseOut={e => { (e.currentTarget).style.color = t.slate500; }}
               >
-                {link.label}
-                <ExternalIcon />
+                {link.label === 'X' ? <XIcon size={16} /> : link.label}
+                {link.label !== 'X' && <ExternalIcon />}
               </a>
             ))}
           </div>
@@ -1732,6 +1732,19 @@ function Footer() {
 
 /* ─── Page ─────────────────────────────────────────────────────────────── */
 
+const faqJsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'FAQPage',
+  mainEntity: faqItems.map(item => ({
+    '@type': 'Question',
+    name: item.question,
+    acceptedAnswer: {
+      '@type': 'Answer',
+      text: item.answer,
+    },
+  })),
+};
+
 function LandingContent() {
   const [modalOpen, setModalOpen] = useState(false);
 
@@ -1739,6 +1752,10 @@ function LandingContent() {
 
   return (
     <>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(faqJsonLd) }}
+      />
       <GlobalStyles />
       <Background>
         <Nav onConnect={openModal} />
