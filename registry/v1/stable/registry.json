@@ -4,7 +4,7 @@
     "schemaVersion": "1.0.0",
     "publishedAt": "2026-01-29T00:00:00Z",
     "channel": "stable",
-    "sequence": 2,
+    "sequence": 3,
     "publisher": "PartyLayer"
   },
   "wallets": [
@@ -98,6 +98,29 @@
       },
       "installation": {
         "oauth": true
+      },
+      "sdkVersion": ">=0.1.0"
+    },
+    {
+      "id": "nightly",
+      "name": "Nightly",
+      "description": "Nightly Multichain Wallet for Canton Network",
+      "homepage": "https://nightly.app",
+      "icon": "https://nightly.app/icon.png",
+      "supportedNetworks": ["devnet", "testnet", "mainnet"],
+      "capabilities": {
+        "signMessage": true,
+        "signTransaction": false,
+        "submitTransaction": true,
+        "transactionStatus": false,
+        "switchNetwork": false,
+        "multiParty": false
+      },
+      "adapter": {
+        "type": "@partylayer/adapter-nightly"
+      },
+      "installation": {
+        "windowProperty": "nightly"
       },
       "sdkVersion": ">=0.1.0"
     }

@@ -13,23 +13,22 @@
       "description": "Official Console Wallet for Canton Network",
       "homepage": "https://console.digitalasset.com",
       "icon": "https://console.digitalasset.com/icon.png",
-      "supportedNetworks": ["mainnet", "devnet", "local"],
+      "supportedNetworks": ["devnet", "testnet", "mainnet"],
       "capabilities": {
         "signMessage": true,
         "signTransaction": true,
         "submitTransaction": true,
         "transactionStatus": true,
-        "switchNetwork": true,
+        "switchNetwork": false,
         "multiParty": false
       },
       "adapter": {
-        "type": "console",
-        "config": {}
+        "type": "@partylayer/adapter-console"
       },
       "installation": {
         "windowProperty": "consoleWallet"
       },
-      "sdkVersion": "0.1.0"
+      "sdkVersion": ">=0.1.0"
     },
     {
       "id": "loop",
@@ -37,71 +36,92 @@
       "description": "5N Loop Wallet for Canton Network",
       "homepage": "https://cantonloop.com",
       "icon": "https://cantonloop.com/icon.png",
-      "supportedNetworks": ["mainnet", "devnet", "local"],
+      "supportedNetworks": ["devnet", "testnet", "mainnet"],
       "capabilities": {
         "signMessage": true,
-        "signTransaction": true,
-        "submitTransaction": true,
-        "transactionStatus": true,
-        "switchNetwork": true,
-        "multiParty": false
-      },
-      "adapter": {
-        "type": "loop",
-        "config": {}
-      },
-      "installation": {
-        "scriptTag": "loop-sdk"
-      },
-      "sdkVersion": "0.1.0"
-    },
-    {
-      "id": "cantor8",
-      "name": "Cantor8 (C8)",
-      "description": "Cantor8 Wallet for Canton Network",
-      "homepage": "https://www.canton.network/ecosystem/cantor8",
-      "icon": "https://cantor8.com/icon.png",
-      "supportedNetworks": ["mainnet", "devnet", "local"],
-      "capabilities": {
-        "signMessage": true,
-        "signTransaction": true,
+        "signTransaction": false,
         "submitTransaction": true,
         "transactionStatus": true,
         "switchNetwork": false,
         "multiParty": false
       },
       "adapter": {
-        "type": "cantor8",
-        "config": {}
+        "type": "@partylayer/adapter-loop"
       },
       "installation": {
-        "windowProperty": "cantor8"
+        "scriptTag": "@fivenorth/loop-sdk"
       },
-      "sdkVersion": "0.1.0"
+      "sdkVersion": ">=0.1.0"
+    },
+    {
+      "id": "cantor8",
+      "name": "Cantor8",
+      "description": "Cantor8 Mobile Wallet for Canton Network",
+      "homepage": "https://cantor8.tech",
+      "icon": "https://cantor8.tech/icon.png",
+      "supportedNetworks": ["devnet", "testnet", "mainnet"],
+      "capabilities": {
+        "signMessage": true,
+        "signTransaction": true,
+        "submitTransaction": false,
+        "transactionStatus": false,
+        "switchNetwork": false,
+        "multiParty": false
+      },
+      "adapter": {
+        "type": "@partylayer/adapter-cantor8"
+      },
+      "installation": {
+        "deeplink": "cantor8://"
+      },
+      "sdkVersion": ">=0.1.0"
     },
     {
       "id": "bron",
       "name": "Bron",
-      "description": "Bron Wallet for Canton Network",
+      "description": "Bron Enterprise Remote Signer for Canton Network",
       "homepage": "https://developer.bron.org",
-      "icon": "https://bron.org/icon.png",
-      "supportedNetworks": ["mainnet", "devnet", "local"],
+      "icon": "https://developer.bron.org/icon.png",
+      "supportedNetworks": ["devnet", "testnet", "mainnet"],
       "capabilities": {
         "signMessage": true,
         "signTransaction": true,
-        "submitTransaction": true,
-        "transactionStatus": true,
+        "submitTransaction": false,
+        "transactionStatus": false,
         "switchNetwork": false,
         "multiParty": false
       },
       "adapter": {
-        "type": "bron",
-        "config": {}
+        "type": "@partylayer/adapter-bron",
+        "requiresConfig": true
       },
       "installation": {
-        "windowProperty": "bron"
+        "oauth": true
       },
-      "sdkVersion": "0.1.0"
+      "sdkVersion": ">=0.1.0"
+    },
+    {
+      "id": "nightly",
+      "name": "Nightly",
+      "description": "Nightly Multichain Wallet for Canton Network",
+      "homepage": "https://nightly.app",
+      "icon": "https://nightly.app/icon.png",
+      "supportedNetworks": ["devnet", "testnet", "mainnet"],
+      "capabilities": {
+        "signMessage": true,
+        "signTransaction": false,
+        "submitTransaction": true,
+        "transactionStatus": false,
+        "switchNetwork": false,
+        "multiParty": false
+      },
+      "adapter": {
+        "type": "@partylayer/adapter-nightly"
+      },
+      "installation": {
+        "windowProperty": "nightly"
+      },
+      "sdkVersion": ">=0.1.0"
     }
   ]
 }
