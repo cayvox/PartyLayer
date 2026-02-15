@@ -195,6 +195,14 @@ function NpmIcon({ size = 20 }: { size?: number }) {
   );
 }
 
+function XIcon({ size = 20 }: { size?: number }) {
+  return (
+    <svg width={size} height={size} fill="currentColor" viewBox="0 0 24 24">
+      <path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z" />
+    </svg>
+  );
+}
+
 function BookIcon({ size = 20 }: { size?: number }) {
   return (
     <svg width={size} height={size} fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round">
@@ -1642,6 +1650,7 @@ function FAQ() {
 const footerLinks = [
   { label: 'GitHub', href: GITHUB_URL },
   { label: 'npm', href: NPM_URL },
+  { label: 'X', href: 'https://x.com/partylayerkit' },
   { label: 'Issues', href: `${GITHUB_URL}/issues` },
   { label: 'Discussions', href: `${GITHUB_URL}/discussions` },
   { label: 'License', href: `${GITHUB_URL}/blob/main/LICENSE` },
@@ -1702,7 +1711,6 @@ function Footer() {
                   style={{ height: 90, marginTop: -30, marginBottom: -30, marginLeft: -10 }}
                 />
               </a>
-              <span style={{ color: t.brand500 }}>&#10022;</span>
             </div>
           </div>
 
