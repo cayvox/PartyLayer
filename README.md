@@ -2,7 +2,7 @@
 
 # PartyLayer
 
-**WalletConnect-like SDK for Canton Network**
+**The Unified Wallet SDK for Canton Network**
 
 Connect your dApp to multiple Canton wallets with a single integration.
 
@@ -19,7 +19,7 @@ Connect your dApp to multiple Canton wallets with a single integration.
 
 ## What is PartyLayer?
 
-PartyLayer is a production-grade SDK that enables decentralized applications (dApps) on the [Canton Network](https://www.canton.network/) to connect with multiple wallet providers through a unified interface. Inspired by WalletConnect, it abstracts away the complexity of integrating with different wallets.
+PartyLayer is a production-grade SDK that enables decentralized applications (dApps) on the [Canton Network](https://www.canton.network/) to connect with multiple wallet providers through a unified interface. It abstracts away the complexity of integrating with different wallets, giving you a single API for every Canton wallet.
 
 ### Why PartyLayer?
 
@@ -839,7 +839,7 @@ MIT License - see [LICENSE](./LICENSE) for details.
 
 - [Canton Network](https://www.canton.network/) - The privacy-enabled blockchain network
 - [Digital Asset](https://www.digitalasset.com/) - Daml and Canton development
-- [WalletConnect](https://walletconnect.com/) - Inspiration for the SDK design
+
 
 ---
 

@@ -1,7 +1,7 @@
 /**
  * WalletModal — Premium wallet selection modal for Canton dApps.
  *
- * Inspired by RainbowKit / WalletConnect quality:
+ * Premium quality wallet selection experience:
  *   - Multi-state flow: idle -> connecting -> success -> error
  *   - Smooth backdrop blur + scale animations
  *   - Dynamic wallet icons with graceful fallback
