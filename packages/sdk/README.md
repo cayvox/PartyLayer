@@ -2,7 +2,7 @@
 
 <div align="center">
 
-**The official SDK for connecting dApps to Canton Network wallets**
+**The unified SDK for connecting dApps to Canton Network wallets**
 
 [![npm version](https://img.shields.io/npm/v/@partylayer/sdk.svg?style=flat-square)](https://www.npmjs.com/package/@partylayer/sdk)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue.svg?style=flat-square)](https://www.typescriptlang.org/)
